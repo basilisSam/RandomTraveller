@@ -85,3 +85,13 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
+
+ktlint {
+    android = true
+    outputToConsole = true
+    outputColorName = "RED"
+    ignoreFailures = false
+    filter {
+        exclude("**/*.kts")
+    }
+}
