@@ -16,7 +16,7 @@ import com.example.randomtraveller.ui.theme.RandomTravellerTheme
 fun LoginScreen(
     onLoginClicked: () -> Unit,
     onLogoutClicked: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     RandomTravellerTheme {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->

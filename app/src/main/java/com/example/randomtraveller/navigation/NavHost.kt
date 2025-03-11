@@ -12,12 +12,12 @@ fun NavHost(
     navController: NavHostController,
     onLoginClicked: () -> Unit,
     onLogoutClicked: () -> Unit,
-    modifier: Modifier
+    modifier: Modifier,
 ) {
     NavHost(
         navController = navController,
         startDestination = Login,
-        modifier = modifier
+        modifier = modifier,
     ) {
         composable<Login> {
             LoginScreen(onLoginClicked, onLogoutClicked, modifier)
