@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1027906729897",
+    "project_id": "random-traveller-8729b",
+    "storage_bucket": "random-traveller-8729b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1027906729897:android:3d3ec90b470e276559b6b8",
+        "android_client_info": {
+          "package_name": "com.example.randomtraveller"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD--bSYdKaHdtnVEzkjdsZEzDQBkj4aZoE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
