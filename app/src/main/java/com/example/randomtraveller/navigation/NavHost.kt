@@ -5,22 +5,45 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.randomtraveller.flights.SearchFlightScreen
 import com.example.randomtraveller.login.LoginScreen
+import com.example.randomtraveller.splash.SplashScreen
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun NavHost(
     navController: NavHostController,
-    onLoginClicked: () -> Unit,
-    onLogoutClicked: () -> Unit,
     modifier: Modifier,
 ) {
     NavHost(
         navController = navController,
-        startDestination = Login,
+        startDestination = SplashScreen,
         modifier = modifier,
     ) {
+        FirebaseAuth.getInstance().addAuthStateListener {
+            if (it.currentUser == null) {
+                navController.navigate(Login) {
+                    popUpTo(0) {
+                        inclusive = true
+                    }
+                }
+            } else {
+                navController.navigate(SearchFlight) {
+                    popUpTo(0) {
+                        inclusive = true
+                    }
+                }
+            }
+        }
+
         composable<Login> {
-            LoginScreen(onLoginClicked, onLogoutClicked, modifier)
+            LoginScreen(modifier)
+        }
+        composable<SplashScreen> {
+            SplashScreen(modifier)
+        }
+        composable<SearchFlight> {
+            SearchFlightScreen(modifier)
         }
     }
 }
