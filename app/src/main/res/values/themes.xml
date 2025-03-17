@@ -2,4 +2,19 @@
 <resources>
 
     <style name="Theme.RandomTraveller" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="SigninTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/teal_200</item>
+        <item name="colorPrimaryDark">@color/black</item>
+        <item name="colorAccent">@color/black</item>
+
+        <item name="android:windowBackground">@android:color/white</item>
+<!--        <item name="android:buttonStyle">@style/RoundedButton</item>-->
+    </style>
+
+<!--    <style name="RoundedButton">-->
+<!--        <item name="android:backgroundTint">@color/black</item>-->
+<!--        <item name="android:textColor">@color/black</item>-->
+<!--    </style>-->
+
 </resources>
