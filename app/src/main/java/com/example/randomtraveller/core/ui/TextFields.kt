@@ -19,6 +19,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.randomtraveller.R
 import com.example.randomtraveller.ui.theme.RandomTravellerTheme
 
@@ -35,7 +36,7 @@ fun TitledTextField(
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = headerText,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp, lineHeight = 24.sp)
         )
 
         Spacer(modifier = Modifier.height(4.dp))
