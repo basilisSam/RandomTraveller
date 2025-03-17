@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">RandomTraveller</string>
+    <string name="leaving_from">Leaving from</string>
+    <string name="enter_airport">Enter airport</string>
+    <string name="budget">Budget</string>
+    <string name="enter_budget">Enter budget</string>
+    <string name="sign_out">Sign Out</string>
 </resources>
