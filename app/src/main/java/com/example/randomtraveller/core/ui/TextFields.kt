@@ -44,7 +44,9 @@ fun TitledTextField(
         TextField(
             value = currentText,
             onValueChange = { onValueChange(it.text) },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
             trailingIcon = {
                 trailingIcon?.let {
                     Icon(
