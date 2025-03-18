@@ -42,6 +42,7 @@ class SearchFlightsViewModel @Inject constructor(
             is OnAction.OnShowCalendarPicker -> showCalendarPicker()
             is OnAction.OnDismissDatePicker -> dismissDatePicker()
             is OnAction.OnDateSelected -> selectStartingDate(action.dateInMillis)
+            is OnAction.OnTripDurationChanged -> updateTripDuration(action.tripDuration)
         }
     }
 
@@ -126,6 +127,13 @@ class SearchFlightsViewModel @Inject constructor(
         }
     }
 
+    private fun updateTripDuration(duration: String) {
+        val cleanedDuration = duration.filter { it.isDigit() }
+        _screenState.update {
+            it.copy(tripDuration = cleanedDuration)
+        }
+    }
+
     private fun searchAirports() {
         cancelAirportSuggestionsJob()
         _screenState.update {
@@ -166,6 +174,7 @@ data class SearchFlightsScreenState(
     val airportText: TextFieldValue = TextFieldValue(),
     val budgetText: TextFieldValue = TextFieldValue(),
     val startDate: SelectedStartDate = SelectedStartDate(),
+    val tripDuration: String = "",
     val shouldShowCalendarPicker: Boolean = false,
     val airportSuggestions: List<AirportSuggestion> = emptyList(),
     val areSuggestionsLoading: Boolean = false
@@ -189,4 +198,5 @@ sealed class OnAction {
     data object OnShowCalendarPicker : OnAction()
     data object OnDismissDatePicker : OnAction()
     data class OnDateSelected(val dateInMillis: Long?) : OnAction()
+    data class OnTripDurationChanged(val tripDuration: String) : OnAction()
 }

@@ -36,6 +36,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -104,6 +105,7 @@ private fun Content(
 
                 BudgetTextField(onAction, screenState.budgetText)
                 StartDateButton(screenState.startDate, onAction)
+                TripDurationTextField(screenState.tripDuration, onAction)
 
                 val context = LocalContext.current
                 Button(onClick = {
@@ -114,6 +116,22 @@ private fun Content(
             }
         }
     }
+}
+
+@Composable
+fun TripDurationTextField(
+    duration: String,
+    onAction: (OnAction) -> Unit
+) {
+    TitledTextField(
+        headerText = stringResource(R.string.duration),
+        placeholderText = stringResource(R.string.trip_duration),
+        trailingIcon = R.drawable.ic_calendar,
+        currentText = TextFieldValue(duration, TextRange(duration.length)),
+        onValueChange = { onAction(OnAction.OnTripDurationChanged(it)) },
+        keyboardType = KeyboardType.Number,
+        modifier = Modifier.padding(top = 24.dp)
+    )
 }
 
 @Composable
