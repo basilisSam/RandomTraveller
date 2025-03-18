@@ -11,4 +11,6 @@
     <string name="selected_start_date">Selected start date</string>
     <string name="select">Select</string>
     <string name="cancel">Cancel</string>
+    <string name="duration">Duration</string>
+    <string name="trip_duration">Trip duration</string>
 </resources>
