@@ -6,4 +6,9 @@
     <string name="enter_budget">Enter budget</string>
     <string name="sign_out">Sign Out</string>
     <string name="searching_airports">Searching airports</string>
+    <string name="choose_airport">Choose airport</string>
+    <string name="start_date">Start date</string>
+    <string name="selected_start_date">Selected start date</string>
+    <string name="select">Select</string>
+    <string name="cancel">Cancel</string>
 </resources>
