@@ -106,7 +106,6 @@ private fun Content(
 
                 BudgetTextField(onAction, screenState.budgetText)
                 DateRangeButton(screenState.selectedDateRange, onAction)
-                TripDurationTextField(screenState.tripDuration, onAction)
 
                 val context = LocalContext.current
                 Button(onClick = {
@@ -117,22 +116,6 @@ private fun Content(
             }
         }
     }
-}
-
-@Composable
-fun TripDurationTextField(
-    duration: String,
-    onAction: (OnAction) -> Unit
-) {
-    TitledTextField(
-        headerText = stringResource(R.string.duration),
-        placeholderText = stringResource(R.string.trip_duration),
-        trailingIcon = R.drawable.ic_calendar,
-        currentText = TextFieldValue(duration, TextRange(duration.length)),
-        onValueChange = { onAction(OnAction.OnTripDurationChanged(it)) },
-        keyboardType = KeyboardType.Number,
-        modifier = Modifier.padding(top = 24.dp)
-    )
 }
 
 @Composable
