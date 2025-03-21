@@ -5,7 +5,6 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.randomtraveller.core.utils.toFormattedDateString
 import com.example.randomtraveller.core.utils.toLocalDate
 import com.example.randomtraveller.flights.data.AirportSearchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
