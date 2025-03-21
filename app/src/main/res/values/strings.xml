@@ -13,4 +13,6 @@
     <string name="cancel">Cancel</string>
     <string name="duration">Duration</string>
     <string name="trip_duration">Trip duration</string>
+    <string name="dates">Dates</string>
+    <string name="select_dates">Select Dates</string>
 </resources>
