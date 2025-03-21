@@ -12,10 +12,11 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AirportsServiceModule {
-
     @Provides
     @Singleton
-    fun provideAirportsService(@Named("airports_api") retrofit: Retrofit): AirportService {
+    fun provideAirportsService(
+        @Named("airports_api") retrofit: Retrofit,
+    ): AirportService {
         return retrofit.create(AirportService::class.java)
     }
 }

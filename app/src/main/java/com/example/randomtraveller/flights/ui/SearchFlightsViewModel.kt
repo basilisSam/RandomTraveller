@@ -20,152 +20,164 @@ import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchFlightsViewModel @Inject constructor(
-    private val airportSearchRepository: AirportSearchRepository
-) : ViewModel() {
-
-    private val _screenState: MutableStateFlow<SearchFlightsScreenState> = MutableStateFlow(
-        SearchFlightsScreenState()
-    )
-    val screenState: StateFlow<SearchFlightsScreenState>
-        get() = _screenState.asStateFlow()
-
-    private var airportSuggestionsJob: Job? = null
-
-    fun onAction(action: OnAction) {
-        when (action) {
-            is OnAction.OnAirportSuggestionSelected -> selectAirportSuggestion(action.suggestion)
-            is OnAction.OnUpdateAirportText -> updateAirportText(action.newText)
-            is OnAction.OnUpdateBudget -> updateBudget(action.newBudget)
-            is OnAction.OnShowCalendarPicker -> showCalendarPicker()
-            is OnAction.OnDismissDatePicker -> dismissDatePicker()
-            is OnAction.OnDateRangeSelected -> selectDateRange(
-                action.startDateInMillis,
-                action.endDateInMillis
+class SearchFlightsViewModel
+    @Inject
+    constructor(
+        private val airportSearchRepository: AirportSearchRepository,
+    ) : ViewModel() {
+        private val _screenState: MutableStateFlow<SearchFlightsScreenState> =
+            MutableStateFlow(
+                SearchFlightsScreenState(),
             )
-        }
-    }
+        val screenState: StateFlow<SearchFlightsScreenState>
+            get() = _screenState.asStateFlow()
 
-    private fun updateAirportText(newText: String) {
-        if (newText.length > 3) {
-            searchAirports()
-        } else if (newText.isEmpty()) {
-            cancelAirportSuggestionsJob()
+        private var airportSuggestionsJob: Job? = null
+
+        fun onAction(action: OnAction) {
+            when (action) {
+                is OnAction.OnAirportSuggestionSelected -> selectAirportSuggestion(action.suggestion)
+                is OnAction.OnUpdateAirportText -> updateAirportText(action.newText)
+                is OnAction.OnUpdateBudget -> updateBudget(action.newBudget)
+                is OnAction.OnShowCalendarPicker -> showCalendarPicker()
+                is OnAction.OnDismissDatePicker -> dismissDatePicker()
+                is OnAction.OnDateRangeSelected ->
+                    selectDateRange(
+                        action.startDateInMillis,
+                        action.endDateInMillis,
+                    )
+            }
+        }
+
+        private fun updateAirportText(newText: String) {
+            if (newText.length > 3) {
+                searchAirports()
+            } else if (newText.isEmpty()) {
+                cancelAirportSuggestionsJob()
+                _screenState.update {
+                    it.copy(
+                        airportSuggestions = emptyList(),
+                        areSuggestionsLoading = false,
+                    )
+                }
+            }
             _screenState.update {
                 it.copy(
+                    airportText =
+                        TextFieldValue(
+                            text = newText,
+                            selection = TextRange(newText.length),
+                        ),
+                )
+            }
+        }
+
+        private fun updateBudget(newBudget: String) {
+            val formattedBudget =
+                if (newBudget.isEmpty()) {
+                    ""
+                } else {
+                    val cleanedBudget = newBudget.filter { it.isDigit() }.toLong()
+                    val formatter = NumberFormat.getInstance(Locale.getDefault())
+                    formatter.format(cleanedBudget)
+                }
+            _screenState.update {
+                it.copy(
+                    budgetText =
+                        TextFieldValue(
+                            text = formattedBudget,
+                            selection = TextRange(formattedBudget.length),
+                        ),
+                )
+            }
+        }
+
+        private fun selectAirportSuggestion(suggestion: AirportSuggestion) {
+            cancelAirportSuggestionsJob()
+            val airportText = "(${suggestion.iata}) ${suggestion.name}"
+            _screenState.update {
+                it.copy(
+                    airportText = TextFieldValue(airportText, TextRange(airportText.length)),
                     airportSuggestions = emptyList(),
                     areSuggestionsLoading = false,
                 )
             }
         }
-        _screenState.update {
-            it.copy(
-                airportText = TextFieldValue(
-                    text = newText,
-                    selection = TextRange(newText.length)
-                )
-            )
-        }
-    }
 
-    private fun updateBudget(newBudget: String) {
-        val formattedBudget = if (newBudget.isEmpty()) {
-            ""
-        } else {
-            val cleanedBudget = newBudget.filter { it.isDigit() }.toLong()
-            val formatter = NumberFormat.getInstance(Locale.getDefault())
-            formatter.format(cleanedBudget)
+        private fun showCalendarPicker() {
+            _screenState.update {
+                it.copy(shouldShowCalendarPicker = true)
+            }
         }
-        _screenState.update {
-            it.copy(
-                budgetText = TextFieldValue(
-                    text = formattedBudget,
-                    selection = TextRange(formattedBudget.length)
-                )
-            )
+
+        private fun dismissDatePicker() {
+            _screenState.update {
+                it.copy(shouldShowCalendarPicker = false)
+            }
         }
-    }
 
-    private fun selectAirportSuggestion(suggestion: AirportSuggestion) {
-        cancelAirportSuggestionsJob()
-        val airportText = "(${suggestion.iata}) ${suggestion.name}"
-        _screenState.update {
-            it.copy(
-                airportText = TextFieldValue(airportText, TextRange(airportText.length)),
-                airportSuggestions = emptyList(),
-                areSuggestionsLoading = false
-            )
-        }
-    }
+        private fun selectDateRange(
+            startDateInMillis: Long?,
+            endDateInMillis: Long?,
+        ) {
+            if (startDateInMillis == null || endDateInMillis == null) return
 
-    private fun showCalendarPicker() {
-        _screenState.update {
-            it.copy(shouldShowCalendarPicker = true)
-        }
-    }
+            val startDate = startDateInMillis.toLocalDate()
+            val endDate = endDateInMillis.toLocalDate()
+            val formattedText =
+                "${startDate.dayOfMonth}/${startDate.monthValue}/${startDate.year} - ${endDate.dayOfMonth}/${endDate.monthValue}/${endDate.year}"
 
-    private fun dismissDatePicker() {
-        _screenState.update {
-            it.copy(shouldShowCalendarPicker = false)
-        }
-    }
-
-    private fun selectDateRange(startDateInMillis: Long?, endDateInMillis: Long?) {
-        if (startDateInMillis == null || endDateInMillis == null) return
-
-        val startDate = startDateInMillis.toLocalDate()
-        val endDate = endDateInMillis.toLocalDate()
-        val formattedText =
-            "${startDate.dayOfMonth}/${startDate.monthValue}/${startDate.year} - ${endDate.dayOfMonth}/${endDate.monthValue}/${endDate.year}"
-
-        _screenState.update {
-            it.copy(
-                selectedDateRange = SelectedDateRange(
-                    startDateText = formattedText,
-                    startLocalDate = startDate,
-                    startDateInMillis = startDateInMillis,
-                    endLocalDate = endDate,
-                    endDateInMillis = endDateInMillis
-                )
-            )
-        }
-    }
-
-    private fun searchAirports() {
-        cancelAirportSuggestionsJob()
-        _screenState.update {
-            it.copy(areSuggestionsLoading = true)
-        }
-        airportSuggestionsJob = viewModelScope.launch {
-            val suggestions = listOf(
-                AirportSuggestion("Athens", "ATH"),
-                AirportSuggestion("Athens", "ATH2"),
-                AirportSuggestion("Athens", "ATH3"),
-                AirportSuggestion("Athens", "ATH4"),
-                AirportSuggestion("Athens", "ATH5"),
-                AirportSuggestion("Athens", "ATH6"),
-                AirportSuggestion("Athens", "ATH7"),
-                AirportSuggestion("Athens", "ATH8"),
-                AirportSuggestion("Athens", "ATH9"),
-                AirportSuggestion("Athens", "ATH10"),
-                AirportSuggestion("Athens", "ATH11"),
-            )
-//            delay(3000)
-            ensureActive()
             _screenState.update {
                 it.copy(
-                    airportSuggestions = suggestions,
-                    areSuggestionsLoading = false
+                    selectedDateRange =
+                        SelectedDateRange(
+                            startDateText = formattedText,
+                            startLocalDate = startDate,
+                            startDateInMillis = startDateInMillis,
+                            endLocalDate = endDate,
+                            endDateInMillis = endDateInMillis,
+                        ),
                 )
             }
         }
-    }
 
-    private fun cancelAirportSuggestionsJob() {
-        airportSuggestionsJob?.cancel()
-        airportSuggestionsJob = null
+        private fun searchAirports() {
+            cancelAirportSuggestionsJob()
+            _screenState.update {
+                it.copy(areSuggestionsLoading = true)
+            }
+            airportSuggestionsJob =
+                viewModelScope.launch {
+                    val suggestions =
+                        listOf(
+                            AirportSuggestion("Athens", "ATH"),
+                            AirportSuggestion("Athens", "ATH2"),
+                            AirportSuggestion("Athens", "ATH3"),
+                            AirportSuggestion("Athens", "ATH4"),
+                            AirportSuggestion("Athens", "ATH5"),
+                            AirportSuggestion("Athens", "ATH6"),
+                            AirportSuggestion("Athens", "ATH7"),
+                            AirportSuggestion("Athens", "ATH8"),
+                            AirportSuggestion("Athens", "ATH9"),
+                            AirportSuggestion("Athens", "ATH10"),
+                            AirportSuggestion("Athens", "ATH11"),
+                        )
+//            delay(3000)
+                    ensureActive()
+                    _screenState.update {
+                        it.copy(
+                            airportSuggestions = suggestions,
+                            areSuggestionsLoading = false,
+                        )
+                    }
+                }
+        }
+
+        private fun cancelAirportSuggestionsJob() {
+            airportSuggestionsJob?.cancel()
+            airportSuggestionsJob = null
+        }
     }
-}
 
 data class SearchFlightsScreenState(
     val airportText: TextFieldValue = TextFieldValue(),
@@ -174,7 +186,7 @@ data class SearchFlightsScreenState(
     val tripDuration: String = "",
     val shouldShowCalendarPicker: Boolean = false,
     val airportSuggestions: List<AirportSuggestion> = emptyList(),
-    val areSuggestionsLoading: Boolean = false
+    val areSuggestionsLoading: Boolean = false,
 )
 
 data class SelectedDateRange(
@@ -182,7 +194,7 @@ data class SelectedDateRange(
     val startLocalDate: LocalDate? = null,
     val startDateInMillis: Long? = null,
     val endLocalDate: LocalDate? = null,
-    val endDateInMillis: Long? = null
+    val endDateInMillis: Long? = null,
 )
 
 data class AirportSuggestion(
@@ -192,12 +204,17 @@ data class AirportSuggestion(
 
 sealed class OnAction {
     data class OnUpdateAirportText(val newText: String) : OnAction()
+
     data class OnUpdateBudget(val newBudget: String) : OnAction()
+
     data class OnAirportSuggestionSelected(val suggestion: AirportSuggestion) : OnAction()
+
     data object OnShowCalendarPicker : OnAction()
+
     data object OnDismissDatePicker : OnAction()
+
     data class OnDateRangeSelected(
         val startDateInMillis: Long?,
-        val endDateInMillis: Long?
+        val endDateInMillis: Long?,
     ) : OnAction()
 }

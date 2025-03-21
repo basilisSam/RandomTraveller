@@ -6,9 +6,10 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface AirportService {
-
     @GET("airports")
-    suspend fun getAirports(@Query("name") cityName: String): Response<List<AirportData>>
+    suspend fun getAirports(
+        @Query("name") cityName: String,
+    ): Response<List<AirportData>>
 }
 
 data class AirportData(
@@ -21,5 +22,5 @@ data class AirportData(
     @SerializedName("elevation_ft") val elevationFt: String?,
     val latitude: String?,
     val longitude: String?,
-    val timezone: String?
+    val timezone: String?,
 )

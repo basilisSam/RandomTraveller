@@ -35,14 +35,12 @@ private val signInIntent =
         .build()
 
 @Composable
-fun LoginScreen(
-    modifier: Modifier = Modifier,
-) {
+fun LoginScreen(modifier: Modifier = Modifier) {
     RandomTravellerTheme {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.BottomCenter
+                contentAlignment = Alignment.BottomCenter,
             ) {
                 Column(
                     modifier = modifier.padding(innerPadding),
@@ -61,18 +59,17 @@ fun LoginButton() {
 
     PrimaryButton(
         text = "Sign-in",
-        modifier = Modifier.padding(bottom = 20.dp)
+        modifier = Modifier.padding(bottom = 20.dp),
     ) { sigInInLauncher.launch(signInIntent) }
 }
 
 @Composable
-private fun getSigInInLauncher(
-    context: Context,
-) = rememberLauncherForActivityResult(
-    contract = FirebaseAuthUIActivityResultContract(),
-) { result ->
-    onSignInResult(context, result)
-}
+private fun getSigInInLauncher(context: Context) =
+    rememberLauncherForActivityResult(
+        contract = FirebaseAuthUIActivityResultContract(),
+    ) { result ->
+        onSignInResult(context, result)
+    }
 
 private fun onSignInResult(
     context: Context,

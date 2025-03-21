@@ -4,20 +4,21 @@ import com.example.randomtraveller.flights.data.service.AirportData
 import com.example.randomtraveller.flights.data.service.AirportService
 import javax.inject.Inject
 
-class AirportSearchRepository @Inject constructor(
-    private val airportService: AirportService
-) {
-
-    suspend fun getAirports(cityName: String): List<AirportData> {
-        return try {
-            val response = airportService.getAirports(cityName)
-            if (response.isSuccessful) {
-                return response.body() ?: emptyList()
-            } else {
+class AirportSearchRepository
+    @Inject
+    constructor(
+        private val airportService: AirportService,
+    ) {
+        suspend fun getAirports(cityName: String): List<AirportData> {
+            return try {
+                val response = airportService.getAirports(cityName)
+                if (response.isSuccessful) {
+                    return response.body() ?: emptyList()
+                } else {
+                    emptyList()
+                }
+            } catch (e: Exception) {
                 emptyList()
             }
-        } catch (e: Exception) {
-            emptyList()
         }
     }
-}

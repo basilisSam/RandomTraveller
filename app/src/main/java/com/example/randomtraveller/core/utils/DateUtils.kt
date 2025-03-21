@@ -18,11 +18,12 @@ fun LocalDate.toFormattedDateString(): String {
     val dayOfMonth = this.dayOfMonth
     val year = this.year
 
-    val dayOfMonthSuffix = when (dayOfMonth) {
-        1, 21, 31 -> "st"
-        2, 22 -> "nd"
-        3, 23 -> "rd"
-        else -> "th"
-    }
-    return "$dayOfWeek, ${dayOfMonth}${dayOfMonthSuffix} of $year"
+    val dayOfMonthSuffix =
+        when (dayOfMonth) {
+            1, 21, 31 -> "st"
+            2, 22 -> "nd"
+            3, 23 -> "rd"
+            else -> "th"
+        }
+    return "$dayOfWeek, ${dayOfMonth}$dayOfMonthSuffix of $year"
 }

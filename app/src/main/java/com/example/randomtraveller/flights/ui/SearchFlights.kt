@@ -52,7 +52,7 @@ import com.firebase.ui.auth.AuthUI
 @Composable
 fun SearchFlightScreen(
     modifier: Modifier,
-    viewModel: SearchFlightsViewModel = hiltViewModel()
+    viewModel: SearchFlightsViewModel = hiltViewModel(),
 ) {
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
     Content(screenState, viewModel::onAction, modifier)
@@ -63,7 +63,7 @@ fun SearchFlightScreen(
 private fun Content(
     screenState: SearchFlightsScreenState,
     onAction: (OnAction) -> Unit,
-    modifier: Modifier
+    modifier: Modifier,
 ) {
     RandomTravellerTheme {
         Scaffold(
@@ -71,23 +71,24 @@ private fun Content(
                 CenterAlignedTopAppBar(title = {
                     Text(
                         "Search Flight",
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                 })
-            }
+            },
         ) { innerPadding ->
             if (screenState.shouldShowCalendarPicker) {
                 MyDatePicker(
                     screenState.selectedDateRange.startDateInMillis,
                     screenState.selectedDateRange.endDateInMillis,
-                    onAction
+                    onAction,
                 )
             }
             Column(
-                modifier = modifier
-                    .padding(innerPadding)
-                    .padding(horizontal = 8.dp)
-                    .verticalScroll(rememberScrollState())
+                modifier =
+                    modifier
+                        .padding(innerPadding)
+                        .padding(horizontal = 8.dp)
+                        .verticalScroll(rememberScrollState()),
             ) {
                 LeavingFromTextField(onAction, screenState.airportText)
 
@@ -98,7 +99,7 @@ private fun Content(
                 if (screenState.airportSuggestions.isNotEmpty()) {
                     AirportSuggestions(
                         suggestions = screenState.airportSuggestions,
-                        onAirportSelected = onAction
+                        onAirportSelected = onAction,
                     )
                 }
 
@@ -119,24 +120,26 @@ private fun Content(
 @Composable
 private fun DateRangeButton(
     startDate: SelectedDateRange,
-    onAction: (OnAction) -> Unit
+    onAction: (OnAction) -> Unit,
 ) {
     TitledTextFieldLikeButton(
         headerText = stringResource(R.string.dates),
-        placeholderText = startDate.startDateText
-            ?: stringResource(R.string.select_dates),
+        placeholderText =
+            startDate.startDateText
+                ?: stringResource(R.string.select_dates),
         trailingIcon = R.drawable.ic_calendar,
         onClick = { onAction(OnAction.OnShowCalendarPicker) },
-        modifier = Modifier
-            .padding(top = 24.dp)
-            .clickable { onAction(OnAction.OnShowCalendarPicker) }
+        modifier =
+            Modifier
+                .padding(top = 24.dp)
+                .clickable { onAction(OnAction.OnShowCalendarPicker) },
     )
 }
 
 @Composable
 private fun BudgetTextField(
     onAction: (OnAction) -> Unit,
-    budgetText: TextFieldValue
+    budgetText: TextFieldValue,
 ) {
     TitledTextField(
         headerText = stringResource(R.string.budget),
@@ -145,7 +148,7 @@ private fun BudgetTextField(
         onValueChange = { onAction(OnAction.OnUpdateBudget(it)) },
         currentText = budgetText,
         keyboardType = KeyboardType.Number,
-        modifier = Modifier.padding(top = 24.dp)
+        modifier = Modifier.padding(top = 24.dp),
     )
 }
 
@@ -153,12 +156,12 @@ private fun BudgetTextField(
 private fun AirportSearchHint() {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Spacer(Modifier.width(8.dp))
         CircularProgressIndicator(
             modifier = Modifier.size(12.dp),
-            strokeWidth = 2.dp
+            strokeWidth = 2.dp,
         )
         Spacer(Modifier.width(8.dp))
         Text(stringResource(R.string.searching_airports))
@@ -168,7 +171,7 @@ private fun AirportSearchHint() {
 @Composable
 private fun LeavingFromTextField(
     onAction: (OnAction) -> Unit,
-    airportText: TextFieldValue
+    airportText: TextFieldValue,
 ) {
     TitledTextField(
         headerText = stringResource(R.string.leaving_from),
@@ -184,57 +187,61 @@ private fun LeavingFromTextField(
 fun AirportSuggestions(
     suggestions: List<AirportSuggestion>,
     onAirportSelected: (OnAction) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     if (suggestions.isNotEmpty()) {
         LazyColumn(
-            modifier = Modifier
-                .padding(vertical = 8.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainer)
-                .fillMaxHeight(0.5f),
-            contentPadding = PaddingValues(horizontal = 16.dp)
+            modifier =
+                Modifier
+                    .padding(vertical = 8.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
+                    .fillMaxHeight(0.5f),
+            contentPadding = PaddingValues(horizontal = 16.dp),
         ) {
-
             stickyHeader {
                 Surface(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .zIndex(1f),
-                    color = MaterialTheme.colorScheme.surfaceContainer
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .zIndex(1f),
+                    color = MaterialTheme.colorScheme.surfaceContainer,
                 ) {
                     Text(
                         text = stringResource(R.string.choose_airport),
-                        modifier = Modifier.padding(
-                            bottom = 8.dp,
-                            top = 4.dp,
-                            start = 16.dp
-                        ),
-                        fontWeight = FontWeight.Bold
+                        modifier =
+                            Modifier.padding(
+                                bottom = 8.dp,
+                                top = 4.dp,
+                                start = 16.dp,
+                            ),
+                        fontWeight = FontWeight.Bold,
                     )
                 }
             }
             itemsIndexed(
                 items = suggestions,
-                key = { _, suggestion -> suggestion.iata }
+                key = { _, suggestion -> suggestion.iata },
             ) { index, suggestion ->
                 Column {
                     if (index > 0) {
                         HorizontalDivider(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(vertical = 4.dp)
+                            modifier = Modifier.padding(vertical = 4.dp),
                         )
                     }
-                    Row(modifier = Modifier
-                        .padding(vertical = 16.dp)
-                        .fillMaxWidth()
-                        .clickable {
-                            onAirportSelected(
-                                OnAction.OnAirportSuggestionSelected(
-                                    suggestion
-                                )
-                            )
-                        }
+                    Row(
+                        modifier =
+                            Modifier
+                                .padding(vertical = 16.dp)
+                                .fillMaxWidth()
+                                .clickable {
+                                    onAirportSelected(
+                                        OnAction.OnAirportSuggestionSelected(
+                                            suggestion,
+                                        ),
+                                    )
+                                },
                     ) {
                         Icon(painterResource(R.drawable.ic_airplane), contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
@@ -260,7 +267,7 @@ private fun AirportSuggestionPreview() {
     RandomTravellerTheme {
         AirportSuggestions(
             listOf(AirportSuggestion("Athens", "ATH"), AirportSuggestion("Athens", "ATH2")),
-            {}
+            {},
         )
     }
 }

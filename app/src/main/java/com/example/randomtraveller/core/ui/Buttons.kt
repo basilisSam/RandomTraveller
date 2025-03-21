@@ -34,26 +34,28 @@ fun PrimaryButton(
     text: String,
     isEnabled: Boolean = true,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Button(
         onClick = { onClick() },
-        modifier = modifier
-            .fillMaxWidth()
-            .height(60.dp)
-            .padding(horizontal = 16.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(60.dp)
+                .padding(horizontal = 16.dp),
         shape = RoundedCornerShape(48.dp),
         enabled = isEnabled,
-        colors = ButtonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-            disabledContentColor = Color.White,
-            disabledContainerColor = Color.LightGray
-        )
+        colors =
+            ButtonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                disabledContentColor = Color.White,
+                disabledContainerColor = Color.LightGray,
+            ),
     ) {
         Text(
             text = text,
-            fontSize = 16.sp
+            fontSize = 16.sp,
         )
     }
 }
@@ -64,45 +66,48 @@ fun TitledTextFieldLikeButton(
     placeholderText: String = "",
     trailingIcon: Int? = null,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = headerText,
-            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp, lineHeight = 24.sp)
+            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp, lineHeight = 24.sp),
         )
 
         Spacer(modifier = Modifier.height(4.dp))
 
         Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .clickable(onClick = onClick),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .clickable(onClick = onClick),
             shape = RoundedCornerShape(12.dp),
             color = MaterialTheme.colorScheme.surfaceVariant,
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(start = 16.dp, end = 13.dp),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(start = 16.dp, end = 13.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
                     text = placeholderText,
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    style =
+                        TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Normal,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        ),
                 )
 
                 trailingIcon?.let {
                     Icon(
                         painterResource(it),
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 }
             }
@@ -135,7 +140,7 @@ private fun TitledTextFieldLikeButtonPreview() {
             placeholderText = "Select a date",
             trailingIcon = R.drawable.ic_calendar,
             onClick = {},
-            modifier = Modifier
+            modifier = Modifier,
         )
     }
 }

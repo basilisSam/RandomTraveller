@@ -31,12 +31,12 @@ fun TitledTextField(
     currentText: TextFieldValue = TextFieldValue(),
     onValueChange: (String) -> Unit,
     keyboardType: KeyboardType = KeyboardType.Unspecified,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = headerText,
-            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp, lineHeight = 24.sp)
+            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp, lineHeight = 24.sp),
         )
 
         Spacer(modifier = Modifier.height(4.dp))
@@ -44,26 +44,28 @@ fun TitledTextField(
         TextField(
             value = currentText,
             onValueChange = { onValueChange(it.text) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
             trailingIcon = {
                 trailingIcon?.let {
                     Icon(
                         painterResource(trailingIcon),
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 }
             },
             singleLine = true,
             shape = RoundedCornerShape(12.dp),
             placeholder = { Text(placeholderText) },
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent,
-                errorIndicatorColor = Color.Transparent
-            ),
+            colors =
+                TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    errorIndicatorColor = Color.Transparent,
+                ),
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         )
     }
@@ -77,7 +79,7 @@ private fun TitledTextFieldPreview() {
             headerText = "Leaving from",
             placeholderText = "Enter airport",
             trailingIcon = R.drawable.ic_calendar,
-            onValueChange = {}
+            onValueChange = {},
         )
     }
 }

@@ -44,7 +44,7 @@ fun NavHost(
         }
         composable<SearchFlight> {
             SearchFlightScreen(
-                modifier = modifier
+                modifier = modifier,
             )
         }
     }

@@ -20,15 +20,17 @@ fun MyDatePicker(
     selectedEndDate: Long? = null,
     onAction: (OnAction) -> Unit,
 ) {
-    val dateState = rememberDateRangePickerState(
-        initialSelectedStartDateMillis = selectedStartDate,
-        initialSelectedEndDateMillis = selectedEndDate,
-        selectableDates = object : SelectableDates {
-            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                return !utcTimeMillis.toLocalDate().isBefore(LocalDate.now())
-            }
-        }
-    )
+    val dateState =
+        rememberDateRangePickerState(
+            initialSelectedStartDateMillis = selectedStartDate,
+            initialSelectedEndDateMillis = selectedEndDate,
+            selectableDates =
+                object : SelectableDates {
+                    override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                        return !utcTimeMillis.toLocalDate().isBefore(LocalDate.now())
+                    }
+                },
+        )
     DatePickerDialog(
         onDismissRequest = { onAction(OnAction.OnDismissDatePicker) },
         confirmButton = {
@@ -36,8 +38,8 @@ fun MyDatePicker(
                 onAction(
                     OnAction.OnDateRangeSelected(
                         dateState.selectedStartDateMillis,
-                        dateState.selectedEndDateMillis
-                    )
+                        dateState.selectedEndDateMillis,
+                    ),
                 )
                 onAction(OnAction.OnDismissDatePicker)
             }) {
@@ -48,9 +50,8 @@ fun MyDatePicker(
             TextButton(onClick = { onAction(OnAction.OnDismissDatePicker) }) {
                 Text(stringResource(R.string.cancel))
             }
-        }
-    )
-    {
+        },
+    ) {
         DateRangePicker(state = dateState)
     }
 }
