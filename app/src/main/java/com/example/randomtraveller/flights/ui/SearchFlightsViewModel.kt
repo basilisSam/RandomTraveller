@@ -10,7 +10,6 @@ import com.example.randomtraveller.core.utils.toLocalDate
 import com.example.randomtraveller.flights.data.AirportSearchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -41,7 +40,11 @@ class SearchFlightsViewModel @Inject constructor(
             is OnAction.OnUpdateBudget -> updateBudget(action.newBudget)
             is OnAction.OnShowCalendarPicker -> showCalendarPicker()
             is OnAction.OnDismissDatePicker -> dismissDatePicker()
-            is OnAction.OnDateSelected -> selectStartingDate(action.dateInMillis)
+            is OnAction.OnDateRangeSelected -> selectDateRange(
+                action.startDateInMillis,
+                action.endDateInMillis
+            )
+
             is OnAction.OnTripDurationChanged -> updateTripDuration(action.tripDuration)
         }
     }
@@ -110,18 +113,22 @@ class SearchFlightsViewModel @Inject constructor(
         }
     }
 
-    private fun selectStartingDate(startDateInMillis: Long?) {
-        startDateInMillis ?: return
+    private fun selectDateRange(startDateInMillis: Long?, endDateInMillis: Long?) {
+        if (startDateInMillis == null || endDateInMillis == null) return
 
-        val localDate = startDateInMillis.toLocalDate()
-        val formattedText = localDate.toFormattedDateString()
+        val startDate = startDateInMillis.toLocalDate()
+        val endDate = endDateInMillis.toLocalDate()
+        val formattedText =
+            "${startDate.dayOfMonth}/${startDate.monthValue}/${startDate.year} - ${endDate.dayOfMonth}/${endDate.monthValue}/${endDate.year}"
 
         _screenState.update {
             it.copy(
-                startDate = SelectedStartDate(
+                selectedDateRange = SelectedDateRange(
                     startDateText = formattedText,
-                    startLocalDate = localDate,
-                    startDateInMillis = startDateInMillis
+                    startLocalDate = startDate,
+                    startDateInMillis = startDateInMillis,
+                    endLocalDate = endDate,
+                    endDateInMillis = endDateInMillis
                 )
             )
         }
@@ -153,7 +160,7 @@ class SearchFlightsViewModel @Inject constructor(
                 AirportSuggestion("Athens", "ATH10"),
                 AirportSuggestion("Athens", "ATH11"),
             )
-            delay(3000)
+//            delay(3000)
             ensureActive()
             _screenState.update {
                 it.copy(
@@ -173,17 +180,19 @@ class SearchFlightsViewModel @Inject constructor(
 data class SearchFlightsScreenState(
     val airportText: TextFieldValue = TextFieldValue(),
     val budgetText: TextFieldValue = TextFieldValue(),
-    val startDate: SelectedStartDate = SelectedStartDate(),
+    val selectedDateRange: SelectedDateRange = SelectedDateRange(),
     val tripDuration: String = "",
     val shouldShowCalendarPicker: Boolean = false,
     val airportSuggestions: List<AirportSuggestion> = emptyList(),
     val areSuggestionsLoading: Boolean = false
 )
 
-data class SelectedStartDate(
+data class SelectedDateRange(
     val startDateText: String? = null,
     val startLocalDate: LocalDate? = null,
-    val startDateInMillis: Long? = null
+    val startDateInMillis: Long? = null,
+    val endLocalDate: LocalDate? = null,
+    val endDateInMillis: Long? = null
 )
 
 data class AirportSuggestion(
@@ -197,6 +206,10 @@ sealed class OnAction {
     data class OnAirportSuggestionSelected(val suggestion: AirportSuggestion) : OnAction()
     data object OnShowCalendarPicker : OnAction()
     data object OnDismissDatePicker : OnAction()
-    data class OnDateSelected(val dateInMillis: Long?) : OnAction()
+    data class OnDateRangeSelected(
+        val startDateInMillis: Long?,
+        val endDateInMillis: Long?
+    ) : OnAction()
+
     data class OnTripDurationChanged(val tripDuration: String) : OnAction()
 }

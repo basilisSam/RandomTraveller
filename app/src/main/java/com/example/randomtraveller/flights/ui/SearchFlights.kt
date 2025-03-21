@@ -80,9 +80,10 @@ private fun Content(
         ) { innerPadding ->
             if (screenState.shouldShowCalendarPicker) {
                 MyDatePicker(
-                    screenState.startDate.startDateInMillis,
+                    screenState.selectedDateRange.startDateInMillis,
+                    screenState.selectedDateRange.endDateInMillis,
                     onAction
-                ) { onAction(OnAction.OnDismissDatePicker) }
+                )
             }
             Column(
                 modifier = modifier
@@ -104,7 +105,7 @@ private fun Content(
                 }
 
                 BudgetTextField(onAction, screenState.budgetText)
-                StartDateButton(screenState.startDate, onAction)
+                DateRangeButton(screenState.selectedDateRange, onAction)
                 TripDurationTextField(screenState.tripDuration, onAction)
 
                 val context = LocalContext.current
@@ -135,14 +136,14 @@ fun TripDurationTextField(
 }
 
 @Composable
-private fun StartDateButton(
-    startDate: SelectedStartDate,
+private fun DateRangeButton(
+    startDate: SelectedDateRange,
     onAction: (OnAction) -> Unit
 ) {
     TitledTextFieldLikeButton(
-        headerText = stringResource(R.string.start_date),
+        headerText = stringResource(R.string.dates),
         placeholderText = startDate.startDateText
-            ?: stringResource(R.string.start_date),
+            ?: stringResource(R.string.select_dates),
         trailingIcon = R.drawable.ic_calendar,
         onClick = { onAction(OnAction.OnShowCalendarPicker) },
         modifier = Modifier
