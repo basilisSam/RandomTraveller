@@ -43,8 +43,6 @@ class SearchFlightsViewModel @Inject constructor(
                 action.startDateInMillis,
                 action.endDateInMillis
             )
-
-            is OnAction.OnTripDurationChanged -> updateTripDuration(action.tripDuration)
         }
     }
 
@@ -133,13 +131,6 @@ class SearchFlightsViewModel @Inject constructor(
         }
     }
 
-    private fun updateTripDuration(duration: String) {
-        val cleanedDuration = duration.filter { it.isDigit() }
-        _screenState.update {
-            it.copy(tripDuration = cleanedDuration)
-        }
-    }
-
     private fun searchAirports() {
         cancelAirportSuggestionsJob()
         _screenState.update {
@@ -209,6 +200,4 @@ sealed class OnAction {
         val startDateInMillis: Long?,
         val endDateInMillis: Long?
     ) : OnAction()
-
-    data class OnTripDurationChanged(val tripDuration: String) : OnAction()
 }
