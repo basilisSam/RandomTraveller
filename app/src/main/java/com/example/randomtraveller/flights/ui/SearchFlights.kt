@@ -12,11 +12,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
@@ -85,10 +84,9 @@ private fun Content(
             }
             Column(
                 modifier =
-                    modifier
-                        .padding(innerPadding)
-                        .padding(horizontal = 8.dp)
-                        .verticalScroll(rememberScrollState()),
+                modifier
+                    .padding(innerPadding)
+                    .padding(horizontal = 8.dp),
             ) {
                 LeavingFromTextField(onAction, screenState.airportText)
 
@@ -125,14 +123,14 @@ private fun DateRangeButton(
     TitledTextFieldLikeButton(
         headerText = stringResource(R.string.dates),
         placeholderText =
-            startDate.startDateText
-                ?: stringResource(R.string.select_dates),
+        startDate.startDateText
+            ?: stringResource(R.string.select_dates),
         trailingIcon = R.drawable.ic_calendar,
         onClick = { onAction(OnAction.OnShowCalendarPicker) },
         modifier =
-            Modifier
-                .padding(top = 24.dp)
-                .clickable { onAction(OnAction.OnShowCalendarPicker) },
+        Modifier
+            .padding(top = 24.dp)
+            .clickable { onAction(OnAction.OnShowCalendarPicker) },
     )
 }
 
@@ -191,30 +189,30 @@ fun AirportSuggestions(
 ) {
     if (suggestions.isNotEmpty()) {
         LazyColumn(
-            modifier =
-                Modifier
-                    .padding(vertical = 8.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.surfaceContainer)
-                    .fillMaxHeight(0.5f),
+            modifier = modifier
+                .padding(vertical = 8.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .fillMaxHeight(0.5f)
+                .wrapContentHeight(),
             contentPadding = PaddingValues(horizontal = 16.dp),
         ) {
             stickyHeader {
                 Surface(
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .zIndex(1f),
+                    Modifier
+                        .fillMaxWidth()
+                        .zIndex(1f),
                     color = MaterialTheme.colorScheme.surfaceContainer,
                 ) {
                     Text(
                         text = stringResource(R.string.choose_airport),
                         modifier =
-                            Modifier.padding(
-                                bottom = 8.dp,
-                                top = 4.dp,
-                                start = 16.dp,
-                            ),
+                        Modifier.padding(
+                            bottom = 8.dp,
+                            top = 4.dp,
+                            start = 16.dp,
+                        ),
                         fontWeight = FontWeight.Bold,
                     )
                 }
@@ -232,16 +230,16 @@ fun AirportSuggestions(
                     }
                     Row(
                         modifier =
-                            Modifier
-                                .padding(vertical = 16.dp)
-                                .fillMaxWidth()
-                                .clickable {
-                                    onAirportSelected(
-                                        OnAction.OnAirportSuggestionSelected(
-                                            suggestion,
-                                        ),
-                                    )
-                                },
+                        Modifier
+                            .padding(vertical = 16.dp)
+                            .fillMaxWidth()
+                            .clickable {
+                                onAirportSelected(
+                                    OnAction.OnAirportSuggestionSelected(
+                                        suggestion,
+                                    ),
+                                )
+                            },
                     ) {
                         Icon(painterResource(R.drawable.ic_airplane), contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
