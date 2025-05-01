@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.google.services)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.apollo.graphql)
 }
 
 android {
@@ -76,6 +77,8 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.firebase.ui.auth)
+
+    implementation(libs.apollo.graphql)
 
     testImplementation(libs.junit)
     testImplementation(libs.truth)

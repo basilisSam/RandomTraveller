@@ -7,5 +7,6 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.google.services) apply false
     alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.apollo.graphql) apply false
     alias(libs.plugins.ktlint)
 }
