@@ -55,7 +55,7 @@ class SearchFlightsViewModel @Inject constructor(
                 ),
             )
         }
-        if (newText.length > 3) {
+        if (newText.length > 2) {
             searchAirports()
         } else if (newText.isEmpty()) {
             cancelAirportSuggestionsJob()
@@ -80,10 +80,10 @@ class SearchFlightsViewModel @Inject constructor(
         _screenState.update {
             it.copy(
                 budgetText =
-                TextFieldValue(
-                    text = formattedBudget,
-                    selection = TextRange(formattedBudget.length),
-                ),
+                    TextFieldValue(
+                        text = formattedBudget,
+                        selection = TextRange(formattedBudget.length),
+                    ),
             )
         }
     }
@@ -126,13 +126,13 @@ class SearchFlightsViewModel @Inject constructor(
         _screenState.update {
             it.copy(
                 selectedDateRange =
-                SelectedDateRange(
-                    startDateText = formattedText,
-                    startLocalDate = startDate,
-                    startDateInMillis = startDateInMillis,
-                    endLocalDate = endDate,
-                    endDateInMillis = endDateInMillis,
-                ),
+                    SelectedDateRange(
+                        startDateText = formattedText,
+                        startLocalDate = startDate,
+                        startDateInMillis = startDateInMillis,
+                        endLocalDate = endDate,
+                        endDateInMillis = endDateInMillis,
+                    ),
             )
         }
     }
@@ -160,10 +160,10 @@ class SearchFlightsViewModel @Inject constructor(
 //                    )
                 val suggestions =
                     airportSearchRepository.getAirports(screenState.value.airportText.text)
-                        .mapNotNull { airport ->
-                            if (airport.name.isNullOrEmpty() || airport.iata.isNullOrEmpty()) return@mapNotNull null
-                            AirportSuggestion(airport.name, airport.iata)
-                        }
+                        ?.mapNotNull { edge ->
+                            val station = edge?.node?.onStation ?: return@mapNotNull null
+                            AirportSuggestion(station.id, station.name, station.code ?: "")
+                        } ?: emptyList()
 
                 ensureActive()
                 _screenState.update {
@@ -200,6 +200,7 @@ data class SelectedDateRange(
 )
 
 data class AirportSuggestion(
+    val id: String,
     val name: String,
     val iata: String,
 )

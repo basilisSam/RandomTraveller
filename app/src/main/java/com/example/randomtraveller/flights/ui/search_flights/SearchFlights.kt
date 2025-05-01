@@ -84,16 +84,17 @@ private fun Content(
                     text = "Search flights",
                     modifier = Modifier.padding(bottom = 24.dp),
                     isEnabled =
-                    screenState.selectedDateRange.startDateInMillis != null &&
-                            screenState.selectedDateRange.endDateInMillis != null &&
-                            screenState.budgetText.text.isNotBlank() &&
-                            screenState.airportText.text.isNotBlank(),
+                        screenState.selectedDateRange.startDateInMillis != null &&
+                                screenState.selectedDateRange.endDateInMillis != null &&
+                                screenState.budgetText.text.isNotBlank() &&
+                                screenState.airportText.text.isNotBlank(),
 
                     ) {
                     onSearchFlightsClicked(
                         FlightResults(
-                            outboundDateMillis = screenState.selectedDateRange.startDateInMillis?:0L,
-                            inboundDateMillis = screenState.selectedDateRange.endDateInMillis?:0L,
+                            outboundDateMillis = screenState.selectedDateRange.startDateInMillis
+                                ?: 0L,
+                            inboundDateMillis = screenState.selectedDateRange.endDateInMillis ?: 0L,
                             departureAirportIata = screenState.airportText.text,
                             maxBudget = screenState.budgetText.text
                         )
@@ -110,9 +111,9 @@ private fun Content(
             }
             Column(
                 modifier =
-                modifier
-                    .padding(innerPadding)
-                    .padding(horizontal = 8.dp),
+                    modifier
+                        .padding(innerPadding)
+                        .padding(horizontal = 8.dp),
             ) {
                 LeavingFromTextField(onAction, screenState.airportText)
 
@@ -149,14 +150,14 @@ private fun DateRangeButton(
     TitledTextFieldLikeButton(
         headerText = stringResource(R.string.dates),
         placeholderText =
-        startDate.startDateText
-            ?: stringResource(R.string.select_dates),
+            startDate.startDateText
+                ?: stringResource(R.string.select_dates),
         trailingIcon = R.drawable.ic_calendar,
         onClick = { onAction(OnAction.OnShowCalendarPicker) },
         modifier =
-        Modifier
-            .padding(top = 24.dp)
-            .clickable { onAction(OnAction.OnShowCalendarPicker) },
+            Modifier
+                .padding(top = 24.dp)
+                .clickable { onAction(OnAction.OnShowCalendarPicker) },
     )
 }
 
@@ -226,26 +227,26 @@ fun AirportSuggestions(
             stickyHeader {
                 Surface(
                     modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .zIndex(1f),
+                        Modifier
+                            .fillMaxWidth()
+                            .zIndex(1f),
                     color = MaterialTheme.colorScheme.surfaceContainer,
                 ) {
                     Text(
                         text = stringResource(R.string.choose_airport),
                         modifier =
-                        Modifier.padding(
-                            bottom = 8.dp,
-                            top = 4.dp,
-                            start = 16.dp,
-                        ),
+                            Modifier.padding(
+                                bottom = 8.dp,
+                                top = 4.dp,
+                                start = 16.dp,
+                            ),
                         fontWeight = FontWeight.Bold,
                     )
                 }
             }
             itemsIndexed(
                 items = suggestions,
-                key = { _, suggestion -> suggestion.iata },
+                key = { _, suggestion -> suggestion.id },
             ) { index, suggestion ->
                 Column {
                     if (index > 0) {
@@ -256,16 +257,16 @@ fun AirportSuggestions(
                     }
                     Row(
                         modifier =
-                        Modifier
-                            .padding(vertical = 16.dp)
-                            .fillMaxWidth()
-                            .clickable {
-                                onAirportSelected(
-                                    OnAction.OnAirportSuggestionSelected(
-                                        suggestion,
-                                    ),
-                                )
-                            },
+                            Modifier
+                                .padding(vertical = 16.dp)
+                                .fillMaxWidth()
+                                .clickable {
+                                    onAirportSelected(
+                                        OnAction.OnAirportSuggestionSelected(
+                                            suggestion,
+                                        ),
+                                    )
+                                },
                     ) {
                         Icon(painterResource(R.drawable.ic_airplane), contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
@@ -290,7 +291,10 @@ private fun SearchFlightsScreenPreview() {
 private fun AirportSuggestionPreview() {
     RandomTravellerTheme {
         AirportSuggestions(
-            listOf(AirportSuggestion("Athens", "ATH"), AirportSuggestion("Athens", "ATH2")),
+            listOf(
+                AirportSuggestion("id1", "Athens", "ATH"),
+                AirportSuggestion("id2", "Athens", "ATH2")
+            ),
             {},
         )
     }

@@ -1,20 +1,15 @@
 package com.example.randomtraveller.flights.data
 
-import com.example.randomtraveller.flights.data.service.AirportData
-import com.example.randomtraveller.flights.data.service.AirportService
+import com.apollographql.apollo.ApolloClient
+import com.example.randomtraveller.GetAirportsQuery
 import javax.inject.Inject
+import javax.inject.Named
 
-class AirportSearchRepository @Inject constructor(private val airportService: AirportService) {
-    suspend fun getAirports(cityName: String): List<AirportData> {
-        return try {
-            val response = airportService.getAirports(cityName)
-            if (response.isSuccessful) {
-                response.body() ?: emptyList()
-            } else {
-                emptyList()
-            }
-        } catch (e: Exception) {
-            emptyList()
-        }
+class AirportSearchRepository @Inject constructor(
+    @Named("umbrella") private val apolloClient: ApolloClient
+) {
+    suspend fun getAirports(cityName: String): List<GetAirportsQuery.Edge?>? {
+        return apolloClient.query(GetAirportsQuery(cityName))
+            .execute().data?.places?.onPlaceConnection?.edges
     }
 }
