@@ -1,7 +1,7 @@
 package com.example.randomtraveller.flights.data
 
 import com.apollographql.apollo.ApolloClient
-import com.example.randomtraveller.GetAirportsQuery
+import com.example.randomtraveller.umbrella.GetAirportsQuery
 import javax.inject.Inject
 import javax.inject.Named
 

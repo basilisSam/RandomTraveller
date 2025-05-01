@@ -104,11 +104,23 @@ ktlint {
 }
 
 apollo {
-    service("service") {
-        packageName.set("com.example.randomtraveller")
+    service("umbrella") {
+        packageName.set("com.example.randomtraveller.umbrella")
+        srcDir("src/main/graphql/com/randomtraveller/umbrella")
+
         introspection {
             endpointUrl.set("https://api.skypicker.com/umbrella/v2/graphql")
-            schemaFile.set(file("app/src/main/graphql/com/randomtraveller/schema.graphqls"))
+            schemaFile.set(file("app/src/main/graphql/com/randomtraveller/umbrella/schema.graphqls"))
+        }
+    }
+
+    service("martech") {
+        packageName.set("com.example.randomtraveller.martech")
+        srcDir("src/main/graphql/com/randomtraveller/martech")
+
+        introspection {
+            endpointUrl.set("https://martech.skypicker.com/graphql")
+            schemaFile.set(file("app/src/main/graphql/com/randomtraveller/martech/schema.graphqls"))
         }
     }
 }
