@@ -1,4 +1,4 @@
-package com.example.randomtraveller.flights.ui
+package com.example.randomtraveller.flights.ui.search_flights
 
 import android.icu.text.NumberFormat
 import androidx.compose.ui.text.TextRange

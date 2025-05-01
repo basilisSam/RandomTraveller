@@ -6,11 +6,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import app.cash.turbine.TurbineTestContext
 import app.cash.turbine.test
 import com.example.randomtraveller.flights.data.AirportSearchRepository
-import com.example.randomtraveller.flights.ui.AirportSuggestion
-import com.example.randomtraveller.flights.ui.OnAction
-import com.example.randomtraveller.flights.ui.SearchFlightsScreenState
-import com.example.randomtraveller.flights.ui.SearchFlightsViewModel
-import com.example.randomtraveller.flights.ui.SelectedDateRange
+import com.example.randomtraveller.flights.ui.search_flights.AirportSuggestion
+import com.example.randomtraveller.flights.ui.search_flights.OnAction
+import com.example.randomtraveller.flights.ui.search_flights.SearchFlightsScreenState
+import com.example.randomtraveller.flights.ui.search_flights.SearchFlightsViewModel
+import com.example.randomtraveller.flights.ui.search_flights.SelectedDateRange
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.impl.annotations.MockK

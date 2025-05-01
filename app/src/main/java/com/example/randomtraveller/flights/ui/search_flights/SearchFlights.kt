@@ -1,4 +1,4 @@
-package com.example.randomtraveller.flights.ui
+package com.example.randomtraveller.flights.ui.search_flights
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -43,24 +43,29 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.randomtraveller.R
+import com.example.randomtraveller.core.ui.PrimaryButton
 import com.example.randomtraveller.core.ui.TitledTextField
 import com.example.randomtraveller.core.ui.TitledTextFieldLikeButton
+import com.example.randomtraveller.flights.ui.MyDatePicker
+import com.example.randomtraveller.navigation.FlightResults
 import com.example.randomtraveller.ui.theme.RandomTravellerTheme
 import com.firebase.ui.auth.AuthUI
 
 @Composable
 fun SearchFlightScreen(
     modifier: Modifier,
+    onSearchFlightsClicked: (FlightResults) -> Unit,
     viewModel: SearchFlightsViewModel = hiltViewModel(),
 ) {
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
-    Content(screenState, viewModel::onAction, modifier)
+    Content(screenState, onSearchFlightsClicked, viewModel::onAction, modifier)
 }
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun Content(
     screenState: SearchFlightsScreenState,
+    onSearchFlightsClicked: (FlightResults) -> Unit,
     onAction: (OnAction) -> Unit,
     modifier: Modifier,
 ) {
@@ -74,6 +79,27 @@ private fun Content(
                     )
                 })
             },
+            bottomBar = {
+                PrimaryButton(
+                    text = "Search flights",
+                    modifier = Modifier.padding(bottom = 24.dp),
+                    isEnabled =
+                    screenState.selectedDateRange.startDateInMillis != null &&
+                            screenState.selectedDateRange.endDateInMillis != null &&
+                            screenState.budgetText.text.isNotBlank() &&
+                            screenState.airportText.text.isNotBlank(),
+
+                    ) {
+                    onSearchFlightsClicked(
+                        FlightResults(
+                            outboundDateMillis = screenState.selectedDateRange.startDateInMillis?:0L,
+                            inboundDateMillis = screenState.selectedDateRange.endDateInMillis?:0L,
+                            departureAirportIata = screenState.airportText.text,
+                            maxBudget = screenState.budgetText.text
+                        )
+                    )
+                }
+            }
         ) { innerPadding ->
             if (screenState.shouldShowCalendarPicker) {
                 MyDatePicker(
@@ -255,7 +281,7 @@ fun AirportSuggestions(
 @Composable
 private fun SearchFlightsScreenPreview() {
     RandomTravellerTheme {
-        Content(SearchFlightsScreenState(), {}, Modifier)
+        Content(SearchFlightsScreenState(), {}, {}, Modifier)
     }
 }
 
