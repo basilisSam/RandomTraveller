@@ -102,3 +102,13 @@ ktlint {
         exclude("**/*.kts")
     }
 }
+
+apollo {
+    service("service") {
+        packageName.set("com.example.randomtraveller")
+        introspection {
+            endpointUrl.set("https://api.skypicker.com/umbrella/v2/graphql")
+            schemaFile.set(file("app/src/main/graphql/com/randomtraveller/schema.graphqls"))
+        }
+    }
+}

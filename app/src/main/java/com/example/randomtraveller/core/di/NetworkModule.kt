@@ -1,5 +1,7 @@
 package com.example.randomtraveller.core.di
 
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.network.okHttpClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,6 +32,12 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun provideApolloClientBuilder(): ApolloClient.Builder {
+        return ApolloClient.Builder()
+    }
+
+    @Provides
+    @Singleton
     @Named("airports_api")
     fun provideOkHttpClient(okHttpClientBuilder: OkHttpClient.Builder): OkHttpClient {
         return okHttpClientBuilder.addInterceptor { chain ->
@@ -44,13 +52,26 @@ object NetworkModule {
     @Provides
     @Singleton
     @Named("airports_api")
-    fun provideAirportsApiClient(
+    fun provideAirportsRetrofitClient(
         @Named("airports_api") okkHttpClient: OkHttpClient,
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://api.api-ninjas.com/v1/")
             .client(okkHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @Named("umbrella")
+    fun provideUmbrellaApolloClient(
+        apolloClientBuilder: ApolloClient.Builder,
+        okHttpClientBuilder: OkHttpClient.Builder,
+    ): ApolloClient {
+        return apolloClientBuilder
+            .serverUrl("https://api.skypicker.com/umbrella/v2/graphql")
+            .okHttpClient(okHttpClientBuilder.build())
             .build()
     }
 }
