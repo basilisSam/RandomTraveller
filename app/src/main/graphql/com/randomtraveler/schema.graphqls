@@ -1,0 +1,5061 @@
+type RootQuery {
+  onewayItineraries(search: SearchOnewayInput, filter: ItinerariesFilterInput, options: ItinerariesOptionsInput): ItinerariesResult
+
+  returnItineraries(search: SearchReturnInput, filter: ItinerariesFilterInput, options: ItinerariesOptionsInput): ItinerariesResult
+
+  multicityItineraries(search: SearchMulticityInput, filter: ItinerariesFilterInput, options: ItinerariesOptionsInput): ItinerariesResult
+
+  nomadItineraries(search: SearchNomadInput, filter: ItinerariesFilterInput, options: ItinerariesOptionsInput): ItinerariesResult
+
+  onewayOnePerCityItineraries(search: SearchOnewayInput, filter: ItinerariesFilterInput, options: ItinerariesOptionsInput): OnePerCityItinerariesResult
+
+  returnOnePerCityItineraries(search: SearchReturnInput, filter: ItinerariesFilterInput, options: ItinerariesOptionsInput): OnePerCityItinerariesResult
+
+  places("\n        If no search input is provided, top cities nearby are returned\n        (the center for nearby search can be modified via options input).\n        " search: PlacesSearchInput, filter: PlacesFilterInput, options: PlacesOptionsInput, first: Int, last: Int, before: String, after: String): PlacesResult
+
+  itineraryPricesCalendar(search: SearchPricesCalendarInput, filter: ItinerariesFilterInput, options: ItinerariesOptionsInput): ItineraryPricesCalendarResult
+
+  returnItineraryPricesCalendar(search: SearchReturnPricesCalendarInput, filter: ItinerariesFilterInput, options: ItinerariesOptionsInput): ItineraryPricesCalendarResult
+
+  itineraryPricesMap(search: SearchPricesMapInput, filter: ItinerariesFilterInput, options: ItinerariesOptionsInput): ItineraryPricesMapResult
+
+  itineraryPriceGraph(search: SearchPriceGraphInput, filter: ItinerariesFilterInput, options: ItinerariesOptionsInput): ItineraryPriceGraphResult
+
+  itineraryPriceTable(search: SearchReturnInput, filter: ItinerariesFilterInput, options: ItinerariesOptionsInput): ItineraryPriceTableResult
+
+  """
+  Requires authorization token of registered user placed in Authorization header. E.g. Authorization: <token> (Bearer prefix is also supported)
+  """
+  userData(locale: Locale, currency: String, enableAdditionalAncillaries: Boolean): UserDataResponse
+
+  """
+  User wallet info. Requires authorization token of registered user placed in Authorization header. E.g. Authorization: <token> (Bearer prefix is also supported)
+  """
+  loyaltyTier: LoyaltyTierResponse
+
+  nomadExampleTrips(source: IdsAndSlugsInput, destination: IdsAndSlugsInput, originCountry: String, locale: Locale!): NomadExampleTripsResult
+
+  availableAccommodations(search: SearchAccommodationsInput!, filter: AccommodationsFilterInput, options: AccommodationsOptionsInput, first: Int, last: Int, before: String, after: String): AccommodationResponse
+
+  seatInfo("ID of Segment.operatingCarrier or Segment.carrier if there's no operaring carrier." carrier: ID!, "Segment.code - this is the flight number in case of a segment operated by aircraft." code: String!, "Outbound departure date and time." outboundDepartureDate: DateTime!, "ID of the source Station." source: ID!, "ID of the destination Station." destination: ID!, "Cabin class of the segment." cabinClass: CabinClassType!): SeatInfoResult
+
+  priceCheck(itineraryType: ItineraryType!, "The price the user paid for his flight." price: MoneyInput, "Source location of the trip." source: ID!, "Destination location of the trip." destination: ID!, "Optional date range of the trip. If not specified we use anytime." date: DateRangeInput, "Nights in destination, used for return trips." nightsCount: Int, "The number of adults on the trip. If no passengers are specified, this parameter's value will be `1`." adults: Int, children: Int, infants: Int, "Number of hold bags per adult. The first number represents the number of bags for passenger 1,\n        the second number is for passenger 2 etc. Can only contain up to two hold bags per passenger." adultsHoldBags: [Int], "Number of hand bags per adult. The first number represents the number of bags for passenger 1,\n        the second number is for passenger 2 etc. Can only contain up to two hand bags per passenger." adultsHandBags: [Int], "Number of hold bags per child. The first number represents the number of bags for child passenger 1,\n        the second number is for child passenger 2 etc. Can only contain up to two hold bags per child passenger." childrenHoldBags: [Int], "Number of hand bags per child. The first number represents the number of bags for child passenger 1,\n        the second number is for child passenger 2 etc. Can only contain up to two hand bags per child passenger." childrenHandBags: [Int], locale: Locale, partner: String): PriceCheckResult
+
+  """
+  Requires authorization token of registered user placed in Authorization header. E.g. Authorization: <token> (Bearer prefix is also supported),
+      define bucket ids for which you want to obtain saved itineraries, sending empty list for ids returns all wishlist buckets
+  """
+  userWishlists(userEmail: String, wishlistIds: [String!]!, currency: String, locale: Locale): UserWishlistsResponse!
+
+  """
+  Requires authorization token of registered user placed in Authorization header. E.g. Authorization: <token> (Bearer prefix is also supported).
+      Use to obtain all wishlist buckets names and ids faster, but without saved itineraries content they contain
+  """
+  userWishlistNames(userEmail: String): UserWishlistNamesResponse!
+
+  homePageData(locale: Locale): HomePageOr404DataResults
+}
+
+type RootMutation {
+  """
+  Requires authorization token of registered user placed in Authorization header. E.g. Authorization: <token> (Bearer prefix is also supported)
+  """
+  setDefaultLocations("Location IDs, radius locations (e.g. radius:43.564-16.76546-250) and city radius locations (e.g. cityRadius:bratislava_sk-250) of users favourite locations." locationIds: [String], locale: Locale): UserDataResponse
+
+  """
+  Authorization token of registered user placed in Authorization header. E.g. Authorization: <token> (Bearer prefix is also supported)
+  """
+  createPriceAlert(searchFingerprint: String, userEmail: String, url: String, locale: String, price: MoneyInput, brand: String, threshold: Int, exponeaCookie: String): PriceAlertResponse
+
+  deletePriceAlert(id: ID!, searchFingerprint: String, userEmail: String): PriceAlertDeletionResponse
+
+  createRecentSearchOneWay(search: SearchOnewayInput, filter: ItinerariesFilterInput, options: ItinerariesOptionsInput): RecentSearchCreationResponse
+
+  createRecentSearchReturn(search: SearchReturnInput, filter: ItinerariesFilterInput, options: ItinerariesOptionsInput): RecentSearchCreationResponse
+
+  createRecentSearchMulticity(search: SearchMulticityInput, filter: ItinerariesFilterInput, options: ItinerariesOptionsInput): RecentSearchCreationResponse
+
+  createRecentSearchNomad(search: SearchNomadInput, filter: ItinerariesFilterInput, options: ItinerariesOptionsInput): RecentSearchCreationResponse
+
+  createRecentSearchOnewayOnePerCity(search: SearchOnewayInput, filter: ItinerariesFilterInput, options: ItinerariesOptionsInput): RecentSearchCreationResponse
+
+  createRecentSearchReturnOnePerCity(search: SearchReturnInput, filter: ItinerariesFilterInput, options: ItinerariesOptionsInput): RecentSearchCreationResponse
+
+  deleteRecentSearch(searchFingerprint: String): RecentSearchDeletionResponse
+
+  """
+  Requires authorization token of registered user placed in Authorization header. E.g. Authorization: <token> (Bearer prefix is also supported)
+  """
+  createUserWishlist(userEmail: String, name: String!, "Optional input, if specified then the newly created bucket will also have an saved itinerary added" wishlistItineraryToken: String, currency: String, locale: Locale): UserWishlistsResponse!
+
+  """
+  Requires authorization token of registered user placed in Authorization header. E.g. Authorization: <token> (Bearer prefix is also supported)
+  """
+  deleteUserWishlist(userEmail: String, wishlistId: String!): UserWishlistNamesResponse!
+
+  renameUserWishlist(userEmail: String, wishlistId: String!, newName: String!): UserWishlistNamesResponse!
+
+  """
+  Requires authorization token of registered user placed in Authorization header. E.g. Authorization: <token> (Bearer prefix is also supported)
+      Returns new state (saved itineraries content) of the bucket the specified itinerary is saved to only
+  """
+  createWishlistItinerary(userEmail: String, wishlistItineraryToken: String!, wishlistId: String!, currency: String, locale: Locale): UserWishlistResponse!
+
+  """
+  Requires authorization token of registered user placed in Authorization header. E.g. Authorization: <token> (Bearer prefix is also supported)
+  """
+  deleteWishlistItinerary(userEmail: String, "Unique per user identifier of a saved itinerary. Returns new state (saved itineraries) of the bucket containing the saved itinerary specified for deletion." wishlistItineraryId: String!): UserWishlistResponse!
+}
+
+interface UserWishlistBase {
+  wishlistId: String!
+
+  name: String
+
+  """
+  A single bucket can have saved itineraries with multiple different destinations, however in order to display an image, an example destination needs to be returned here.
+  """
+  destinationLocationId: String
+
+  itineraryCount: Int!
+}
+
+type UserWishlist implements UserWishlistBase {
+  wishlistId: String!
+
+  name: String!
+
+  """
+  A single bucket can have saved itineraries with multiple different destinations, however in order to display an image, an example destination needs to be returned here.
+  """
+  destinationLocationId: String
+
+  itineraryCount: Int!
+
+  wishlistItineraries: [WishlistItinerary!]!
+}
+
+type UserWishlistName implements UserWishlistBase {
+  wishlistId: String!
+
+  name: String!
+
+  """
+  A single bucket can have saved itineraries with multiple different destinations, however in order to display an image, an example destination needs to be returned here.
+  """
+  destinationLocationId: String
+
+  itineraryCount: Int!
+}
+
+type SearchQueryInfo implements SearchArguments {
+  passengers: PassengersArguments
+
+  cabinClass: CabinClassArguments
+}
+
+type WishlistItinerary {
+  wishlistItineraryId: String!
+
+  active: Boolean!
+
+  itineraryType: ItineraryType!
+
+  itinerary: GenericItinerary!
+
+  searchQueryInfo: SearchQueryInfo
+}
+
+union GenericItinerary = ItineraryOneWay|ItineraryReturn|ItineraryMulticity|ItineraryNomad
+
+union UserWishlistResponse = UserWishlist|AppError
+
+union UserWishlistsResponse = UserWishlists|AppError
+
+union UserWishlistNamesResponse = UserWishlistNames|AppError
+
+type UserWishlistNames {
+  wishlistNames: [UserWishlistName!]!
+
+  status: WishlistStatus!
+}
+
+type UserWishlists {
+  wishlists: [UserWishlist!]!
+
+  status: WishlistStatus!
+}
+
+enum WishlistStatus {
+  SUCCESS
+
+  NAMEALREDYPRESENTERROR
+
+  WISHLISTNOTFOUND
+
+  ITINERARYNOTFOUND
+
+  DBFAIL
+
+  SUCCESSNOWISHLISTSREMAINING
+
+  SUCCESSNOITINERARIESREMAINING
+}
+
+union LoyaltyTierResponse = LoyaltyTier|AppError
+
+union RecentSearchCreationResponse = RecentSearchCreation|AppError
+
+union RecentSearchDeletionResponse = RecentSearchDeletion|AppError
+
+input SearchAccommodationsInput {
+  lat: Float!
+
+  lng: Float!
+
+  radius: Int!
+
+  """
+  `start` date/time represents checkin, `end` date/time represents checkout.
+  """
+  checkin: DateTime!
+
+  checkout: DateTime!
+
+  """
+  A room's configuration is determined by the number of guests it can accommodate and their age.
+  """
+  roomsConfiguration: [GuestsInput]!
+}
+
+input GuestsInput {
+  """
+  Number of adult guests.
+  """
+  adults: Int!
+
+  """
+  Every element of the list represents a child guest, while its value represents the child guest's age.
+  """
+  children: [Int]
+}
+
+input AccommodationsFilterInput {
+  """
+  Filter only hotels with specified stars rating; e.g. `[4, 5]` - return only 4 and 5 stars hotels.
+  """
+  stars: [Int]
+
+  minScore: Int
+}
+
+input AccommodationsOptionsInput {
+  currency: String
+
+  """
+  Default sort is by popularity.
+  """
+  sortBy: AccommodationsSort
+}
+
+enum AccommodationsSort {
+  PRICE
+
+  POPULARITY
+}
+
+union AccommodationResponse = AccommodationConnection|AppError
+
+type PriceCheckResult {
+  """
+  List of best priced itineraries used to display in carousel.
+  """
+  itineraries: [Itinerary]
+
+  """
+  List of items used to construct graph by price.
+  """
+  histogram: [PriceCheckHistogramColumn]
+
+  """
+  Price entered by the user, that we're trying to beat.
+  """
+  referentPrice: Money
+
+  isCheaper: PriceState
+}
+
+type PriceCheckHistogramColumn {
+  """
+  Cheapest price on the date in `date` field.
+  """
+  price: String
+
+  date: DateTime
+
+  """
+  The corresponding itinerary's ID.
+  """
+  itineraryID: String
+}
+
+enum PriceState {
+  KIWI_IS_CHEAPER
+
+  KIWI_IS_MORE_EXPENSIVE
+}
+
+enum ItineraryType {
+  ONEWAY_ITINERARY
+
+  RETURN_ITINERARY
+
+  NOMAD_ITINERARY
+
+  MULTICITY_ITINERARY
+}
+
+type AccommodationConnection {
+  pageInfo: PageInfo!
+
+  edges: [AccommodationEdge]
+}
+
+type AccommodationEdge {
+  node: Accommodation
+
+  cursor: String!
+}
+
+type Accommodation {
+  id: ID!
+
+  price: Money
+}
+
+union UserDataResponse = UserData|AppError
+
+type PlaceRadius {
+  place: Place
+
+  radius: Radius
+}
+
+type UserData {
+  defaultLocations: [PlaceRadius]
+
+  recentSearches: [RecentSearch]
+
+  upcomingTrip: UpcomingTrip
+
+  upcomingTripsCount: Int
+}
+
+interface UpcomingTrip {
+  id: ID!
+
+  """
+  Booking ID
+  """
+  bookingId: String
+
+  status: BookingStatus
+
+  displayStatus: BookingDisplayStatus
+
+  itineraryType: ItineraryType!
+
+  adults: Int!
+
+  children: Int!
+
+  infants: Int!
+
+  handBags: Int!
+
+  holdBags: Int!
+}
+
+type UpcomingTripSector {
+  id: ID
+
+  source: Place
+
+  destination: Place
+
+  outboundDepartureDate: DateTime
+
+  outboundArrivalDate: DateTime
+
+  """
+  If the itinerary is not Return, this field will be empty.
+  """
+  inboundDepartureDate: DateTime
+
+  """
+  If the itinerary is not Return, this field will be empty.
+  """
+  inboundArrivalDate: DateTime
+
+  ancillaries: [Ancillary]
+}
+
+"""
+Encompasses Oneway and Return trips.
+"""
+type UpcomingTripSingleSector implements UpcomingTrip {
+  id: ID!
+
+  bookingId: String
+
+  sector: UpcomingTripSector
+
+  status: BookingStatus
+
+  displayStatus: BookingDisplayStatus
+
+  itineraryType: ItineraryType!
+
+  adults: Int!
+
+  children: Int!
+
+  infants: Int!
+
+  handBags: Int!
+
+  holdBags: Int!
+}
+
+"""
+Encompasses Multicity and Nomad trips.
+"""
+type UpcomingTripMultiSector implements UpcomingTrip {
+  id: ID!
+
+  bookingId: String
+
+  sectors: [UpcomingTripSector]!
+
+  status: BookingStatus
+
+  displayStatus: BookingDisplayStatus
+
+  itineraryType: ItineraryType!
+
+  adults: Int!
+
+  children: Int!
+
+  infants: Int!
+
+  handBags: Int!
+
+  holdBags: Int!
+}
+
+type Ancillary {
+  id: ID!
+
+  type: AncillaryType
+
+  url: String
+
+  available: AncillaryAvailabilityStatus
+
+  price: Money
+
+  purchased: Boolean
+}
+
+enum AncillaryType {
+  AIRPORT_PARKING
+
+  RENT_A_CAR
+
+  ACCOMMODATION
+
+  CONNECTION
+
+  AXA_INSURANCE
+
+  BAGS
+
+  SEATING
+}
+
+enum AncillaryAvailabilityStatus {
+  ACTIVE_SCHEDULE_CHANGE
+
+  AVAILABLE
+
+  HIDDEN_CITY
+
+  ITINERARY_CHANGE_IN_PROCESS
+
+  NO_CHECKED_BAGGAGE
+
+  NOT_AVAILABLE
+
+  NOT_VISIBLE
+
+  NOT_YET_AVAILABLE
+
+  TOO_LATE_TO_ORDER
+}
+
+enum BookingStatus {
+  CANCELLED
+
+  CLOSED
+
+  CONFIRMED
+
+  FAILED
+
+  PENDING
+
+  REFUNDED
+
+  TRAVELED
+}
+
+enum BookingDisplayStatus {
+  CANCELLED
+
+  CHANGE_IN_PROGRESS
+
+  CONFIRMED
+
+  LOCKED
+
+  PROCESSING
+
+  NOT_BOOKED
+
+  REFUNDED
+
+  REFUNDING
+
+  TRAVELED
+}
+
+type RecentSearch {
+  createdAt: DateTime
+
+  searchType: SearchType
+
+  search: SearchArguments
+
+  filter: ItinerariesFilterArguments
+}
+
+interface SearchArguments {
+  passengers: PassengersArguments
+
+  cabinClass: CabinClassArguments
+}
+
+type SearchOnewayArguments implements SearchArguments {
+  itinerary: ItineraryOnewayArguments
+
+  passengers: PassengersArguments
+
+  cabinClass: CabinClassArguments
+}
+
+type SearchReturnArguments implements SearchArguments {
+  itinerary: ItineraryReturnArguments
+
+  passengers: PassengersArguments
+
+  cabinClass: CabinClassArguments
+}
+
+type SearchMulticityArguments implements SearchArguments {
+  itinerary: [ItineraryMulticityArguments]
+
+  passengers: PassengersArguments
+
+  cabinClass: CabinClassArguments
+}
+
+type SearchNomadArguments implements SearchArguments {
+  itinerary: ItineraryNomadArguments
+
+  passengers: PassengersArguments
+
+  cabinClass: CabinClassArguments
+}
+
+enum SearchType {
+  ONEWAY_ITINERARIES
+
+  RETURN_ITINERARIES
+
+  MULTICITY_ITINERARIES
+
+  NOMAD_ITINERARIES
+
+  RETURN_ONE_PER_CITY_ITINERARIES
+
+  ONEWAY_ONE_PER_CITY_ITINERARIES
+}
+
+type PriceAlert {
+  id: ID
+
+  confirmed: Boolean
+}
+
+type PriceAlertDeletion {
+  deleted: Boolean
+}
+
+type RecentSearchCreation {
+  created: Boolean
+}
+
+type RecentSearchDeletion {
+  deleted: Boolean
+}
+
+type LoyaltyTier {
+  """
+  Current tier
+  """
+  tier: Int
+
+  active: Boolean
+
+  createdAt: DateTime
+
+  validUntil: DateTime
+
+  pointsValidUntil: DateTime
+
+  lastActivity: DateTime
+
+  activationBonus: Boolean
+
+  mobileAppBonus: Boolean
+
+  totalAvailablePoints: Int
+
+  totalFrozenPoints: Int
+
+  totalEarnedPoints: Int
+
+  totalSpentPoints: Int
+
+  totalExpiredPoints: Int
+
+  """
+  Current tier frozen points
+  """
+  frozenPoints: Int
+
+  """
+  Current tier earned points
+  """
+  earnedPoints: Int
+
+  """
+  Current tier spent points
+  """
+  spentPoints: Int
+
+  """
+  Points needed to get to tier 2
+  """
+  tier2Threshold: Int
+
+  """
+  Points needed to get to tier 3
+  """
+  tier3Threshold: Int
+
+  spentPointsThreshold: Int
+}
+
+union PriceAlertResponse = PriceAlert|AppError
+
+union PriceAlertDeletionResponse = PriceAlertDeletion|AppError
+
+union NomadExampleTripsResult = NomadExampleTrips|AppError
+
+type NomadExampleTrips {
+  trips: [NomadExampleTrip]
+}
+
+type NomadExampleTrip {
+  continent: Continent
+
+  cities: [City]
+
+  days: [Int]
+}
+
+type ExtendedFareOptionsPricing {
+  standardFarePrice: Money
+
+  flexiFarePrice: Money
+
+  standardFarePriceOnly: Money
+
+  flexiFarePriceOnly: Money
+}
+
+type TestEligibilityInformation {
+  convenienceSortBucket: String
+
+  paretoABTestNewItinerary: Boolean
+}
+
+"""
+A schedule or outline of events relating to planned travel, generally including destinations
+to be visited at specified times and means of transportation between those destinations.
+"""
+interface Itinerary {
+  id: ID!
+
+  """
+  ID used for itinerary sharing. Should be used as value for ItinerariesOptionsInput.sharedItineraryId input.
+  """
+  shareId: String
+
+  """
+  Token used for saving an itinerary to a wishlist. 
+  """
+  price: Money
+
+  priceEur: Money
+
+  extendedFareOptionsPricing: ExtendedFareOptionsPricing
+
+  paidGuaranteePrice: Money
+
+  duration: Int
+
+  provider: ItineraryProvider
+
+  bookingOptions: BookingOptionConnection
+
+  bagsInfo: ItineraryBagsInfo
+
+  """
+  All the different cabin classes included in the itinerary
+  """
+  cabinClasses: [CabinClassType]
+
+  loyaltyPointTiers: LoyaltyPointTiers
+
+  """
+  Number of technical stops in itinerary
+  """
+  technicalStops: Int
+
+  isTravelHack: Boolean
+
+  travelHack: TravelHack
+
+  highlights: Highlights
+
+  priceLocks: PriceLocks
+
+  wishlistItineraryInfo: WishlistItineraryInfo
+
+  itineraryDebugData: ItineraryDebugData
+
+  pnrCount: Int
+}
+
+enum FareLocksStatus {
+  PENDING
+
+  AVAILABLE
+}
+
+type FareLock {
+  id: ID!
+
+  status: FareLocksStatus!
+
+  price: Money
+
+  url: String
+}
+
+"""
+Oneway itinerary is an itinerary with only one sector - journey from A to B with no return.
+"""
+type ItineraryOneWay implements Itinerary {
+  id: ID!
+
+  """
+  Legacy ID of the itinerary used for automation tests.
+  """
+  legacyId: String
+
+  """
+  ID used for itinerary sharing. Should be used as value for ItinerariesOptionsInput.sharedItineraryId input.
+  """
+  shareId: String
+
+  """
+      A part of itinerary that consist of one or more segments, basically it is the whole part
+      from source to destination, in case of multicity trip the itinerary consists of two or more sectors.
+      Direct trip has one sector.
+      
+  """
+  sector: Sector
+
+  price: Money
+
+  priceEur: Money
+
+  extendedFareOptionsPricing: ExtendedFareOptionsPricing
+
+  paidGuaranteePrice: Money
+
+  duration: Int
+
+  """
+  The company providing the itinerary. Most likely it is a metasearch data provider we have integrated into our search result.
+  """
+  provider: ItineraryProvider
+
+  bookingOptions: BookingOptionConnection
+
+  bagsInfo: ItineraryBagsInfo
+
+  """
+  All the different cabin classes included in the itinerary
+  """
+  cabinClasses: [CabinClassType]
+
+  loyaltyPointTiers: LoyaltyPointTiers
+
+  lastAvailable: LastAvailable
+
+  technicalStops: Int @deprecated(reason: "segment.followingTechnicalStop is enough info for FE")
+
+  isTravelHack: Boolean
+
+  fareLock: FareLock
+
+  travelHack: TravelHack
+
+  highlights: Highlights
+
+  """
+  Indicates whether itinerary is eligible to have market specifics displayed. Itinerary is in Tier 1, has only specific airlines and is not VI. Evaluated only for mobile affilid.
+  """
+  hasTier1Price: Boolean
+
+  topThreeHighlightedItineraryLabel: ResultsHighlightingOptions
+
+  wishlistItineraryInfo: WishlistItineraryInfo
+
+  priceLocks: PriceLocks
+
+  isRyanair: Boolean
+
+  benefitsData: BenefitsData
+
+  itineraryDebugData: ItineraryDebugData
+
+  isAirBaggageBundleEligible: Boolean
+
+  pnrCount: Int
+
+  testEligibilityInformation: TestEligibilityInformation
+}
+
+type WishlistItineraryInfo {
+  """
+  Boolean state signifying whether an itinerary is already present in the wishlist of an user.
+  """
+  isItineraryWishlisted: Boolean
+
+  """
+  Identity of an itinerary, used for refering to a specific wishlist itinerary, primarily for deletion purposes.
+  """
+  wishlistItineraryId: String
+
+  """
+  Token is specifically used for creating wishlist itineraries.
+  """
+  wishlistItineraryToken: String
+}
+
+type ItineraryDebugData {
+  debug: String
+}
+
+"""
+Return itinerary is an itinerary with two sectors. It allows the passenger to go back to the starting point - journeys from A to B and back.
+"""
+type ItineraryReturn implements Itinerary {
+  id: ID!
+
+  """
+  Legacy ID of the itinerary used for automation tests.
+  """
+  legacyId: String
+
+  """
+  ID used for itinerary sharing. Should be used as value for ItinerariesOptionsInput.sharedItineraryId input.
+  """
+  shareId: String
+
+  """
+  An outbound journey is a journey away from a particular place / departing leg of a journey.
+  """
+  outbound: Sector
+
+  """
+  An inbound journey is a journey towards a particular place, especially when returning to the original point of departure.
+  """
+  inbound: Sector
+
+  price: Money
+
+  priceEur: Money
+
+  extendedFareOptionsPricing: ExtendedFareOptionsPricing
+
+  paidGuaranteePrice: Money
+
+  duration: Int
+
+  """
+  The company providing the itinerary. Most likely it is a metasearch data provider we have integrated into our search result.
+  """
+  provider: ItineraryProvider
+
+  bagsInfo: ItineraryBagsInfo
+
+  bookingOptions: BookingOptionConnection
+
+  """
+  All the different cabin classes included in the itinerary
+  """
+  cabinClasses: [CabinClassType]
+
+  loyaltyPointTiers: LoyaltyPointTiers
+
+  lastAvailable: LastAvailable
+
+  technicalStops: Int
+
+  """
+  Stopover between the outbound and inboud Sector.
+  """
+  stopover: Stopover
+
+  isTravelHack: Boolean
+
+  fareLock: FareLock
+
+  travelHack: TravelHack
+
+  highlights: Highlights
+
+  """
+  Indicates whether itinerary is eligible to have market specifics displayed. Itinerary is in Tier 1, has only specific airlines and is not VI. Evaluated only for mobile affilid.
+  """
+  hasTier1Price: Boolean
+
+  topThreeHighlightedItineraryLabel: ResultsHighlightingOptions
+
+  wishlistItineraryInfo: WishlistItineraryInfo
+
+  priceLocks: PriceLocks
+
+  isRyanair: Boolean
+
+  benefitsData: BenefitsData
+
+  itineraryDebugData: ItineraryDebugData
+
+  isAirBaggageBundleEligible: Boolean
+
+  pnrCount: Int
+
+  testEligibilityInformation: TestEligibilityInformation
+}
+
+"""
+An advanced airline/bus/train ticket which allows the passengers to travel across the world using
+multiple stops with several stopovers in various cities.
+"""
+type ItineraryMulticity implements Itinerary {
+  id: ID!
+
+  """
+  ID used for itinerary sharing. Should be used as value for ItinerariesOptionsInput.sharedItineraryId input.
+  """
+  shareId: String
+
+  """
+      A part of itinerary that consist of one or more segments, basically it is the whole part
+      from source to destination, in case of multicity trip the itinerary consists of two or more
+      sectors. One way trip has one sector.
+      
+  """
+  sectors: [Sector]
+
+  price: Money
+
+  priceEur: Money
+
+  extendedFareOptionsPricing: ExtendedFareOptionsPricing
+
+  paidGuaranteePrice: Money
+
+  duration: Int
+
+  """
+  The company providing the itinerary. Most likely it is a metasearch data provider we have integrated into our search result.
+  """
+  provider: ItineraryProvider
+
+  bagsInfo: ItineraryBagsInfo
+
+  bookingOptions: BookingOptionConnection
+
+  """
+  All the different cabin classes included in the itinerary
+  """
+  cabinClasses: [CabinClassType]
+
+  loyaltyPointTiers: LoyaltyPointTiers
+
+  technicalStops: Int
+
+  """
+      Stopovers between sectors, ordered by order of Sectors
+      1st = Stopover between 1st and 2nd Sector,
+      2nd = Stopover between 2nd and 3rd Sector, ...
+      
+  """
+  stopovers: [Stopover]
+
+  isTravelHack: Boolean
+
+  travelHack: TravelHack
+
+  highlights: Highlights
+
+  lastAvailable: LastAvailable
+
+  wishlistItineraryInfo: WishlistItineraryInfo
+
+  priceLocks: PriceLocks
+
+  isRyanair: Boolean
+
+  itineraryDebugData: ItineraryDebugData
+
+  pnrCount: Int
+}
+
+"""
+Nomad itineraries allow passengers to specify the origin (A), the destination (B) and up to
+ten 'via destinations'. Passengers are able to input the interval of nights in each destination.
+Nomad then finds the cheapest possible route.
+"""
+type ItineraryNomad implements Itinerary {
+  id: ID!
+
+  """
+  ID used for itinerary sharing. Should be used as value for ItinerariesOptionsInput.sharedItineraryId input.
+  """
+  shareId: String
+
+  """
+      A part of itinerary that consist of one or more segments, basically it is the whole part from
+      source to destination, in case of a Nomad trip the itinerary consists of two or more sectors.
+      
+  """
+  sectors: [Sector]
+
+  price: Money
+
+  priceEur: Money
+
+  extendedFareOptionsPricing: ExtendedFareOptionsPricing
+
+  paidGuaranteePrice: Money
+
+  duration: Int
+
+  """
+  The company providing the itinerary. Most likely it is a metasearch data provider we have integrated into our search result.
+  """
+  provider: ItineraryProvider
+
+  bagsInfo: ItineraryBagsInfo
+
+  bookingOptions: BookingOptionConnection
+
+  """
+  All the different cabin classes included in the itinerary
+  """
+  cabinClasses: [CabinClassType]
+
+  loyaltyPointTiers: LoyaltyPointTiers
+
+  technicalStops: Int
+
+  """
+      Stopovers between sectors, ordered by order of Sectors
+      1st = Stopover between 1st and 2nd Sector,
+      2nd = Stopover between 2nd and 3rd Sector, ...
+      
+  """
+  stopovers: [Stopover]
+
+  isTravelHack: Boolean
+
+  travelHack: TravelHack
+
+  highlights: Highlights
+
+  wishlistItineraryInfo: WishlistItineraryInfo
+
+  priceLocks: PriceLocks
+
+  isRyanair: Boolean
+
+  itineraryDebugData: ItineraryDebugData
+
+  pnrCount: Int
+}
+
+type OnePerCityItineraries {
+  server: Server
+
+  metadata: ItinerariesMetadata
+
+  itineraries: [OnePerCityItinerary]
+}
+
+type CarrierExclusiveCount {
+  carrier: Carrier!
+
+  itineraryCount: Int!
+}
+
+interface OnePerCityItinerary {
+  price: Money
+
+  priceEur: Money
+
+  locationHashtags: [LocationHashtag]
+
+  source: Stop
+
+  destination: Stop
+
+  discountPercentage: String
+
+  outboundDepartureDateRange: DateRange
+
+  departureDate: DateTime
+}
+
+union OnePerCityItinerariesResult = OnePerCityItineraries|AppError
+
+type OnewayOnePerCityItinerary implements OnePerCityItinerary {
+  price: Money
+
+  priceEur: Money
+
+  locationHashtags: [LocationHashtag]
+
+  source: Stop
+
+  destination: Stop
+
+  discountPercentage: String
+
+  outboundDepartureDateRange: DateRange
+
+  departureDate: DateTime
+}
+
+type ReturnOnePerCityItinerary implements OnePerCityItinerary {
+  price: Money
+
+  priceEur: Money
+
+  locationHashtags: [LocationHashtag]
+
+  source: Stop
+
+  destination: Stop
+
+  nightsCount: Int
+
+  discountPercentage: String
+
+  outboundDepartureDateRange: DateRange
+
+  inboundDepartureDateRange: DateRange
+
+  departureDate: DateTime
+
+  returnDate: DateTime
+}
+
+type Itineraries {
+  server: Server
+
+  metadata: ItinerariesMetadata
+
+  itineraries: [Itinerary]
+}
+
+"""
+A part of itinerary that consist of one or more segments, basically it is the whole part from
+source to destination, in case of multicity trip the itinerary consists of two or more sectors.
+One way trip has one sector.
+"""
+type Sector {
+  id: ID!
+
+  segments: SegmentConnection @deprecated(reason: "Replaced with Sector.sectorSegments.")
+
+  sectorSegments: [SectorSegment]
+
+  carriers: [Carrier]
+
+  duration: Int
+
+  stopover: Stopover @deprecated(reason: "Replaced with ItineraryReturn.stopover, ItineraryMulticity.stopovers, ItineraryNomad.stopovers.")
+}
+
+type SectorSegment {
+  segment: Segment
+
+  layover: Layover
+
+  """
+  The guarantee can be provided/covered by Kiwi.com or by the carrier.
+  """
+  guarantee: ItineraryGuaranteeType
+}
+
+type SegmentConnection {
+  pageInfo: PageInfo!
+
+  edges: [SegmentEdge]
+}
+
+type SegmentEdge {
+  node: Segment
+
+  cursor: String!
+}
+
+enum HaulType {
+  SHORT
+
+  MEDIUM
+
+  LONG
+}
+
+enum AudioVideoAvailable {
+  YES
+
+  NO
+
+  BYOD
+
+  PAID
+}
+
+enum PowerAvailable {
+  AC
+
+  USB
+
+  AC_DC
+
+  AC_USB
+
+  DC_USB
+
+  DC
+
+  NO
+}
+
+"""
+Atomic unit of the itinerary. One segment connects two locations and can be travelled by
+different vehicles. If you take a flight then it is called a flight segment. When you travel
+by bus then it is bus segment, with train train segment, etc.
+"""
+type Segment {
+  id: ID!
+
+  source: Stop
+
+  destination: Stop
+
+  duration: Int
+
+  type: TransportType
+
+  code: String
+
+  layover: Layover @deprecated(reason: "Replaced by SectorSegment.layover.")
+
+  carrier: Carrier
+
+  operatingCarrier: Carrier
+
+  seatInfo: SeatInfo @deprecated(reason: "Replaced by RootQuery.seatInfo")
+
+  cabinClass: CabinClassType
+
+  """
+  True Hidden City destination, available only for last segment of the combination that ends in a different station.
+  """
+  hiddenDestination: Station
+
+  """
+  Throw Away Ticket destination.
+  """
+  throwawayDestination: Station
+
+  followingTechnicalStop: Boolean
+}
+
+union SeatInfoResult = SeatInfo|AppError
+
+type SeatInfo {
+  pitch: SeatDimension
+
+  width: SeatDimension
+
+  recline: SeatDimension
+
+  hasPower: Boolean
+
+  hasAudioVideo: Boolean
+
+  hasWifi: Boolean
+
+  powerAvailable: PowerAvailable
+
+  audioVideoAvailable: AudioVideoAvailable
+}
+
+"""
+Value and its unit describing particular seat property. The unit selection is based on the 'accept-language' HTTP header.
+"""
+type SeatDimension {
+  """
+  The value is a string because possible values are not only number but also interval, such as '30 - 32'.
+  """
+  value: String
+
+  """
+  Seat dimensions unit options, eg. cm, inch, degree.
+  """
+  unit: SeatDimensionUnit
+}
+
+enum SeatDimensionUnit {
+  CM
+
+  INCH
+
+  DEGREE
+}
+
+"""
+When a passenger arrives at an intermediate point and is scheduled to depart later than 24 hours after arrival (local time).
+"""
+type Stopover {
+  """
+  The number of nights in the destination.
+  """
+  nightsCount: Int
+
+  """
+  The location where the passenger arrived. It can be an airport, bus station, train station, etc.
+  """
+  arrival: Station
+
+  """
+  The location where the passenger is departing from. It can be an airport, bus station, train station, etc.
+  """
+  departure: Station
+
+  """
+  The duration of the stopover in seconds.
+  """
+  duration: Int
+
+  """
+  Station change occurs when the departure station of next sector is different than the arrival station of the previous sector.
+  """
+  isStationChange: Boolean
+}
+
+scalar DateTimeIso
+
+"""
+The stop location and the time of arrival.
+"""
+type Stop {
+  """
+  The location of the stop. It can be an airport, bus station, train station, etc.
+  """
+  station: Station
+
+  """
+  Local date and time of arrival to a specific station, in the station's local timezone.
+  """
+  localTime: DateTime
+
+  """
+  UTC date and time of arrival to a specific station.
+  """
+  utcTime: DateTime
+
+  """
+  UTC date and time of arrival to a specific station in ISO 8601 format.
+  """
+  utcTimeIso: DateTimeIso
+}
+
+"""
+Transfer types between two stations
+PUBLIC - Public transport
+PUBLIC_DIRECT - Direct public transport
+"""
+enum TransferType {
+  PUBLIC
+
+  PUBLIC_DIRECT
+}
+
+"""
+A layover is a point where a vehicle stops, with passengers possibly changing vehicles.
+In public transport, this typically takes a few minutes at a trip terminal. For air travel,
+where layovers are longer, passengers will exit the vehicle and wait in the terminal.
+"""
+type Layover {
+  id: ID!
+
+  """
+  The duration of the layover is specified in seconds.
+  """
+  duration: Int
+
+  """
+  The guarantee can be provided/covered by Kiwi.com or by the carrier.
+  """
+  guarantee: ItineraryGuaranteeType @deprecated(reason: "Replaced by SectorSegment.guarantee.")
+
+  """
+  Station change occurs when the passengers arrive to a different station then they depart from.
+  """
+  isStationChange: Boolean
+
+  """
+  During a layover the bags may need to be rechecked by the passenger. In other cases, the station takes care of rechecking the baggage.
+  """
+  isBaggageRecheck: Boolean
+
+  """
+  Tells if distance between previous segment's destination and current segment's origin is within max walking distance.
+  """
+  isWalkingDistance: Boolean
+
+  """
+  Expected duration of the transfer in minutes, only available for specific locations when isStationChange is true and isWalkingDistance is false.
+  """
+  transferDuration: Int
+
+  """
+  Type of the available transfer between stations, only available for specific locations when isStationChange is true and isWalkingDistance is false.
+  """
+  transferType: TransferType
+}
+
+"""
+Content provider (aka data source) is company (i.e. Kiwi, Kayak etc.) that provides itineraries data and and booking solution for those itineraries.
+"""
+type ContentProvider {
+  id: String
+
+  code: String
+
+  name: String
+
+  siteName: String
+}
+
+enum ProviderCategory {
+  OTA
+
+  AIRLINE
+}
+
+"""
+ItineraryProvider holds info and meta data about specific itinerary's booking option. Every ItineraryProvider belongs to/originates from one content provider/data source.
+"""
+type ItineraryProvider {
+  id: ID!
+
+  name: String
+
+  code: String
+
+  """
+  Information about eventual provider's subprovider from which it acquired data.
+  """
+  subprovider: String
+
+  contentProvider: ContentProvider
+
+  """
+  Information whether or not is the provider likely to change the prices.
+  """
+  hasHighProbabilityOfPriceChange: Boolean
+
+  """
+  Information of whether the flight provider is an OTA or airline.com, None if contentProvider is kiwi
+  """
+  providerCategory: ProviderCategory
+}
+
+"""
+A station is the place at which the vehicle stops. It is an airport in case of a flight,
+train station in case of a train trasport and bus station in case of a bus transport.
+"""
+type Station implements Place {
+  id: ID!
+
+  legacyId: String!
+
+  name: String!
+
+  slug: String!
+
+  slugEn: String
+
+  code: String
+
+  city: City
+
+  country: Country
+
+  type: StationType
+
+  gps: Gps
+
+  rank: Int
+
+  icao: String
+
+  timezone: String
+}
+
+"""
+Operating company of the segment. It is an airline in case of a flight, bus operator in case of bus travel, etc.
+"""
+type Carrier {
+  id: ID!
+
+  name: String
+
+  slug: String
+
+  code: String
+
+  logo: Image
+
+  icao: String
+
+  country: Country
+
+  alliance: String
+
+  website: String
+
+  checkInInfo: CheckInInfo
+
+  deprecated: Boolean
+
+  closeBookingHours: Int
+
+  allowedBookingWindow: Range
+
+  bookingDocNeeded: BookingDocNeededOption
+
+  childrenAgeThreshold: Int
+
+  teenAgeThreshold: Int
+
+  adultAgeThreshold: Int
+}
+
+type CheckInInfo {
+  """
+  Provider of the checkin service e.g. 'kiwi', 'carrier'
+  """
+  checkinProvidedBy: String
+
+  """
+  Checkin price at the airport
+  """
+  airportCheckinPrice: Int
+
+  """
+  Checkin requires passport
+  """
+  passportRequired: Boolean
+
+  airportCheckIn: Int @deprecated(reason: "No longer supported")
+
+  """
+  Is checkin available online
+  """
+  onlineCheckIn: Boolean
+
+  """
+  Days before departure check-in opens
+  """
+  checkInOpened: Int
+
+  """
+  Number of hours before check-in closes
+  """
+  checkInClosed: Float
+}
+
+type Money {
+  """
+      Amount is a string type because it's not recommended to work with floats in
+      your application when working with money. This little change suggest that you
+      should use something like [decimal.js](https://github.com/MikeMcl/decimal.js/) for example.
+      
+  """
+  amount: String
+
+  roundedAmount: String
+
+  currency: Currency
+
+  formattedValue: String
+
+  """
+  Rounds to closest integer number
+  """
+  roundedFormattedValue: String
+
+  priceBeforeDiscount: String
+
+  priceBeforeDiscountFormatted: String
+}
+
+type Currency {
+  id: ID!
+
+  """
+  ISO 4217 currency names
+  """
+  code: String
+
+  name: String
+
+  format: CurrencyFormat
+
+  """
+  The currency used as a fallback
+  """
+  fallback: Currency
+
+  """
+  Currency rate compared to EUR
+  """
+  rate: String
+}
+
+type CurrencyFormat {
+  """
+  Format string with __price__ placeholder
+  """
+  format: String
+
+  """
+  The number of decimal digits to round to
+  """
+  precision: Int
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+
+  hasPreviousPage: Boolean!
+
+  startCursor: String
+
+  endCursor: String
+}
+
+type AppError {
+  code: String
+
+  message: String
+}
+
+type BookingOptionConnection {
+  pageInfo: PageInfo!
+
+  edges: [BookingOptionEdge]
+}
+
+type BookingOptionEdge {
+  node: BookingOption
+
+  cursor: String!
+}
+
+"""
+The itinerary can be booked through various sites, eg. directly at kiwi.com, through KAYAK etc.
+"""
+type BookingOption {
+  itineraryProvider: ItineraryProvider
+
+  price: Money
+
+  token: String
+
+  bookingUrl: String
+
+  """
+      A hash containing the encrypted flight data. This hash should be passed to check flights and
+      save booking API calls in the booking v2 API.
+      
+  """
+  trackingPixel: String
+
+  loyaltyPointTiers: LoyaltyPointTiers
+
+  priceEur: Money
+
+  priceLocks: PriceLocks
+
+  disruptionTreatment: DisruptionTreatment
+
+  kiwiProduct: KiwiProduct
+
+  """
+  At least one segment has origin or destination in the US, currently used only for Kiwi Basic product
+  """
+  usRulesApply: Boolean
+}
+
+type ItinerariesMetadata {
+  priceAlertExists: Boolean
+
+  existingPriceAlert: PriceAlert
+
+  """
+  Stopover time histogram
+  """
+  stopoverTimes: [HistogramItem]
+
+  outboundTimes: [HistogramIntItem] @deprecated(reason: "Replaced by outboundArrivalTimes and outboundDepartureTimes.")
+
+  inboundTimes: [HistogramIntItem] @deprecated(reason: "Replaced by inboundArrivalTimes and inboundDepartureTimes.")
+
+  outboundArrivalTimes: [HistogramIntItem]
+
+  outboundDepartureTimes: [HistogramIntItem]
+
+  inboundArrivalTimes: [HistogramIntItem]
+
+  inboundDepartureTimes: [HistogramIntItem]
+
+  durations: [HistogramIntItem]
+
+  prices: PriceHistogram
+
+  carriers: [Carrier]
+
+  stations: [Station]
+
+  """
+  List of stopover countries, excluding the departure and destination countries.
+  """
+  stopoverCountries: [Country]
+
+  stopoverStations: [Station]
+
+  inboundDays: [DayName]
+
+  outboundDays: [DayName]
+
+  itinerariesCount: Int
+
+  topResults: ItinerariesTopResults
+
+  """
+  Top result prices for each sort from KIWI and KAYAK content provider data exclusively. Values are used for defining base/referent price when creating price alert.
+  """
+  priceAlertsTopResults: PriceAlertsTopResults
+
+  missingProviders: [ContentProvider]
+
+  hasMorePending: Boolean
+
+  locationHashtags: [LocationHashtag]
+
+  travelTips: [TravelTip]
+
+  groundTravelTip: TravelTipGround @deprecated(reason: "Ground is no longer supported.")
+
+  transportTypes: [TransportType]
+
+  stopoverCountRange: Range
+
+  stopoverDurationRange: Range
+
+  hasOvernightStopover: Boolean
+
+  hasCheckedBaggage: Boolean
+
+  hasCabinBaggage: Boolean
+
+  sharedItinerary: Itinerary
+
+  searchFingerprint: String
+
+  """
+  In case a trip is promoted by Kiwi, this will be true.
+  """
+  isRoutePromoted: Boolean
+
+  providersFirstResultTime: [ContentProviderTimed]
+
+  """
+  Whitelabel website should do a 302 redirect to this URL when it's not null.
+  """
+  redirectUrl: String
+
+  isSortOrderSameAsDefault: Boolean
+
+  statusPerProvider: [StatusPerProvider]
+
+  """
+  Checks if any of the top five results contains a TrueHiddenCity
+  """
+  topFiveOriginalItinerariesContainTHC: Boolean
+
+  """
+  Most expensive one-way or return itinerary
+  """
+  maxPriceForOnewayReturnItineraries: Money
+
+  topFiveResultsBaggageEligibility: TopFiveResultsBaggageEligibility
+
+  """
+  Eligibility information for SS sorting
+  """
+  sortEligibilityInformation: SortEligibilityInformation
+
+  """
+  Contains itineraries that are in Tier1 market
+  """
+  hasTier1MarketItineraries: Boolean
+
+  """
+  Recommended filters based on response characteristics
+  """
+  contextuallyRecommendedFilters: [ContextuallyRecommendedFilter]
+
+  tilesDataSource: TilesDataSource
+
+  repeatedSearchInfoResult: RepeatedSearchInfoResult
+
+  kayakEligibilityTest: KayakEligibilityTest
+
+  eligibilityInformation: EligibilityInformation
+
+  responseCarriers: [Carrier]
+
+  extendedTrackingMetadata: ExtendedTrackingMetadata
+}
+
+type ExtendedTrackingMetadata {
+  fullResponse: MetadataBreakdown @deprecated(reason: "Not used.")
+
+  topTenInResponse: MetadataBreakdown
+}
+
+type MetadataBreakdown {
+  allItineraries: ContentMetadata
+
+  """
+  Excludes itineraries which have travel hacks or multiple PNRs per sector.
+  """
+  filteredItineraries: ContentMetadata
+
+  """
+  Provided on a per-Carrier breakdown basis
+  """
+  airlineBreakdown: [CarrierContentMetadata]
+}
+
+type CarrierContentMetadata {
+  carriers: [Carrier]
+
+  allItineraries: ContentMetadata
+
+  """
+  Excludes itineraries which have travel hacks or multiple PNRs per sector.
+  """
+  filteredItineraries: ContentMetadata
+}
+
+type ContentMetadata {
+  numberOfKiwiOnlyBookingOptionItineraries: ProviderOccurrencesBeforeAndAfterMerging
+
+  numberOfKayakOnlyBookingOptionItineraries: ProviderOccurrencesBeforeAndAfterMerging
+
+  numberOfDeeplinkOnlyBookingOptionItineraries: ProviderOccurrencesBeforeAndAfterMerging
+
+  numberOfKiwiAndKayakBookingOptionItineraries: ProviderOccurrencesBeforeAndAfterMerging
+
+  numberOfKiwiAndDeeplinkBookingOptionItineraries: ProviderOccurrencesBeforeAndAfterMerging
+
+  numberOfWegoOnlyBookingOptionItineraries: ProviderOccurrencesBeforeAndAfterMerging
+
+  numberOfKiwiAndWegoBookingOptionItineraries: ProviderOccurrencesBeforeAndAfterMerging
+
+  numberOfU2OnlyBookingOptionItineraries: ProviderOccurrencesBeforeAndAfterMerging
+
+  numberOfKiwiAndU2BookingOptionItineraries: ProviderOccurrencesBeforeAndAfterMerging
+
+  numberOfFROnlyBookingOptionItineraries: ProviderOccurrencesBeforeAndAfterMerging
+
+  numberOfKiwiAndFRBookingOptionItineraries: ProviderOccurrencesBeforeAndAfterMerging
+}
+
+type ProviderOccurrencesBeforeAndAfterMerging {
+  beforeMerging: Int
+
+  afterMerging: Int
+}
+
+union RepeatedSearchInfoResult = RepeatedSearchInfo|RepeatedSearchNullInfo
+
+type RepeatedSearchInfo {
+  """
+  Price difference signifying how much cheaper the new price is for the repeated search, currency always matches the one requested
+  """
+  priceDiff: Money
+
+  priceDiffPercentage: Int
+
+  priceDiffThreshold: PriceDiffThreshold
+
+  metadata: RepeatedSearchMetadata
+}
+
+enum TilesDataSource {
+  CACHE
+
+  PRECACHE @deprecated(reason: "No longer available.")
+
+  API
+}
+
+type RepeatedSearchMetadata {
+  """
+  The previous price, amount and currency are matching the previous search
+  """
+  previousPrice: Money
+
+  previousPriceSearchTime: DateTime
+}
+
+interface FieldNullInfo {
+  code: String
+
+  message: String
+}
+
+enum RepeatedSearchNullInfoEnum {
+  USER_NOT_LOGGED_IN
+
+  DEVICE_NOT_ANDROID_OR_IOS
+
+  REPEATED_SEARCH_TOO_FRESH
+
+  REPEATED_SEARCH_TOO_SIMILAR_PRICE
+
+  POLLING_NOT_DONE
+
+  UNIDENTIFIED_ERROR
+
+  SEARCH_NON_REPEATING
+
+  SEARCH_RESULT_EMPTY
+
+  ONE_PER_CITY_NOT_SUPPORTED
+}
+
+enum PriceDiffThreshold {
+  REPEATED_PRICE_CHEAPER_THAN_THRESHOLD
+
+  REPEATED_PRICE_MORE_EXPENSIVE_THAN_THRESHOLD
+}
+
+type RepeatedSearchNullInfo implements FieldNullInfo {
+  repeatedSearchNullInfoEnum: RepeatedSearchNullInfoEnum
+
+  code: String
+
+  message: String
+}
+
+type ContentProviderTimed {
+  provider: ContentProvider
+
+  """
+  Number of miliseconds from the begining of the request until the time first result for this provider appeared
+  """
+  loadTime: Int
+}
+
+type StatusPerProvider {
+  provider: ContentProvider
+
+  statusCode: Int
+
+  errorHappened: Boolean
+
+  pending: Boolean
+
+  errorMessage: String
+}
+
+type Range {
+  start: Int
+
+  end: Int
+}
+
+type MoneyRange {
+  start: Money
+
+  end: Money
+}
+
+type LocationHashtag {
+  id: ID
+
+  slug: String
+
+  label: String
+}
+
+type ItinerariesTopResults {
+  best: Itinerary
+
+  cheapest: Itinerary
+
+  fastest: Itinerary
+
+  sourceTakeoffAsc: Itinerary
+
+  sourceTakeoffDesc: Itinerary
+
+  sourceLandingAsc: Itinerary
+
+  sourceLandingDesc: Itinerary
+
+  destinationTakeoffAsc: Itinerary
+
+  destinationTakeoffDesc: Itinerary
+
+  destinationLandingAsc: Itinerary
+
+  destinationLandingDesc: Itinerary
+}
+
+type PriceAlertsTopResults {
+  best: PriceAlertsTopResult
+
+  cheapest: PriceAlertsTopResult
+
+  fastest: PriceAlertsTopResult
+
+  sourceTakeoffAsc: PriceAlertsTopResult
+
+  sourceTakeoffDesc: PriceAlertsTopResult
+
+  sourceLandingAsc: PriceAlertsTopResult
+
+  sourceLandingDesc: PriceAlertsTopResult
+
+  destinationTakeoffAsc: PriceAlertsTopResult
+
+  destinationTakeoffDesc: PriceAlertsTopResult
+
+  destinationLandingAsc: PriceAlertsTopResult
+
+  destinationLandingDesc: PriceAlertsTopResult
+}
+
+type PriceAlertsTopResult {
+  price: Money
+}
+
+type PriceHistogram {
+  currency: Currency
+
+  items: [HistogramItem]
+}
+
+type HistogramItem {
+  frequency: Int
+
+  label: String
+}
+
+type HistogramIntItem {
+  frequency: Int
+
+  label: Int
+}
+
+enum DayName {
+  MONDAY
+
+  TUESDAY
+
+  WEDNESDAY
+
+  THURSDAY
+
+  FRIDAY
+
+  SATURDAY
+
+  SUNDAY
+}
+
+enum TransportType {
+  BUS
+
+  FLIGHT
+
+  TRAIN
+}
+
+enum StationType {
+  AIRPORT
+
+  BUS_STATION
+
+  TRAIN_STATION
+}
+
+enum ItineraryGuaranteeType {
+  KIWI_COM
+
+  CARRIER
+}
+
+enum BookingDocNeededOption {
+  NOT_NEEDED
+
+  NEEDED_AFTER_BOOKING_CONFIRMED
+
+  NEEDED_DURING_BOOKING
+}
+
+union ItinerariesResult = Itineraries|AppError
+
+input SearchOnewayInput {
+  itinerary: ItineraryOnewayInput
+
+  passengers: PassengersInput
+
+  cabinClass: CabinClassInput
+
+  knownItineraryIds: [ID]
+}
+
+input SearchReturnInput {
+  itinerary: ItineraryReturnInput
+
+  passengers: PassengersInput
+
+  cabinClass: CabinClassInput
+
+  knownItineraryIds: [ID]
+}
+
+input SearchMulticityInput {
+  itinerary: [ItineraryMulticityInput]
+
+  passengers: PassengersInput
+
+  cabinClass: CabinClassInput
+}
+
+input SearchNomadInput {
+  itinerary: ItineraryNomadInput
+
+  passengers: PassengersInput
+
+  cabinClass: CabinClassInput
+}
+
+"""
+No outbound date fields specified (outboundDepartureDate, outboundArrivalDate) means depart anytime.
+"""
+input ItineraryOnewayInput {
+  source: IdsAndSlugsInput
+
+  """
+  Destinations specified by IDs and slugs from the Place interface. No slugs and IDs specified means anywhere.
+  """
+  destination: IdsAndSlugsInput
+
+  outboundDepartureDate: DateRangeInput
+
+  outboundArrivalDate: DateRangeInput
+}
+
+type ItineraryOnewayArguments {
+  source: IdsAndSlugs
+
+  """
+  Destinations specified by IDs and slugs from the Place interface. No slugs and IDs specified means anywhere.
+  """
+  destination: IdsAndSlugs
+
+  outboundDepartureDate: DateRange
+
+  outboundArrivalDate: DateRange
+}
+
+"""
+No outbound date fields specified (outboundDepartureDate, outboundArrivalDate) means depart anytime.
+
+No inbound date fields specified (inboundDepartureDate, inboundArrivalDate, nightsCount) means inbound anytime.
+"""
+input ItineraryReturnInput {
+  source: IdsAndSlugsInput
+
+  """
+  Destinations specified by IDs and slugs from the Place interface. No slugs and IDs specified means anywhere.
+  """
+  destination: IdsAndSlugsInput
+
+  outboundDepartureDate: DateRangeInput
+
+  outboundArrivalDate: DateRangeInput
+
+  outboundDepartureMonths: [MonthName]
+
+  inboundDepartureDate: DateRangeInput
+
+  inboundArrivalDate: DateRangeInput
+
+  nightsCount: RangeInput
+}
+
+type ItineraryReturnArguments {
+  source: IdsAndSlugs
+
+  """
+  Destinations specified by IDs and slugs from the Place interface. No slugs and IDs specified means anywhere.
+  """
+  destination: IdsAndSlugs
+
+  outboundDepartureDate: DateRange
+
+  outboundArrivalDate: DateRange
+
+  outboundDepartureMonths: [MonthName]
+
+  inboundDepartureDate: DateRange
+
+  inboundArrivalDate: DateRange
+
+  nightsCount: Range
+}
+
+input ItineraryMulticityInput {
+  source: IdsAndSlugsInput
+
+  """
+  Destinations specified by IDs and slugs from the Place interface. No slugs and IDs specified means anywhere.
+  """
+  destination: IdsAndSlugsInput
+
+  outboundDepartureDate: DateRangeInput
+
+  outboundArrivalDate: DateRangeInput
+
+  nightsCount: RangeInput
+
+  maxStopsCount: Int
+
+  stopoverTime: RangeInput
+
+  outbound: ItineraryFilterDateTimeInput
+
+  allowOvernightStopover: Boolean
+}
+
+type ItineraryMulticityArguments {
+  source: IdsAndSlugs
+
+  """
+  Destinations specified by IDs and slugs from the Place interface. No slugs and IDs specified means anywhere.
+  """
+  destination: IdsAndSlugs
+
+  outboundDepartureDate: DateRange
+
+  outboundArrivalDate: DateRange
+
+  nightsCount: Range
+
+  maxStopsCount: Int
+
+  stopoverTime: Range
+
+  outbound: ItineraryFilterDateTimeArguments
+
+  allowOvernightStopover: Boolean
+}
+
+input ItineraryNomadInput {
+  source: IdsAndSlugsInput
+
+  """
+  Destinations specified by IDs and slugs from the Place interface. No slugs and IDs specified means anywhere.
+  """
+  destination: IdsAndSlugsInput
+
+  nightsCount: RangeInput
+
+  outboundDepartureDate: DateRangeInput
+
+  inboundDepartureDate: DateRangeInput
+
+  stopovers: [StopoverInput]
+}
+
+type ItineraryNomadArguments {
+  source: IdsAndSlugs
+
+  """
+  Destinations specified by IDs and slugs from the Place interface. No slugs and IDs specified means anywhere.
+  """
+  destination: IdsAndSlugs
+
+  nightsCount: Range
+
+  outboundDepartureDate: DateRange
+
+  inboundDepartureDate: DateRange
+
+  stopovers: [StopoverArguments]
+}
+
+input ItineraryPriceGraphInput {
+  source: IdsAndSlugsInput
+
+  """
+  Destinations specified by IDs and slugs from the Place interface. No slugs and IDs specified means anywhere.
+  """
+  destination: IdsAndSlugsInput
+
+  outboundDepartureDate: DateRangeInput
+
+  nightsCount: RangeInput
+}
+
+input IdsAndSlugsInput {
+  ids: [ID!]
+
+  slugs: [String!]
+}
+
+input IdAndSlugRadiusInput {
+  id: ID
+
+  slug: String
+
+  radius: Int
+}
+
+type IdsAndSlugs {
+  ids: [ID]
+
+  slugs: [String]
+
+  idsPlaces: [PlaceRadius]
+
+  slugsPlaces: [Place]
+}
+
+input DateRangeInput {
+  start: DateTime
+
+  end: DateTime
+}
+
+input RangeInput {
+  start: Int
+
+  end: Int
+}
+
+input StopoverInput {
+  """
+  There can be multiple locations defined in a single stopover, either by id or slug
+  """
+  location: IdsAndSlugsInput
+
+  """
+      Number of nights the user wants to spend at the desired location(s). This parameter takes priority over `dates`, so
+      if both are provided, the latter is ignored.
+      
+  """
+  nightsCount: RangeInput
+
+  """
+      Range of dates the user wants to spend at desired stopover locations. If you want to use this parameters, do not
+      provide `nightsCount` as this one will then be ignored.
+      
+  """
+  dates: DateRangeInput
+
+  """
+  Maximum number of stopovers when traveling from this location.
+  """
+  departureMaxStopsCount: Int
+
+  """
+  Maximum number of stopovers when traveling to this location.
+  """
+  arrivalMaxStopsCount: Int
+
+  """
+  Travel to this location only on days specified with this parameter.
+  """
+  arrivalDays: [DayName]
+
+  """
+  Travel from this location only on days specified with this parameter.
+  """
+  departureDays: [DayName]
+
+  """
+  Travel from this location within hours specified with this parameter.
+  """
+  departureHours: RangeInput
+
+  """
+  Arrive to this location within hours specified with this parameter.
+  """
+  arrivalHours: RangeInput
+
+  """
+      If multiple places are defined inside a stopover location, setting `forceContinuity` to `true` will set the
+      departure and arrival to the same location.
+      
+  """
+  forceContinuity: Boolean
+}
+
+type StopoverArguments {
+  """
+  There can be multiple locations defined in a single stopover, either by id or slug
+  """
+  location: IdsAndSlugs
+
+  """
+      Number of nights the user wants to spend at the desired location(s). This parameter takes priority over `dates`, so
+      if both are provided, the latter is ignored.
+      
+  """
+  nightsCount: Range
+
+  """
+      Range of dates the user wants to spend at desired stopover locations. If you want to use this parameters, do not
+      provide `nightsCount` as this one will then be ignored.
+      
+  """
+  dates: DateRange
+
+  """
+  Maximum number of stopovers when traveling from this location.
+  """
+  departureMaxStopsCount: Int
+
+  """
+  Maximum number of stopovers when traveling to this location.
+  """
+  arrivalMaxStopsCount: Int
+
+  """
+  Travel to this location only on days specified with this parameter.
+  """
+  arrivalDays: [DayName]
+
+  """
+  Travel from this location only on days specified with this parameter.
+  """
+  departureDays: [DayName]
+
+  """
+  Travel from this location within hours specified with this parameter.
+  """
+  departureHours: Range
+
+  """
+  Arrive to this location within hours specified with this parameter.
+  """
+  arrivalHours: Range
+
+  """
+      If multiple places are defined inside a stopover location, setting `forceContinuity` to `true` will set the
+      departure and arrival to the same location.
+      
+  """
+  forceContinuity: Boolean
+}
+
+"""
+This is used to specify the passenger categories, numbers of passengers as well as their baggage
+configuration. Please note: the total number of passengers cannot exceed 9.
+"""
+input PassengersInput {
+  adults: Int = 1
+
+  """
+      Number of hold bags per adult. The first number represents the number of bags for passenger 1,
+      the second number is for passenger 2 etc. Can only contain up to two hold bags per passenger.
+      
+  """
+  adultsHoldBags: [Int]
+
+  """
+      Number of hand bags per adult. The first number represents the number of bags for passenger 1,
+      the second number is for passenger 2 etc. Can only contain up to two hold bags per passenger.
+      
+  """
+  adultsHandBags: [Int]
+
+  children: Int = 0
+
+  """
+      Number of hold bags per child. The first number represents the number of bags for passenger 1,
+      the second number is for passenger 2 etc. Can only contain up to two hold bags per passenger.
+      
+  """
+  childrenHoldBags: [Int]
+
+  """
+      Number of hand bags per child. The first number represents the number of bags for passenger 1,
+      the second number is for passenger 2 etc. Can only contain up to two hold bags per passenger.
+      
+  """
+  childrenHandBags: [Int]
+
+  infants: Int = 0
+}
+
+type PassengersArguments {
+  adults: Int
+
+  """
+      Number of hold bags per adult. The first number represents the number of bags for passenger 1,
+      the second number is for passenger 2 etc. Can only contain up to two hold bags per passenger.
+      
+  """
+  adultsHoldBags: [Int]
+
+  """
+      Number of hand bags per adult. The first number represents the number of bags for passenger 1,
+      the second number is for passenger 2 etc. Can only contain up to two hold bags per passenger.
+      
+  """
+  adultsHandBags: [Int]
+
+  children: Int
+
+  """
+      Number of hold bags per child. The first number represents the number of bags for passenger 1,
+      the second number is for passenger 2 etc. Can only contain up to two hold bags per passenger.
+      
+  """
+  childrenHoldBags: [Int]
+
+  """
+      Number of hand bags per child. The first number represents the number of bags for passenger 1,
+      the second number is for passenger 2 etc. Can only contain up to two hold bags per passenger.
+      
+  """
+  childrenHandBags: [Int]
+
+  infants: Int
+}
+
+"""
+Specify what cabin class do you want to travel
+"""
+input CabinClassInput {
+  cabinClass: CabinClassType
+
+  """
+  Allows to combine cabin classes of segments in the itinerary to save money but keep travel comfort.
+  """
+  applyMixedClasses: Boolean
+}
+
+input MoneyInput {
+  amount: String
+
+  currency: String
+}
+
+type CabinClassArguments {
+  cabinClass: CabinClassType
+
+  """
+  Allows to combine cabin classes of segments in the itinerary to save money but keep travel comfort.
+  """
+  applyMixedClasses: Boolean
+}
+
+enum CabinClassType {
+  ECONOMY
+
+  PREMIUM_ECONOMY
+
+  BUSINESS
+
+  FIRST_CLASS
+}
+
+"""
+The search results can be sorted by the following values. 'Quality' is the default sorting value.
+"""
+enum ItinerariesSortByInput {
+  DATE
+
+  DURATION
+
+  POPULARITY
+
+  PRICE
+
+  QUALITY
+
+  SOURCE_TAKEOFF
+
+  SOURCE_LANDING
+
+  DESTINATION_TAKEOFF
+
+  DESTINATION_LANDING
+}
+
+"""
+To allow easier navigation through the search results various filtering options are available for the user.
+"""
+input ItinerariesFilterInput {
+  """
+  The maximum amount of itineraries to be returned
+  """
+  limit: Int
+
+  """
+      Allow the inbound destination to be different than outbound source.
+      Not applicable for onewayItineraries, onewayOnePerCityItineraries and nomadItineraries.
+      
+  """
+  allowChangeInboundDestination: Boolean
+
+  """
+      Allow the inbound source to be different than outbound destination.
+      Not applicable for onewayItineraries, onewayOnePerCityItineraries and nomadItineraries.
+      
+  """
+  allowChangeInboundSource: Boolean
+
+  """
+  Allow connection on different nearby station. Default: true
+  """
+  allowDifferentStationConnection: Boolean
+
+  """
+      Use only selected carriers.
+      Can not be used in combination with `excludeCarriers`, `stopoverCountries` and `excludeStopoverCountries` filters.
+      
+  """
+  carriers: [ID]
+
+  """
+      Use all carriers except for the ones selected.
+      Can not be used in combination with `carriers`, `stopoverCountries` and `excludeStopoverCountries` filters.
+      
+  """
+  excludeCarriers: [ID]
+
+  """
+  Use only selected stations. Can not be used in combination with `excludeStopoverCountries` filter.
+  """
+  stations: [ID]
+
+  """
+  Use all stations except for the ones selected. Can not be used in combination with `excludeStations` filter.
+  """
+  excludeStations: [ID]
+
+  """
+      Use only selected stopover countries.
+      Can not be used in combination with `excludeStopoverCountries`, `carriers` and `excludeCarriers` filters.
+      Not applicable for nomadItineraries.
+      
+  """
+  stopoverCountries: [ID]
+
+  """
+      Use all stopover countries except for the ones selected.
+      Can not be used in combination with `stopoverCountries`, `carriers` and `excludeCarriers` filters.
+      Not applicable for multicityItineraries and nomadItineraries.
+      
+  """
+  excludeStopoverCountries: [ID]
+
+  """
+      Filter by outbound travel days and times.
+      Not applicable for multicityItineraries and nomadItineraries.
+      
+  """
+  outbound: ItineraryFilterDateTimeInput
+
+  """
+      Filter by inbound travel days and times.
+      Not applicable for onewayItineraries, onewayOnePerCityItineraries, multicityItineraries and nomadItineraries.
+      
+  """
+  inbound: ItineraryFilterDateTimeInput
+
+  """
+      Return itineraries by location hashtag.
+      Not applicable for multicityItineraries and nomadItineraries.
+      
+  """
+  locationHashtags: [ID]
+
+  """
+      Maximum travel duration in hours, excluding the stopover duration.
+      Not applicable for multicityItineraries and nomadItineraries.
+      
+  """
+  maxDuration: Int
+
+  """
+  Maximum number of stopovers.
+  """
+  maxStopsCount: Int
+
+  """
+  Filter by price range.
+  """
+  price: RangeInput
+
+  """
+  Include itineraries without checked (hold) bags, default: true.
+  """
+  showNoCheckedBags: Boolean
+
+  """
+      Filter by stopover duration in hours.
+      Not applicable for multicityItineraries and nomadItineraries.
+      
+  """
+  stopoverTime: RangeInput
+
+  """
+  List of Country.id values, return itineraries that have all stopovers only in the selected list of countries.
+  """
+  transportTypes: [TransportType!]
+
+  """
+      Internal API limit.
+      Limit the number of results returned from the first request for onewayItineraries and returnItineraries.
+      Limit that is forwarded to search api on multicity requests.
+      
+  """
+  flightsApiLimit: Int
+
+  """
+      IDs of sectors that have to be included in itineraries.
+      Only applicable for onewayItineraries and returnItineraries.
+      
+  """
+  sectorIds: [ID]
+
+  """
+      When false and there is at least one overnight stopover in the itinerary, filter the itinerary out.
+      An overnight stopover is 3 hours or longer in the local time window between 22:00 and 05:00.
+      Only applicable for onewayItineraries and returnItineraries.
+      
+  """
+  allowOvernightStopover: Boolean
+
+  """
+      Return only results from specific content providers.
+      Only applicable for onewayItineraries and returnItineraries.
+      
+  """
+  contentProviders: [ItineraryContentProvider]
+
+  """
+  When this parameter is true, return only itineraries that provide wi-fi. Not available anymore.
+  """
+  wifiEnabled: Boolean
+
+  """
+      If false then remove itineraries whose stopovers are among locations requested in flyFrom and to. Default: false.
+      Only applicable for onewayItineraries and returnItineraries.
+      
+  """
+  enableFromToLocationInVia: Boolean
+
+  """
+      If False and search is one-per-city and multiplace,
+      go through the response and filter destinations containing a location entered as origin.
+      Default:True
+      
+  """
+  allowOriginInResult: Boolean
+
+  """
+      If True search results won't contain any TrueHiddenCities results. Default is False
+      
+  """
+  excludeTHCInSearchResults: Boolean
+
+  """
+      Allow return to different city for multi-destination search. Default is True.
+      
+  """
+  allowReturnToDifferentCity: Boolean
+
+  """
+      Allow return from different city for multi-destination search. Default is True.
+      
+  """
+  allowReturnFromDifferentCity: Boolean
+
+  """
+      Allow itineraries where at least one direction of the flight has a change of flight.
+      
+  """
+  enableSelfTransfer: Boolean
+
+  """
+      Allow itineraries where the user needs to exit at one of the layovers of the flight they’re on to make it to their
+      final destination.
+      
+  """
+  enableTrueHiddenCity: Boolean
+
+  """
+      Allow itineraries where the user is using a return ticket as a one-way ticket and discarding the return part.
+      
+  """
+  enableThrowAwayTicketing: Boolean
+
+  """
+      Ensure that the returned itineraries contain a Kiwi booking option; filter out those which don't. Default is False.
+      
+  """
+  ensureKiwiBookingOption: Boolean
+}
+
+type ItinerariesFilterArguments {
+  limit: Int
+
+  allowChangeInboundDestination: Boolean
+
+  allowChangeInboundSource: Boolean
+
+  allowDifferentStationConnection: Boolean
+
+  carriers: [ID]
+
+  excludeCarriers: [ID]
+
+  excludeStations: [ID]
+
+  excludeStopoverCountries: [ID]
+
+  inbound: ItineraryFilterDateTimeArguments
+
+  locationHashtags: [ID]
+
+  maxDuration: Int
+
+  maxStopsCount: Int
+
+  outbound: ItineraryFilterDateTimeArguments
+
+  price: Range
+
+  showNoCheckedBags: Boolean
+
+  stations: [ID]
+
+  stopoverTime: Range
+
+  """
+  List of Country.id values, return itineraries that have all stopovers only in the selected list of countries.
+  """
+  stopoverCountries: [ID]
+
+  transportTypes: [TransportType]
+
+  """
+  Internal API limit used for A/B testing. Limit the number of results returned from the first request.
+  """
+  flightsApiLimit: Int
+
+  """
+  IDs of sectors that have to be included in itineraries
+  """
+  sectorIds: [ID]
+
+  """
+      When false and there is at least one overnight stopover in the itinerary, filter the itinerary out.
+      An overnight stopover is 3 hours or longer in the local time window between 22:00 and 05:00.
+      
+  """
+  allowOvernightStopover: Boolean
+
+  """
+  This is a debugging parameter. If set, only results from specific content providers will be returned.
+  """
+  contentProviders: [ItineraryContentProvider]
+
+  """
+  When this parameter is true, return only itineraries that provide wi-fi.
+  """
+  wifiEnabled: Boolean
+
+  """
+  If false then remove itineraries whose stopovers are among locations requested in flyFrom and to. Default: false
+  """
+  enableFromToLocationInVia: Boolean
+
+  sortBy: ItinerariesSortByInput
+
+  sortOrder: SortOrder
+
+  """
+  If True search results won't contain any TrueHiddenCities results. Default is False. Used for A/B testing.
+  """
+  excludeTHCInSearchResults: Boolean
+
+  """
+  Allow return to different city for multi-destination search. Default is True.
+  """
+  allowReturnToDifferentCity: Boolean
+
+  """
+  Allow return from different city for multi-destination search. Default is True.
+  """
+  allowReturnFromDifferentCity: Boolean
+
+  """
+      Allow itineraries where at least one direction of the flight has a change of flight.
+      
+  """
+  enableSelfTransfer: Boolean
+
+  """
+      Allow itineraries where the user needs to exit at one of the layovers of the flight they’re on to make it to their
+      final destination.
+      
+  """
+  enableTrueHiddenCity: Boolean
+
+  """
+      Allow itineraries where the user is using a return ticket as a one-way ticket and discarding the return part.
+      
+  """
+  enableThrowAwayTicketing: Boolean
+}
+
+enum ItineraryContentProvider {
+  AMADEUS
+
+  AVIASALES
+
+  BUSBUD
+
+  FLIXBUS_DIRECTS
+
+  FRESH
+
+  KAYAK
+
+  KIWI
+
+  NDC
+
+  LASTMINUTE
+
+  ETRAVELI
+
+  WEGO
+
+  U2_META_API
+
+  FR_META_API
+}
+
+input ItineraryFilterDateTimeInput {
+  departureHours: RangeInput
+
+  arrivalHours: RangeInput
+
+  days: [DayName]
+}
+
+type ItineraryFilterDateTimeArguments {
+  departureHours: Range
+
+  arrivalHours: Range
+
+  days: [DayName]
+}
+
+"""
+Supported values:
+"ae", "at", "ag", "ar", "au", "be", "bg", "bh", "br", "by", "ca", "ca-fr", "ch", "cl", "cn", "co", "ct", "cz", "da",
+"de", "ec", "ee", "el", "en", "es", "fi", "fr", "hk", "hr", "hu", "id", "in", "ie", "il", "is", "it", "ja", "jo",
+"ko", "kw", "kz", "lt", "mx", "my", "nl", "no", "nz", "om", "pe", "ph", "pl", "pt", "qa", "ro", "ru", "sg", "sk",
+"sr", "sv", "th", "tr", "tw", "uk", "us", "vn", "za"
+"""
+scalar Locale
+
+"""
+This type contains Umbrella server metadata used for metrics on FE and debugging.
+"""
+type Server {
+  """
+  Unique id of the request used for tracking on clients.
+  """
+  requestId: String
+
+  """
+  Umbrella deployment environment.
+  """
+  environment: String
+
+  """
+  Umbrella deployment package version.
+  """
+  packageVersion: String
+
+  """
+  Server token used to track sever status during consecutive search polling.
+  """
+  serverToken: String
+}
+
+"""
+Options not affecting the number of results just the presentation.  E.g. sorting or prices currency.
+"""
+input ItinerariesOptionsInput {
+  sortBy: ItinerariesSortByInput
+
+  currency: String
+
+  locale: Locale
+
+  """
+      Partner ID. If present, the result will include a link to a specific trip directly to Kiwi.com,
+      with the affiliate ID included (use picky partner ID for testing).
+      
+  """
+  partner: String!
+
+  """
+  Market from which the request is coming from. Example: us
+  """
+  partnerMarket: String
+
+  affilID: String
+
+  """
+      Use different URL for the Kiwi.com API that will be called instead of the default one.
+      Must be on skypicker.com domain.
+      
+  """
+  apiUrl: String
+
+  ab: String
+
+  sortOrder: SortOrder
+
+  """
+  Server token used to track sever status during consecutive search polling.
+  """
+  serverToken: String
+
+  """
+  If true, Travel tips have exact place/date in changed params. If false, Travel tips have radiuses/date ranges.
+  """
+  exactTravelTips: Boolean
+
+  sharedItineraryId: String
+
+  userEmail: String
+
+  """
+  Coordinates of user location for Travel Tip nearest city calculation
+  """
+  position: GpsInput
+
+  """
+  When this option is false, the search request will not be stored as recent search for user. Default value is
+      `true`.
+  """
+  storeSearch: Boolean
+
+  """
+  Price diff rule used during itineraries merge. Deprecated. Value set to INCREASED for all requests.
+  """
+  mergePriceDiffRule: MergePriceDiffRule
+
+  """
+  Filter the cached responses instead of requesting from APIs. Default: false
+  """
+  fastFilters: Boolean
+
+  """
+      Include hidden cities in response. Deprecated and replaced with ItinerariesFilterInput.enableTrueHiddenCity.
+      enableTrueHiddenCity overwrites enableHC if both are provided.
+      
+  """
+  enableHC: Boolean
+
+  """
+  When this option is [reduced] the request will fire 2 flightsApi requests. Default value is [regular] and does 3 flightApi requests. If strategy with MRP used then additional MRP refresh will be executed
+  """
+  searchStrategy: SearchStrategy
+
+  featureName: String
+
+  """
+  Sort version
+  """
+  sortVersion: Int
+
+  """
+  Determines whether to apply selected sorting version
+  """
+  applySortingChanges: Boolean
+
+  """
+  Used for A/B test. Select data source for itineraryPricesCalendar.
+  """
+  priceCalendarDataSource: PriceCalendarCacheType
+
+  abTestInput: ABTestInput
+
+  """
+  Use precached results on OnePerCity requests.
+  """
+  usePrecached: Boolean
+
+  market: String
+
+  isPrefetch: Boolean
+
+  searchSessionId: String
+}
+
+enum PriceCalendarCacheType {
+  NO_CACHE
+
+  TEN_MINUTE_CACHE
+
+  ONE_HOUR_CACHE
+}
+
+"""
+This type describes limit for bags in each itinerary.
+"""
+type ItineraryBagsInfo {
+  """
+      Some itinerary providers don't support baggage in their response.
+      This field is used to differentiate that case and the case when no bags are allowed.
+      
+  """
+  hasBagsSupported: Boolean @deprecated(reason: "Use hasNoBaggageSupported without additional logic instead.")
+
+  hasNoCheckedBags: Boolean @deprecated(reason: "Use hasNoCheckedBaggage without additional logic instead.")
+
+  checkedBagTiers: [BaggageTier!]
+
+  handBagTiers: [BaggageTier!]
+
+  personalItemTiers: [BaggageTier!]
+
+  """
+  Quantity of hand bags included in the itinerary price (either price is 0 or it was requested with filter).
+  """
+  includedHandBags: Int
+
+  """
+  Quantity of checked bags included in the itinerary price (either price is 0 or it was requested with filter).
+  """
+  includedCheckedBags: Int
+
+  """
+  Quantity of personal item bags included in the itinerary price.
+  """
+  includedPersonalItem: Int
+
+  hasNoBaggageSupported: Boolean
+
+  hasNoCheckedBaggage: Boolean
+}
+
+type BaggageTier {
+  tierPrice: Money
+
+  bags: [BaggageInfo!]
+
+  """
+  Number of bags from the tier that are included in the itinerary price.
+  """
+  included: Int @deprecated(reason: "Replaced by ItineraryBagsInfo.includedHandBags and ItineraryBagsInfo.includedCheckedBags")
+}
+
+type BaggageInfo {
+  height: SizeValue
+
+  length: SizeValue
+
+  width: SizeValue
+
+  weight: WeightValue
+
+  dimensionsSum: SizeValue
+}
+
+type SizeValue {
+  value: Int
+
+  """
+  The unit is selected based on the HTTP header 'accept-language'.
+  """
+  unit: SizeUnit
+}
+
+type WeightValue {
+  value: Int
+
+  """
+  The unit is selected based on the HTTP header 'accept-language'.
+  """
+  unit: WeightUnit
+}
+
+"""
+Explicitly define sort order, by default this is set to ASCENDING for all sort types except for POPULARITY type where default and optimal sort order is DESCENDING
+"""
+enum SortOrder {
+  ASCENDING
+
+  DESCENDING
+}
+
+"""
+The size unit is selected based on the HTTP header 'accept-language'.
+"""
+enum SizeUnit {
+  CM
+
+  INCH
+}
+
+"""
+Supported weight units. The weight unit is selected based on the HTTP header 'accept-language'.
+"""
+enum WeightUnit {
+  KG
+
+  POUND
+}
+
+enum SearchStrategy {
+  REGULAR
+
+  REGULAR_WITH_MRP
+
+  REDUCED
+
+  REDUCED_WITH_MRP
+}
+
+type Image {
+  url: String
+
+  width: Int
+
+  height: Int
+}
+
+input ImageLocationInput {
+  size: ImageLocationSize!
+
+  """
+  Default value is JPG
+  """
+  format: ImageLocationFormat
+
+  """
+  Compression level. The bigger value the better quality but also bigger file size. Allowed value is between 1 and 100 inclusive
+  """
+  quality: Int
+}
+
+enum ImageLogoSize {
+  _16x16
+
+  _32x32
+
+  _64x64
+
+  _128x128
+}
+
+enum ImageLocationSize {
+  _30x30
+
+  _60x60
+
+  _220x165
+
+  _275x250
+
+  _300x165
+
+  _375x165
+
+  _610x251
+
+  _600x330
+
+  _600x600
+
+  _900x120
+
+  _1200x628
+
+  _1280x720
+}
+
+enum ImageLogoFormat {
+  PNG
+
+  WEBP
+}
+
+enum ImageLocationFormat {
+  JPG
+
+  WEBP
+}
+
+enum MergePriceDiffRule {
+  STANDARD
+
+  INCREASED
+}
+
+interface Place {
+  id: ID!
+
+  """
+  Locations API ID of the location, should only be used for legacy purposes.
+  """
+  legacyId: String!
+
+  name: String!
+
+  slug: String!
+
+  slugEn: String
+
+  gps: Gps
+
+  rank: Int
+}
+
+type PlaceAlreadyIncluded {
+  place: Place
+
+  """
+  Parent of the place when it is a child of another place defined inside `PlacesFilterInput.childrenOf`.
+  """
+  isChildOf: Place
+
+  """
+  Parent area of the place when it is within one of the areas defined in `PlacesFilterInput.childrenOf.areas`.
+  """
+  isInArea: Radius
+
+  """
+  Child of the place when it is a parent of another place defined inside `PlacesFilterInput.parentsOf.ids`.
+  """
+  isParentOf: Place
+
+  """
+  Place is a duplicate of the place defined inside `PlacesFilterInput.duplicatesOf`.
+  """
+  isDuplicate: Boolean
+}
+
+type PlacesMetadata {
+  statusPerProvider: [StatusPerProvider]
+
+  placesAlreadyIncluded: [PlaceAlreadyIncluded]
+
+  firstResultStations(first: Int, last: Int, before: String, after: String): StationConnection
+}
+
+type PlaceConnection {
+  pageInfo: PageInfo!
+
+  metadata: PlacesMetadata
+
+  edges: [PlaceEdge]
+}
+
+interface Distance {
+  """
+  Distance in meters
+  """
+  distance: Int
+}
+
+type SphericalDistance implements Distance {
+  """
+  Distance in meters
+  """
+  distance: Int
+}
+
+type CarDirections implements Distance {
+  """
+  Time in minutes
+  """
+  duration: Int
+
+  """
+  Distance in meters
+  """
+  distance: Int
+}
+
+type PlaceEdge {
+  node: Place!
+
+  cursor: String!
+
+  """
+  Distance from parent place or from a user's position. 
+  """
+  distance: Distance
+
+  """
+  Importance/popularity of location (locale dependent)
+  """
+  rank: Int
+
+  """
+  Indicates that there are multiple locations returned with the same name.
+  """
+  isAmbiguous: Boolean
+}
+
+type CityConnection {
+  pageInfo: PageInfo!
+
+  edges: [CityEdge]
+}
+
+type CityEdge {
+  node: City
+
+  cursor: String!
+}
+
+type StationConnection {
+  pageInfo: PageInfo!
+
+  edges: [StationEdge]
+}
+
+type StationEdge {
+  node: Station!
+
+  cursor: String!
+
+  """
+  Driving distance from parent place.
+  """
+  carDirections: CarDirections
+
+  """
+  GPS distance from parent place.
+  """
+  sphericalDistance: SphericalDistance
+}
+
+union PlacesResult = PlaceConnection|AppError
+
+type City implements Place {
+   id: ID!
+
+  legacyId: String!
+
+  """
+  City identifier used for map.
+  """
+  mapId: String
+
+  name: String!
+
+  slug: String!
+
+  """
+  IATA code of the city, only available for cities with airports, NULL for rest.
+  """
+  code: String
+
+  slugEn: String
+
+  stations(first: Int, last: Int, before: String, after: String): StationConnection
+
+  nearbyCities: CityRadius
+
+  photo(input: ImageLocationInput): Image
+
+  country: Country
+
+  region: Region
+
+  autonomousTerritory: AutonomousTerritory
+
+  subdivision: Subdivision
+
+  gps: Gps
+
+  rank: Int
+
+  timezone: String
+
+  """
+  Number of airports in the city.
+  """
+  airportsCount: Int
+
+  """
+  Number of ground stations in the city.
+  """
+  groundStationsCount: Int
+
+  """
+  Locations API tags
+  """
+  tags: [String]
+}
+
+type CityRadius {
+  id: ID!
+
+  slug: String
+
+  radius: Radius
+
+  cities(first: Int, last: Int, before: String, after: String): CityConnection
+}
+
+type Radius {
+  center: Gps
+
+  """
+  Distance in meters
+  """
+  radius: Int
+}
+
+type Gps {
+  lat: Float
+
+  lng: Float
+}
+
+type Country implements Place {
+  id: ID!
+
+  legacyId: String!
+
+  code: String
+
+  name: String!
+
+  slug: String!
+
+  slugEn: String
+
+  region: Region
+
+  neighbourCountries: [Country]
+
+  """
+  Cities sorted by requested sort. Defaults: first:1, sort:RANK.
+  """
+  cities(first: Int, sort: PlacesSortByInput): [City]
+
+  gps: Gps
+
+  rank: Int
+
+  majorCity: City
+}
+
+"""
+Point of interest
+"""
+type POI implements Place {
+  id: ID!
+
+  legacyId: String!
+
+  name: String!
+
+  slug: String!
+
+  slugEn: String
+
+  stations(first: Int, last: Int, before: String, after: String): StationConnection
+
+  gps: Gps
+
+  rank: Int
+}
+
+type TouristRegion implements Place {
+  id: ID!
+
+  legacyId: String!
+
+  name: String!
+
+  slug: String!
+
+  slugEn: String
+
+  stations(first: Int, last: Int, before: String, after: String): StationConnection
+
+  gps: Gps
+
+  rank: Int
+}
+
+type Subdivision implements Place {
+  id: ID!
+
+  legacyId: String!
+
+  name: String!
+
+  slug: String!
+
+  slugEn: String
+
+  country: Country
+
+  """
+  Cities sorted by requested sort. Defaults: first:1, sort:RANK.
+  """
+  cities(first: Int, sort: PlacesSortByInput): [City]
+
+  gps: Gps
+
+  rank: Int
+
+  code: String
+}
+
+type Region implements Place {
+  id: ID!
+
+  legacyId: String!
+
+  name: String!
+
+  slug: String!
+
+  slugEn: String
+
+  continent: Continent
+
+  """
+  Cities sorted by requested sort. Defaults: first:1, sort:RANK.
+  """
+  cities(first: Int, sort: PlacesSortByInput): [City]
+
+  gps: Gps
+
+  rank: Int
+}
+
+type Continent implements Place {
+  id: ID!
+
+  legacyId: String!
+
+  name: String!
+
+  slug: String!
+
+  slugEn: String
+
+  gps: Gps
+
+  rank: Int
+
+  """
+  Cities sorted by requested sort. Defaults: first:1, sort:RANK.
+  """
+  cities(first: Int, sort: PlacesSortByInput): [City]
+}
+
+type AutonomousTerritory implements Place {
+  id: ID!
+
+  legacyId: String!
+
+  name: String!
+
+  slug: String!
+
+  slugEn: String
+
+  country: Country
+
+  """
+  Cities sorted by requested sort. Defaults: first:1, sort:RANK.
+  """
+  cities(first: Int, sort: PlacesSortByInput): [City]
+
+  gps: Gps
+
+  rank: Int
+}
+
+input PlacesSearchRadiusInput {
+  """
+  GPS position for radius search
+  """
+  position: GpsInput
+
+  """
+  Radius distance in kilometers
+  """
+  radius: Int!
+}
+
+input IdSlugRadiusInput {
+  radius: Int
+
+  id: ID
+
+  slug: String
+}
+
+input ChildFilterRadiusInput {
+  """
+  GPS position for radius search
+  """
+  position: GpsInput!
+
+  """
+  Radius distance in kilometers
+  """
+  radius: Int!
+}
+
+"""
+You can search for places by name, an array of slugs or radius from GPS position
+"""
+input PlacesSearchInput {
+  """
+  Typo tolerant fulltext
+  """
+  term: String
+
+  slugs: [String]
+
+  slugsEn: [String]
+
+  """
+  List of place ID values
+  """
+  ids: [ID!]
+
+  """
+  List of IATA metro codes
+  """
+  metroCodes: [String]
+
+  """
+  Radius search based on the GPS position
+  """
+  radius: PlacesSearchRadiusInput
+
+  """
+  Search for best destinations based on departure Place
+  """
+  topDestinations: TopDestinationsInput
+
+  """
+  Search for alternative departure Places based on departure Place
+  """
+  alternatives: PlacesAlternativesInput
+
+  idSlugRadius: IdSlugRadiusInput
+}
+
+enum PlacesFilterOnlyTypesEnum {
+  AIRPORT
+
+  AUTONOMOUS_TERRITORY
+
+  BUS_STATION
+
+  CITY
+
+  CONTINENT
+
+  COUNTRY
+
+  POINT_OF_INTEREST
+
+  REGION
+
+  TRAIN_STATION
+
+  SUBDIVISION
+
+  TOURIST_REGION
+}
+
+enum TopDestinationsPopularityEnum {
+  BOOKINGS
+
+  CLICKS
+
+  SEARCHES
+}
+
+input PlacesFilterInput {
+  onlyTypes: [PlacesFilterOnlyTypesEnum!]
+
+  """
+  When true, stations which belong to a city that is part of the returned data set will be filtered out.
+  """
+  groupByCity: Boolean
+
+  """
+  IDs of places to be filtered out.
+  """
+  duplicatesOf: [ID]
+
+  """
+  Places which are descendants of places or areas defined by this variable, will be filtered out. This is not
+      limited to direct descendants.
+  """
+  childrenOf: ChildrenOf
+
+  """
+  Places whose descendants are specified here will be filtered out. The places don't need to be direct descendants.
+  """
+  parentsOf: [ID]
+}
+
+input ChildrenOf {
+  ids: [ID]
+
+  areas: [ChildFilterRadiusInput]
+}
+
+input PlacesAlternativesInput {
+  """
+  Find alternative departure Places for the selected Place ID
+  """
+  id: ID
+
+  """
+  Find alternative departure Places for GPS coordinates and radius
+  """
+  radius: PlacesSearchRadiusInput
+}
+
+"""
+Search for destinations most searched / clicked on / booked from the departure place.
+"""
+input TopDestinationsInput {
+  """
+  Departure Place ID
+  """
+  id: ID
+
+  """
+  Popularity of the destination used for top destinations search. Default value: SEARCHES
+  """
+  popularity: TopDestinationsPopularityEnum
+
+  """
+      Fallback popularity of the destination used for top destinations search.
+      Can be left blank. Used if not enough results is returned by "popularity" selected.
+      
+  """
+  popularityFallback: TopDestinationsPopularityEnum
+}
+
+"""
+Places results can be sorted by the following values
+NAME - name of the place, default value
+RANK - rank of the place, locale dependant
+RANK_DISTANCE - combination of rank (locale dependant) and distance from the options.position or IP address geolocation
+RANK_DISTANCE_TERM - only available for search by "term", it keeps the top result sorted by term and sorts the rest using RANK_DISTANCE
+"""
+enum PlacesSortByInput {
+  NAME
+
+  RANK
+
+  RANK_DISTANCE
+
+  RANK_DISTANCE_TERM
+}
+
+"""
+Options not affecting the number of results just the presentation. E.g. sorting or prices currency.
+"""
+input PlacesOptionsInput {
+  """
+      You can specify the current position for distance calculations.
+      Otherwise, position based on IP address is used.
+      
+  """
+  position: GpsInput
+
+  locale: Locale
+
+  sortBy: PlacesSortByInput
+
+  replaceLocationsWithoutAirports: Boolean
+
+  replaceUnnecessaryLocations: Boolean
+
+  stationsQueryOptimisation: Boolean
+}
+
+input GpsInput {
+  lat: Float!
+
+  lng: Float!
+}
+
+"""
+Supported categories for price rating.
+"""
+enum PriceRating {
+  CHEAP
+
+  AVERAGE
+
+  EXPENSIVE
+}
+
+"""
+Price and its rating related to other prices in result set
+"""
+type RatedPrice {
+  price: Money
+
+  rating: PriceRating
+}
+
+type ItineraryPriceList {
+  outboundDate: DateTime
+
+  inboundDate: DateTime
+
+  price: Money
+
+  rating: PriceRating
+}
+
+input SearchPricesCalendarInput {
+  source: IdsAndSlugsInput
+
+  """
+  Destinations specified by IDs and slugs from the Place interface. No slugs and IDs specified means anywhere.
+  """
+  destination: IdsAndSlugsInput
+
+  dates: DateRangeInput
+
+  passengers: PassengersInput
+
+  cabinClass: CabinClassInput
+}
+
+input SearchReturnPricesCalendarInput {
+  source: IdsAndSlugsInput
+
+  """
+  Destinations specified by IDs and slugs from the Place interface. No slugs and IDs specified means anywhere.
+  """
+  destination: IdsAndSlugsInput
+
+  departureDates: DateRangeInput
+
+  returnDates: DateRangeInput
+
+  visibleDates: DateRangeInput!
+
+  nightsCount: RangeInput
+
+  passengers: PassengersInput
+
+  cabinClass: CabinClassInput
+}
+
+input DestinationGeoBox {
+  southWestGeoBoxCorner: GpsInput
+
+  northEastGeoBoxCorner: GpsInput
+}
+
+input SearchPricesMapInput {
+  source: IdsAndSlugsInput
+
+  """
+  Destinations specified by IDs and slugs from the Place interface. No slugs and IDs specified means anywhere.
+  """
+  destination: IdsAndSlugsInput
+
+  destinationGeoBox: DestinationGeoBox
+
+  dates: DateRangeInput
+
+  returnDates: DateRangeInput
+
+  """
+  When set to `true`, use anytime for returnDates. Can not be used in combination with `returnDates` or `nightsCount`.
+  """
+  returnAnytime: Boolean
+
+  passengers: PassengersInput
+
+  cabinClass: CabinClassInput
+
+  """
+      For faster inaccurate response, set this flag to false (default).
+      For complete dataset, repeat the same request with this flag set to true.
+      
+  """
+  accurate: Boolean
+
+  nightsCount: RangeInput
+}
+
+union ItineraryPricesMapResult = ItineraryPricesMap|AppError
+
+union ItineraryPricesCalendarResult = ItineraryPricesCalendar|AppError
+
+input SearchPriceGraphInput {
+  itinerary: ItineraryPriceGraphInput
+
+  passengers: PassengersInput
+
+  cabinClass: CabinClassInput
+}
+
+union ItineraryPriceGraphResult = ItineraryPriceGraph|AppError
+
+union ItineraryPriceTableResult = ItineraryPriceTable|AppError
+
+type ItineraryPricesCalendar {
+  sources: [Place]
+
+  destinations: [Place]
+
+  currency: Currency
+
+  """
+  List of departure dates and the lowest price available for each date.
+  """
+  calendar: [PriceCalendarItem]
+
+  """
+      Used in conjunction with Itineraries.Options.Input.priceCalendarDataSource for A/B test.
+      If TEN_MINUTE or ONE_HOUR_CACHE is selected, priceCalendarCacheHit returns a boolean indicating if the selected
+      cache had actually been hit. Default is False.
+      
+  """
+  priceCalendarCacheHit: Boolean
+
+  priceRatingLegend: PriceRatingLegend
+}
+
+type ItineraryPricesMap {
+  sources: [Place]
+
+  destinations: [Place]
+
+  currency: Currency
+
+  """
+  List of cities and the best price available for each city.
+  """
+  map: [PriceMapItem]
+}
+
+type ItineraryPriceTable {
+  priceList: [ItineraryPriceList]
+}
+
+type ItineraryPriceGraph {
+  sources: [Place]
+
+  destinations: [Place]
+
+  currency: Currency
+
+  """
+  List of dates and the best price available that date
+  """
+  prices: [PriceGraphItem]
+}
+
+"""
+Lowest price for a date in the calendar.
+"""
+type PriceCalendarItem {
+  date: DateTime
+
+  ratedPrice: RatedPrice
+}
+
+"""
+Lowest price for a date in the itinerary graph.
+"""
+type PriceGraphItem {
+  date: DateTime
+
+  inboundDate: DateTime
+
+  price: Money
+
+  ratedPrice: PriceRating
+}
+
+"""
+Lowest price for a destination city.
+"""
+type PriceMapItem {
+  city: City
+
+  price: Money
+
+  """
+  Importance/popularity of location (locale dependent)
+  """
+  rank: Int
+}
+
+union TravelTip = TravelTipRadiusMoney|TravelTipDestinationRadiusMoney|TravelTipRadiusTime|TravelTipDestinationRadiusTime|TravelTipRadiusSome|TravelTipDateMoney|TravelTipDateTime|TravelTipDateSome|TravelTipExtend|TravelTipNomad
+
+"""
+Save money with increased departure radius
+"""
+type TravelTipRadiusMoney {
+  """
+  Distance in kilometers
+  """
+  radius: Int
+
+  """
+  Source location, the center of suggested radius
+  """
+  location: Place
+
+  saving: Money
+
+  """
+  Parameters for the new query
+  """
+  params: [QueryParam]
+
+  """
+  Best itinerary for the suggested route.
+  """
+  itinerary: Itinerary
+}
+
+"""
+Save money with increased arrival radius
+"""
+type TravelTipDestinationRadiusMoney {
+  """
+  Distance in kilometers
+  """
+  radius: Int
+
+  """
+  Source location, the center of suggested radius
+  """
+  location: Place
+
+  saving: Money
+
+  """
+  Parameters for the new query
+  """
+  params: [QueryParam]
+
+  """
+  Best itinerary for the suggested route.
+  """
+  itinerary: Itinerary
+}
+
+"""
+Save time with increased departure radius
+"""
+type TravelTipRadiusTime {
+  """
+  Distance in kilometers
+  """
+  radius: Int
+
+  """
+  Source location, the center of suggested radius
+  """
+  location: Place
+
+  """
+  Saved time in minutes
+  """
+  saving: Int
+
+  """
+  Parameters for the new query
+  """
+  params: [QueryParam]
+
+  """
+  Best itinerary for the suggested route.
+  """
+  itinerary: Itinerary
+}
+
+"""
+Save time with increased arrival radius
+"""
+type TravelTipDestinationRadiusTime {
+  """
+  Distance in kilometers
+  """
+  radius: Int
+
+  """
+  Source location, the center of suggested radius
+  """
+  location: Place
+
+  """
+  Saved time in minutes
+  """
+  saving: Int
+
+  """
+  Parameters for the new query
+  """
+  params: [QueryParam]
+
+  """
+  Best itinerary for the suggested route.
+  """
+  itinerary: Itinerary
+}
+
+"""
+Get any results with increased departure radius, used when search produces zero results
+"""
+type TravelTipRadiusSome {
+  """
+  Distance in kilometers
+  """
+  radius: Int
+
+  """
+  Source location, the center of suggested radius
+  """
+  location: Place
+
+  """
+  Parameters for the new query
+  """
+  params: [QueryParam]
+
+  """
+  Best itinerary for the suggested route.
+  """
+  itinerary: Itinerary
+}
+
+"""
+Save money with different travel dates
+"""
+type TravelTipDateMoney {
+  dates: DateRange
+
+  saving: Money
+
+  """
+  Parameters for the new query
+  """
+  params: [QueryParam]
+
+  """
+  Best itinerary for the suggested route.
+  """
+  itinerary: Itinerary
+}
+
+"""
+Save time with different travel dates
+"""
+type TravelTipDateTime {
+  dates: DateRange
+
+  """
+  Saved time in minutes
+  """
+  saving: Int
+
+  """
+  Parameters for the new query
+  """
+  params: [QueryParam]
+
+  """
+  Best itinerary for the suggested route.
+  """
+  itinerary: Itinerary
+}
+
+"""
+Get any results with different travel dates, used when search produces zero results
+"""
+type TravelTipDateSome {
+  dates: DateRange
+
+  """
+  Parameters for the new query
+  """
+  params: [QueryParam]
+
+  """
+  Best itinerary for the suggested route.
+  """
+  itinerary: Itinerary
+}
+
+"""
+Extend the trip for interesting amount of money
+"""
+type TravelTipExtend {
+  """
+  Current itinerary destination
+  """
+  destination: Place
+
+  """
+  Suggested locations to extend the itinerary
+  """
+  locations: [Place]
+
+  price: Money
+
+  """
+  Parameters for the new query
+  """
+  params: [QueryParam]
+
+  """
+  Best itinerary for the suggested route.
+  """
+  itinerary: Itinerary
+}
+
+type TravelTipNomad {
+  source: Place
+
+  destination: Place
+
+  vias: [TravelTipNomadVia]
+
+  price: Money
+}
+
+type TravelTipNomadVia {
+  location: Place
+
+  nightsCount: Range
+}
+
+"""
+Travel tip used when ground transport in not selected in the filters.
+"""
+type TravelTipGround {
+  """
+  List of itineraries operated by ground transport (ground only plus multimodal).
+  """
+  itineraries: [Itinerary]
+
+  """
+  Returns True if a cheaper or cheaper and faster itinerary is available
+  """
+  promptUserToExploreOtherModesOfTransport: Boolean
+
+  groundTravelIsCheaperByPercentage: Int
+
+  groundTravelIsCheaperByAmount: Int
+
+  groundTravelIsFasterByPercentage: Int
+
+  """
+  Returns time value in minutes
+  """
+  groundTravelIsFasterByTime: Int
+}
+
+type TopFiveResultsBaggageEligibility {
+  """
+  Checks the first five results and returns True if user is eligible to be prompted to search with bags
+  """
+  promptUserToSearchWithBags: Boolean
+
+  """
+  Returns True if search is eligible and user searches for a trip that spans more than seven days between departure and return
+  """
+  searchIsLongTrip: Boolean
+
+  """
+  Returns True if search is eligible and user searches with at least one adult and one child or infant selected
+  """
+  searchIsFamilyTrip: Boolean
+
+  """
+  If prompt is True, returns number of cabin bags to be included in search
+  """
+  numberOfCabinBags: Int
+
+  """
+  If prompt is True, returns number of bags to be included in search
+  """
+  numberOfBags: Int
+}
+
+type KayakEligibilityTest {
+  containsKayakWithCurrentRules: Boolean
+
+  containsKayakWithNewRules: Boolean
+
+  containsKayakAirlinesWithNewRules: Boolean
+
+  containsKayakTierOneEqual: Boolean
+}
+
+type RedirectEligibility {
+  anywhere: Boolean
+
+  top10: Boolean
+
+  """
+  Kiwi result available anywhere in the results.
+  """
+  isKiwiAvailable: Boolean
+}
+
+type GuaranteeEligibility {
+  anywhere: Boolean
+
+  top10: Boolean
+}
+
+type CombinationEligibility {
+  anywhere: Boolean
+
+  top10: Boolean
+}
+
+type GuaranteeAndRedirectsEligibilityInformation {
+  redirect: RedirectEligibility
+
+  guarantee: GuaranteeEligibility
+
+  combination: CombinationEligibility
+}
+
+type KiwiBasicEligibility {
+  anywhere: Boolean
+
+  top10: Boolean
+}
+
+type EligibilityInformation {
+  guaranteeAndRedirectsEligibilityInformation: GuaranteeAndRedirectsEligibilityInformation
+
+  baggageEligibilityInformation: BaggageEligibilityInformation
+
+  """
+  True if any of the requested top three results has been resorted in any way.
+  """
+  topThreeResortingOccurred: Boolean
+
+  carriersDeeplinkEligibility: Boolean @deprecated(reason: "Ryanair deeplinks not supported anymore")
+
+  """
+  True if the response contains at least one Kayak itinerary.
+  """
+  responseContainsKayakItinerary: Boolean
+
+  eligibleForVIRemoval: Boolean
+
+  paretoABTestEligible: Boolean
+
+  kiwiBasicEligibility: KiwiBasicEligibility
+}
+
+type BaggageEligibilityInformation {
+  """
+  Checks the first five results and returns True if user is eligible to be prompted to search with bags
+  """
+  topFiveResultsBaggageEligibleForPrompt: Boolean
+
+  """
+  Checks the first fifteen results and returns True if user is eligible to be prompted to search with bags
+  """
+  topFifteenResultsBaggageEligibleForPrompt: Boolean
+
+  """
+  Returns True if search is eligible and user searches for a trip that spans more than seven days between departure and return
+  """
+  searchIsLongTrip: Boolean
+
+  """
+  Returns True if search is eligible and user searches with at least one adult and one child or infant selected
+  """
+  searchIsFamilyTrip: Boolean
+
+  """
+  If prompt is True, returns number of cabin bags to be included in search
+  """
+  numberOfCabinBags: Int
+
+  """
+  If prompt is True, returns number of bags to be included in search
+  """
+  numberOfBags: Int
+}
+
+type DateRange {
+  start: DateTime
+
+  end: DateTime
+}
+
+type QueryParam {
+  name: String
+
+  value: String
+}
+
+type LastAvailable {
+  seatsLeft: Int
+}
+
+type LoyaltyPointTiers {
+  tier1: Int
+
+  tier2: Int
+
+  tier3: Int
+}
+
+type TravelHack {
+  isTrueHiddenCity: Boolean
+
+  isVirtualInterlining: Boolean
+
+  isThrowawayTicket: Boolean
+}
+
+type Highlights {
+  isBest: Boolean
+
+  isFastest: Boolean
+
+  isCheapest: Boolean
+}
+
+type Alliance {
+  name: String
+
+  airlines: [Carrier]
+}
+
+type EligibilityType {
+  changeHappenedInTopThree: Boolean
+
+  changeHappenedInTopTen: Boolean
+}
+
+type SortOrderingPositionalComparison {
+  position: Int
+
+  changeOccurred: Boolean
+}
+
+type SortEligibilityInformation {
+  eligibilityType: EligibilityType
+
+  isKayakPresent: Boolean
+
+  beelineDistance: Int
+
+  sortOrderingPositionalComparison: [SortOrderingPositionalComparison]
+
+  viPenalisationEligible: Boolean
+}
+
+type AirportChangesInfo {
+  count: Int
+
+  ranks: [Int]
+}
+
+type DirectFlightsInfo {
+  count: Int
+
+  ranks: [Int]
+}
+
+type MultipleStopsInfo {
+  count: Int
+
+  ranks: [Int]
+
+  isLongHaulTrip: Boolean
+}
+
+type SelfTransferInfo {
+  count: Int
+
+  ranks: [Int]
+}
+
+type HiddenCityInfo {
+  count: Int
+
+  ranks: [Int]
+}
+
+type WeekendTripInfo {
+  isWeekendTrip: Boolean
+}
+
+type ABTestResultsOutput {
+  """
+  If True, there are no itineraries in the results labeled with the 'beach' tag and unfiltered results were returned.
+  """
+  noBeachHashtagAmongResults: Boolean
+}
+
+union ContextuallyRecommendedFilter = AirportChangesInfo|DirectFlightsInfo|MultipleStopsInfo|SelfTransferInfo|HiddenCityInfo|WeekendTripInfo
+
+input ABTestInput {
+  popularityTilesReduction: Boolean
+
+  multicityFlightsApiLimit: Int
+
+  kayakABCTest: KayakABCTest
+
+  """
+  Determines whether recommended destinations, if any, will be shown to the user. Default is True.
+  """
+  topThreeResultsHighlighting: TopThreeResultsHighlighting
+
+  firstResponseSlowdown: FirstResponseSlowdown
+
+  lastResponseSlowdown: LastResponseSlowdown
+
+  carriersDeeplinkResultsEnable: Boolean
+
+  carriersDeeplinkOnSEMEnable: Boolean
+
+  kiwiGuaranteeABTest: ABTestToggle
+
+  """
+  If enabled, get Kayak search results without bags.
+  """
+  kayakWithoutBags: ABTestToggle
+
+  kiwiGuaranteeEsABTest: ABTestToggle
+
+  newMarketDefinitionABTest: ABTestToggle
+
+  priceElasticityGuarantee: ABTestToggle
+
+  baggageProtectionBundle: ABTestToggle
+
+  removeVI: ABTestToggle
+
+  excludeKayakWhenWinRateIsHigh: ABTestToggle
+
+  paretoProtectVanilla: ABTestToggle
+
+  kiwiBasic: ABTestToggle
+
+  kiwiBasicWithBags: ABTestToggle
+
+  marketStopPenalisation0: ABTestToggle
+
+  marketStopPenalisation10: ABTestToggle
+
+  marketStopPenalisation30: ABTestToggle
+
+  kiwiBasicThirdIteration: TestVariant
+}
+
+enum KayakABCTest {
+  EXISTING_RULES
+
+  NEW_RULES
+
+  REMOVE_KAYAK_COMPLETELY
+
+  NEW_RULES_AIRLINES
+
+  T1_ZERO_THRESHOLD
+}
+
+type PriceRatingLegend {
+  cheapThreshold: Money
+
+  averageThreshold: Money
+
+  expensiveThreshold: Money
+}
+
+input TopThreeResultsHighlighting {
+  firstResult: HighlightOptions
+
+  secondResult: HighlightOptions
+
+  thirdResult: HighlightOptions
+}
+
+enum FirstResponseSlowdown {
+  MS500
+
+  MS1000
+}
+
+enum LastResponseSlowdown {
+  MS1000
+
+  MS3000
+}
+
+enum ABTestToggle {
+  ENABLE
+
+  DISABLE
+}
+
+input HighlightOptions {
+  highlightingOption: ResultsHighlightingOptions
+
+  """
+  Enable or disable travel hacks for individual ResultsHighlightingOptions.
+  """
+  enableTravelHackForResult: ABTestToggle
+
+  nrOptimized: ABTestToggle
+}
+
+enum ResultsHighlightingOptions {
+  BEST_VALUE
+
+  DIRECT
+
+  CHEAPEST
+}
+
+type PriceLock {
+  default: Boolean
+
+  duration: String
+
+  itineraryPriceLimit: Float
+
+  itineraryPriceRemaining: Float
+
+  fareLockKind: String
+
+  price: Money
+
+  ruleInstanceID: Int
+
+  version: String
+}
+
+type PriceLocks {
+  priceLocksCurr: [PriceLock]
+
+  priceLocksEur: [PriceLock]
+}
+
+type BenefitsData {
+  automaticCheckinAvailable: Boolean
+
+  instantChatSupportAvailable: Boolean
+
+  disruptionProtectionAvailable: Boolean
+
+  guaranteeAvailable: Boolean
+
+  guaranteeFee: Money
+
+  searchReferencePrice: Money
+
+  guaranteeFeeEur: Money
+
+  liveBoardingPassAvailable: Boolean
+}
+
+enum MonthName {
+  JANUARY
+
+  FEBRUARY
+
+  MARCH
+
+  APRIL
+
+  MAY
+
+  JUNE
+
+  JULY
+
+  AUGUST
+
+  SEPTEMBER
+
+  OCTOBER
+
+  NOVEMBER
+
+  DECEMBER
+}
+
+enum DisruptionTreatment {
+  DISRUPTION_PROTECTION
+
+  CONNECTION_PROTECTION
+
+  NO_PROTECTION
+
+  NONE
+}
+
+enum KiwiProduct {
+  KIWI_GUARANTEE
+
+  KIWI_BENEFITS
+
+  KIWI_BASIC
+
+  KIWI_REST
+
+  NONE
+}
+
+type ODLandingPage {
+  origin: Place
+
+  destination: Place
+
+  locale: String
+}
+
+type HomePageOr404Data {
+  popularOriginCities: [City]
+
+  popularDestinationCities: [City]
+
+  popularCountries: [Country]
+
+  popularRegions: [Region]
+
+  popularAirports: [Station]
+
+  popularAirlines: [Carrier]
+
+  topPopularODLandingPages: [ODLandingPage]
+
+  fallbackLocale: String
+}
+
+union HomePageOr404DataResults = HomePageOr404Data|AppError
+
+enum TestVariant {
+  CONTROL
+
+  B
+
+  C
+
+  D
+}
+
+"""
+The `Date` scalar type represents a date object
+"""
+scalar Date
+
+"""
+The `DateTime` scalar type represents a date time object
+"""
+scalar DateTime
+
+"""
+The `Time` scalar type represents a time object
+"""
+scalar Time
+
+"""
+Enforce URL validation. Place on input type fields that need to conform to specific URL structure.
+"""
+directive @apiUrlDirective on INPUT_FIELD_DEFINITION
+
+"""
+Handle mutually exclusive arguments. Place on input type containing parameters that are mutually exclusive and
+field which uses the input type as argument object.
+"""
+directive @currencyValidation on ARGUMENT_DEFINITION|FIELD_DEFINITION|INPUT_FIELD_DEFINITION
+
+directive @dateValidation (max_future_days: Int) on ARGUMENT_DEFINITION|FIELD_DEFINITION|INPUT_FIELD_DEFINITION
+
+directive @carrierValidation on ARGUMENT_DEFINITION|FIELD_DEFINITION|INPUT_FIELD_DEFINITION
+
+directive @partnersValidation on ARGUMENT_DEFINITION|FIELD_DEFINITION|INPUT_FIELD_DEFINITION
+
+directive @sourceParamValidation on ARGUMENT_DEFINITION|FIELD_DEFINITION|INPUT_FIELD_DEFINITION
+
+directive @exclusiveDirective on INPUT_OBJECT|FIELD_DEFINITION
+
+directive @localeDirective on ARGUMENT_DEFINITION|INPUT_FIELD_DEFINITION|FIELD_DEFINITION
+
+directive @prepareConnection on FIELD_DEFINITION
+
+directive @resolveLocations on INPUT_OBJECT
+
+"""
+Handle authorization. Place on fields desired to be restricted to logged in users.
+"""
+directive @securityDirective (allowWithoutToken: Boolean) on FIELD_DEFINITION
+
+"""
+Handle storing search fingerprints. Place on argument and `ItinerariesFilterInput` input type.
+"""
+directive @userStoreDirective on INPUT_OBJECT|OBJECT
+
+directive @validateEmailDirective on ARGUMENT_DEFINITION|FIELD_DEFINITION|INPUT_FIELD_DEFINITION
+
+directive @validateRange (min: Int, max: Int, field: String, allow_internal_partners: Boolean) on INPUT_FIELD_DEFINITION|FIELD_DEFINITION
+
+directive @validateSearchFingerprintDirective on ARGUMENT_DEFINITION|FIELD_DEFINITION|INPUT_FIELD_DEFINITION
+
+directive @affilIdDirective on INPUT_OBJECT|OBJECT
+
+directive @locationValidation on FIELD_DEFINITION|INPUT_FIELD_DEFINITION
+
+"""
+Marks an element of a GraphQL schema as no longer supported.
+"""
+directive @deprecated ("Explains why this element was deprecated, usually also including a suggestion for how to access supported similar data. Formatted using the Markdown syntax (as specified by [CommonMark](https://commonmark.org/)." reason: String = "No longer supported") on FIELD_DEFINITION|ENUM_VALUE
+
+"""
+Directs the executor to hide the element on introspection queries.
+"""
+directive @nonIntrospectable on FIELD_DEFINITION|SCHEMA
+
+"""
+Directs the executor to skip this field or fragment when the `if` argument is true.
+"""
+directive @skip ("Skipped when true." if: Boolean!) on FIELD|FRAGMENT_SPREAD|INLINE_FRAGMENT
+
+"""
+Directs the executor to include this field or fragment only when the `if` argument is true.
+"""
+directive @include ("Included when true." if: Boolean!) on FIELD|FRAGMENT_SPREAD|INLINE_FRAGMENT
+
+schema {
+  query: RootQuery
+  mutation: RootMutation
+}
