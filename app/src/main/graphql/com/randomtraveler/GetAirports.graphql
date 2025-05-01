@@ -1,0 +1,26 @@
+query GetAirports($searchTerm: String!) {
+    places(
+        search: { term: $searchTerm },
+        filter: { onlyTypes: [AIRPORT] },
+        first: 5,
+        options: { sortBy: RANK }
+    ) {
+        __typename
+        ... on PlaceConnection {
+            edges {
+                node {
+                    __typename
+                    ... on Station {
+                        id
+                        name
+                        code
+                    }
+                }
+            }
+        }
+        ... on AppError {
+            code
+            message
+        }
+    }
+}
