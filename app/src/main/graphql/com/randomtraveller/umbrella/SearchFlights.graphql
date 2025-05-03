@@ -42,11 +42,11 @@ query SearchFlightsQuery(
         }
         filter: {
             price: { end: $maxBudgetEnd }
-            allowReturnFromDifferentCity: true
-            allowChangeInboundDestination: true
-            allowChangeInboundSource: true
-            allowDifferentStationConnection: true
-            enableSelfTransfer: true
+            allowReturnFromDifferentCity: false
+            allowChangeInboundDestination: false
+            allowChangeInboundSource: false
+            allowDifferentStationConnection: false
+            enableSelfTransfer: false
             enableThrowAwayTicketing: true
             enableTrueHiddenCity: true
             transportTypes: [FLIGHT]
