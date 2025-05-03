@@ -11,9 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -23,7 +21,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,7 +37,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.randomtraveller.R
@@ -51,6 +47,7 @@ import com.example.randomtraveller.core.ui.DateRangeSelectorDialog
 import com.example.randomtraveller.navigation.FlightResults
 import com.example.randomtraveller.ui.theme.RandomTravellerTheme
 import com.firebase.ui.auth.AuthUI
+import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
 fun SearchFlightScreen(
@@ -59,23 +56,7 @@ fun SearchFlightScreen(
     viewModel: SearchFlightsViewModel = hiltViewModel(),
 ) {
 
-    LaunchedEffect(viewModel.navigation) {
-        viewModel.navigation.collect { navigationEvent ->
-            if (navigationEvent == null) {
-                return@collect
-            } else {
-                val flightsSearch = FlightResults(
-                    cityId = navigationEvent.cityId,
-                    maxPrice = navigationEvent.maxPrice,
-                    outboundStartDate = navigationEvent.outboundStartDate,
-                    outboundEndDate = navigationEvent.outboundEndDate,
-                    inboundStartDate = navigationEvent.inboundStartDate,
-                    inboundEndDate = navigationEvent.inboundEndDate,
-                )
-                onSearchFlightsClicked(flightsSearch)
-            }
-        }
-    }
+    NavigationHandler(viewModel.navigation, onSearchFlightsClicked)
 
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
     Content(screenState, viewModel::onAction, modifier)
@@ -148,6 +129,30 @@ private fun Content(
                 }) {
                     Text(stringResource(R.string.sign_out))
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun NavigationHandler(
+    navigation: SharedFlow<SearchFlightsNavigationParams?>,
+    onSearchFlightsClicked: (FlightResults) -> Unit
+) {
+    LaunchedEffect(navigation) {
+        navigation.collect { navigationEvent ->
+            if (navigationEvent == null) {
+                return@collect
+            } else {
+                val flightsSearch = FlightResults(
+                    cityId = navigationEvent.cityId,
+                    maxPrice = navigationEvent.maxPrice,
+                    outboundStartDate = navigationEvent.outboundStartDate,
+                    outboundEndDate = navigationEvent.outboundEndDate,
+                    inboundStartDate = navigationEvent.inboundStartDate,
+                    inboundEndDate = navigationEvent.inboundEndDate,
+                )
+                onSearchFlightsClicked(flightsSearch)
             }
         }
     }
