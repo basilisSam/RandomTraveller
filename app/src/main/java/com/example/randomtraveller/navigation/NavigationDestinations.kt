@@ -15,6 +15,8 @@ object SearchFlight
 data class FlightResults(
     val cityId: String,
     val maxPrice: Int,
-    val departureStartDate: String,
-    val departureEndDate: String,
+    val outboundStartDate: String,
+    val outboundEndDate: String,
+    val inboundStartDate: String,
+    val inboundEndDate: String
 )

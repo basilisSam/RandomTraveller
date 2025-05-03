@@ -67,8 +67,10 @@ fun SearchFlightScreen(
                 val flightsSearch = FlightResults(
                     cityId = navigationEvent.cityId,
                     maxPrice = navigationEvent.maxPrice,
-                    departureStartDate = navigationEvent.departureStartDate,
-                    departureEndDate = navigationEvent.departureEndDate
+                    outboundStartDate = navigationEvent.outboundStartDate,
+                    outboundEndDate = navigationEvent.outboundEndDate,
+                    inboundStartDate = navigationEvent.inboundStartDate,
+                    inboundEndDate = navigationEvent.inboundEndDate,
                 )
                 onSearchFlightsClicked(flightsSearch)
             }

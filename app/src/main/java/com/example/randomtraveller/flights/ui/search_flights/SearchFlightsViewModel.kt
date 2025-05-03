@@ -5,8 +5,9 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.randomtraveller.core.utils.toUtcIsoString
 import com.example.randomtraveller.core.utils.toLocalDate
+import com.example.randomtraveller.core.utils.toUtcIsoEndOfDayString
+import com.example.randomtraveller.core.utils.toUtcIsoStartOfDayString
 import com.example.randomtraveller.flights.data.AirportSearchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -198,18 +199,24 @@ class SearchFlightsViewModel @Inject constructor(
 
     private fun handleSearchButtonClick() {
         viewModelScope.launch {
-            val startDate =
-                _screenState.value.selectedDateRange.startLocalDate!!.toUtcIsoString()
-            val endDate =
-                _screenState.value.selectedDateRange.endLocalDate!!.toUtcIsoString()
+            val outboundStartDate =
+                _screenState.value.selectedDateRange.startLocalDate!!.toUtcIsoStartOfDayString()
+            val outboundEndDate =
+                _screenState.value.selectedDateRange.startLocalDate!!.toUtcIsoEndOfDayString()
+            val inboundStartDate =
+                _screenState.value.selectedDateRange.endLocalDate!!.toUtcIsoStartOfDayString()
+            val inboundEndDate =
+                _screenState.value.selectedDateRange.endLocalDate!!.toUtcIsoEndOfDayString()
             val cityId = _screenState.value.selectedAirportSuggestion!!.cityId
             val maxPrice = _screenState.value.budgetText.text.toIntOrNull() ?: 0
 
             val searchFlightsData = SearchFlightsNavigationParams(
                 cityId = cityId,
                 maxPrice = maxPrice,
-                departureStartDate = startDate,
-                departureEndDate = endDate
+                outboundStartDate = outboundStartDate,
+                outboundEndDate = outboundEndDate,
+                inboundStartDate = inboundStartDate,
+                inboundEndDate = inboundEndDate
             )
             _navigation.emit(searchFlightsData)
         }
@@ -264,6 +271,8 @@ sealed class OnAction {
 data class SearchFlightsNavigationParams(
     val cityId: String,
     val maxPrice: Int,
-    val departureStartDate: String,
-    val departureEndDate: String,
+    val outboundStartDate: String,
+    val outboundEndDate: String,
+    val inboundStartDate: String,
+    val inboundEndDate: String,
 )
