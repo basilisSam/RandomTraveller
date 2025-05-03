@@ -27,6 +27,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,15 +58,31 @@ fun SearchFlightScreen(
     onSearchFlightsClicked: (FlightResults) -> Unit,
     viewModel: SearchFlightsViewModel = hiltViewModel(),
 ) {
+
+    LaunchedEffect(viewModel.navigation) {
+        viewModel.navigation.collect { navigationEvent ->
+            if (navigationEvent == null) {
+                return@collect
+            } else {
+                val flightsSearch = FlightResults(
+                    cityId = navigationEvent.cityId,
+                    maxPrice = navigationEvent.maxPrice,
+                    departureStartDate = navigationEvent.departureStartDate,
+                    departureEndDate = navigationEvent.departureEndDate
+                )
+                onSearchFlightsClicked(flightsSearch)
+            }
+        }
+    }
+
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
-    Content(screenState, onSearchFlightsClicked, viewModel::onAction, modifier)
+    Content(screenState, viewModel::onAction, modifier)
 }
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun Content(
     screenState: SearchFlightsScreenState,
-    onSearchFlightsClicked: (FlightResults) -> Unit,
     onAction: (OnAction) -> Unit,
     modifier: Modifier,
 ) {
@@ -90,15 +107,7 @@ private fun Content(
                                 screenState.airportText.text.isNotBlank(),
 
                     ) {
-                    onSearchFlightsClicked(
-                        FlightResults(
-                            outboundDateMillis = screenState.selectedDateRange.startDateInMillis
-                                ?: 0L,
-                            inboundDateMillis = screenState.selectedDateRange.endDateInMillis ?: 0L,
-                            departureAirportIata = screenState.airportText.text,
-                            maxBudget = screenState.budgetText.text
-                        )
-                    )
+                    onAction.invoke(OnAction.OnSearchButtonClicked)
                 }
             }
         ) { innerPadding ->
@@ -282,7 +291,7 @@ fun AirportSuggestions(
 @Composable
 private fun SearchFlightsScreenPreview() {
     RandomTravellerTheme {
-        Content(SearchFlightsScreenState(), {}, {}, Modifier)
+        Content(SearchFlightsScreenState(), {}, Modifier)
     }
 }
 
@@ -292,8 +301,8 @@ private fun AirportSuggestionPreview() {
     RandomTravellerTheme {
         AirportSuggestions(
             listOf(
-                AirportSuggestion("id1", "Athens", "ATH"),
-                AirportSuggestion("id2", "Athens", "ATH2")
+                AirportSuggestion("id1", "cityId1", "Athens", "ATH"),
+                AirportSuggestion("id2", "cityId2", "Athens", "ATH2")
             ),
             {},
         )

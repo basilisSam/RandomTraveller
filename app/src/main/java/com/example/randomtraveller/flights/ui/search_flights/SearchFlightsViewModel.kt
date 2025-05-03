@@ -5,13 +5,17 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.randomtraveller.core.utils.toUtcIsoString
 import com.example.randomtraveller.core.utils.toLocalDate
 import com.example.randomtraveller.flights.data.AirportSearchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -21,14 +25,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchFlightsViewModel @Inject constructor(
-    private val airportSearchRepository: AirportSearchRepository,
+    private val airportSearchRepository: AirportSearchRepository
 ) : ViewModel() {
+
     private val _screenState: MutableStateFlow<SearchFlightsScreenState> =
         MutableStateFlow(
             SearchFlightsScreenState(),
         )
     val screenState: StateFlow<SearchFlightsScreenState>
         get() = _screenState.asStateFlow()
+
+    private val _navigation: MutableSharedFlow<SearchFlightsNavigationParams?> = MutableSharedFlow()
+    val navigation: SharedFlow<SearchFlightsNavigationParams?> = _navigation.asSharedFlow()
 
     private var airportSuggestionsJob: Job? = null
 
@@ -43,6 +51,8 @@ class SearchFlightsViewModel @Inject constructor(
                 action.startDateInMillis,
                 action.endDateInMillis,
             )
+
+            is OnAction.OnSearchButtonClicked -> handleSearchButtonClick()
         }
     }
 
@@ -94,6 +104,7 @@ class SearchFlightsViewModel @Inject constructor(
         _screenState.update {
             it.copy(
                 airportText = TextFieldValue(airportText, TextRange(airportText.length)),
+                selectedAirportSuggestion = suggestion,
                 airportSuggestions = emptyList(),
                 areSuggestionsLoading = false,
             )
@@ -162,7 +173,12 @@ class SearchFlightsViewModel @Inject constructor(
                     airportSearchRepository.getAirports(screenState.value.airportText.text)
                         ?.mapNotNull { edge ->
                             val station = edge?.node?.onStation ?: return@mapNotNull null
-                            AirportSuggestion(station.id, station.name, station.code ?: "")
+                            AirportSuggestion(
+                                station.id,
+                                station.city?.id ?: "",
+                                station.name,
+                                station.code ?: ""
+                            )
                         } ?: emptyList()
 
                 ensureActive()
@@ -179,10 +195,30 @@ class SearchFlightsViewModel @Inject constructor(
         airportSuggestionsJob?.cancel()
         airportSuggestionsJob = null
     }
+
+    private fun handleSearchButtonClick() {
+        viewModelScope.launch {
+            val startDate =
+                _screenState.value.selectedDateRange.startLocalDate!!.toUtcIsoString()
+            val endDate =
+                _screenState.value.selectedDateRange.endLocalDate!!.toUtcIsoString()
+            val cityId = _screenState.value.selectedAirportSuggestion!!.cityId
+            val maxPrice = _screenState.value.budgetText.text.toIntOrNull() ?: 0
+
+            val searchFlightsData = SearchFlightsNavigationParams(
+                cityId = cityId,
+                maxPrice = maxPrice,
+                departureStartDate = startDate,
+                departureEndDate = endDate
+            )
+            _navigation.emit(searchFlightsData)
+        }
+    }
 }
 
 data class SearchFlightsScreenState(
     val airportText: TextFieldValue = TextFieldValue(),
+    val selectedAirportSuggestion: AirportSuggestion? = null,
     val budgetText: TextFieldValue = TextFieldValue(),
     val selectedDateRange: SelectedDateRange = SelectedDateRange(),
     val tripDuration: String = "",
@@ -201,6 +237,7 @@ data class SelectedDateRange(
 
 data class AirportSuggestion(
     val id: String,
+    val cityId: String,
     val name: String,
     val iata: String,
 )
@@ -220,4 +257,13 @@ sealed class OnAction {
         val startDateInMillis: Long?,
         val endDateInMillis: Long?,
     ) : OnAction()
+
+    data object OnSearchButtonClicked : OnAction()
 }
+
+data class SearchFlightsNavigationParams(
+    val cityId: String,
+    val maxPrice: Int,
+    val departureStartDate: String,
+    val departureEndDate: String,
+)
