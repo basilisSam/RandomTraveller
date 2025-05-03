@@ -30,10 +30,20 @@ fun LocalDate.toFormattedDateString(): String {
     return "$dayOfWeek, ${dayOfMonth}$dayOfMonthSuffix of $year"
 }
 
-fun LocalDate.toUtcIsoString(): String {
+fun LocalDate.toUtcIsoStartOfDayString(): String {
     val localZone = ZoneId.systemDefault()
     val startOfDay = this.atTime(LocalTime.MIDNIGHT)
     val zonedLocal = startOfDay.atZone(localZone)
+    val utcZoned = zonedLocal.withZoneSameInstant(ZoneId.of("UTC"))
+
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+    return utcZoned.format(formatter)
+}
+
+fun LocalDate.toUtcIsoEndOfDayString(): String {
+    val localZone = ZoneId.systemDefault()
+    val endOfDay = this.atTime(LocalTime.of(23, 59, 59))
+    val zonedLocal = endOfDay.atZone(localZone)
     val utcZoned = zonedLocal.withZoneSameInstant(ZoneId.of("UTC"))
 
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
