@@ -2,22 +2,50 @@ package com.example.randomtraveller.flights.ui.flight_results
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.example.randomtraveller.flights.data.FlightsRepository
 import com.example.randomtraveller.navigation.FlightResults
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import javax.inject.Inject
 
-class FlightResultsViewModel(
+@HiltViewModel
+class FlightResultsViewModel @Inject constructor(
+    private val flightSearchRepository: FlightsRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _screenState = MutableStateFlow(createSampleScreenState())
-    val screenState = _screenState.asStateFlow()
-
     private val flightParams = savedStateHandle.toRoute<FlightResults>()
+
+    private val _screenState = MutableStateFlow(ScreenState())
+    val screenState = _screenState.onStart {
+        val response = flightSearchRepository.searchFlights(
+            flightParams.cityId,
+            flightParams.maxPrice,
+            flightParams.outboundStartDate,
+            flightParams.outboundEndDate,
+            flightParams.inboundStartDate,
+            flightParams.inboundEndDate
+        )
+
+        val mapped = response?.toUiModel() ?: emptyList()
+
+        _screenState.update {
+            it.copy(
+                flights = mapped,
+                isLoading = false
+            )
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ScreenState())
 }
 
 data class ScreenState(
+    val isLoading: Boolean = true,
     val flights: List<RoundTripFlight> = emptyList(),
 )
 
@@ -36,6 +64,7 @@ data class FlightDetails(
     val duration: String,
     val arrivalTime: String,
     val arrivalAirport: String,
+    val carrierCode: String?
 )
 
 enum class FlightDirection(val value: String) {
@@ -51,7 +80,8 @@ fun createSampleScreenState(): ScreenState {
             createRoundTripFlight("3", "200"),
             createRoundTripFlight("4", "350"),
             createRoundTripFlight("5", "280")
-        )
+        ),
+        isLoading = false
     )
 }
 
@@ -72,6 +102,7 @@ fun createFlightDetails(direction: FlightDirection): FlightDetails {
         departureAirport = "JFK",
         duration = "3h 30m",
         arrivalTime = "11:30",
-        arrivalAirport = "LAX"
+        arrivalAirport = "LAX",
+        null
     )
 }
