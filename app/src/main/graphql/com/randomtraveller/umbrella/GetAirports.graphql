@@ -14,6 +14,12 @@ query GetAirports($searchTerm: String!) {
                         id
                         name
                         code
+
+                        city {
+                            id
+                            slug
+                            name
+                        }
                     }
                 }
             }
