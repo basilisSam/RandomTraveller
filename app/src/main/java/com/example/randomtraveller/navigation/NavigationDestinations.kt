@@ -13,8 +13,8 @@ object SearchFlight
 
 @Serializable
 data class FlightResults(
-    val outboundDateMillis: Long,
-    val inboundDateMillis: Long,
-    val departureAirportIata: String,
-    val maxBudget: String
+    val cityId: String,
+    val maxPrice: Int,
+    val departureStartDate: String,
+    val departureEndDate: String,
 )

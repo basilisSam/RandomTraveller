@@ -49,10 +49,10 @@ fun NavHost(
                 onSearchFlightsClicked = {
                     navController.navigate(
                         FlightResults(
-                            maxBudget = it.maxBudget,
-                            departureAirportIata = it.departureAirportIata,
-                            inboundDateMillis = it.inboundDateMillis,
-                            outboundDateMillis = it.outboundDateMillis
+                            it.cityId,
+                            it.maxPrice,
+                            it.departureStartDate,
+                            it.departureEndDate
                         )
                     )
                 }
