@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.randomtraveller.flights.flight_results.ui.FlightResultsScreen
+import com.example.randomtraveller.flights.flight_results.ui.SearchFlightsScreen
 import com.example.randomtraveller.flights.search_criteria.ui.FlightSearchCriteriaScreen
 import com.example.randomtraveller.login.LoginScreen
 import com.example.randomtraveller.splash.SplashScreen
@@ -48,7 +48,7 @@ fun NavHost(
                 modifier = modifier,
                 onSearchFlightsClicked = {
                     navController.navigate(
-                        FlightResults(
+                        SearchFlights(
                             it.cityId,
                             it.maxPrice,
                             it.outboundStartDate,
@@ -60,8 +60,8 @@ fun NavHost(
                 }
             )
         }
-        composable<FlightResults> {
-            FlightResultsScreen(onBackClicked = { navController.popBackStack() })
+        composable<SearchFlights> {
+            SearchFlightsScreen(onBackClicked = { navController.popBackStack() })
         }
     }
 }

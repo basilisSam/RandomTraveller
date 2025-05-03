@@ -32,7 +32,7 @@ import java.time.ZoneOffset
 import java.util.Locale
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class FlightSearchCriteriaViewModelTest {
+class SearchFlightsCriteriaViewModelTest {
     @MockK
     val formatter = mockk<NumberFormat>()
 

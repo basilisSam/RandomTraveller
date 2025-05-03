@@ -12,7 +12,7 @@ object SplashScreen
 object SearchFlightCriteria
 
 @Serializable
-data class FlightResults(
+data class SearchFlights(
     val cityId: String,
     val maxPrice: Int,
     val outboundStartDate: String,

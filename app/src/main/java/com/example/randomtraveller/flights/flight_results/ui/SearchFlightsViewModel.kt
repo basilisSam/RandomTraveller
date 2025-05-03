@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.example.randomtraveller.flights.flight_results.data.FlightsRepository
 import com.example.randomtraveller.flights.flight_results.ui.mapper.toUiModel
-import com.example.randomtraveller.navigation.FlightResults
+import com.example.randomtraveller.navigation.SearchFlights
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,12 +16,12 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class FlightResultsViewModel @Inject constructor(
+class SearchFlightsViewModel @Inject constructor(
     private val flightSearchRepository: FlightsRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val flightParams = savedStateHandle.toRoute<FlightResults>()
+    private val flightParams = savedStateHandle.toRoute<SearchFlights>()
 
     private val _screenState = MutableStateFlow(ScreenState())
     val screenState = _screenState.onStart {

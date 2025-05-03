@@ -43,10 +43,9 @@ import com.example.randomtraveller.flights.flight_results.ui.components.FlightCa
 import com.example.randomtraveller.ui.theme.RandomTravellerTheme
 
 @Composable
-fun FlightResultsScreen(
+fun SearchFlightsScreen(
     onBackClicked: () -> Unit,
-    viewModel: FlightResultsViewModel = hiltViewModel(),
-    modifier: Modifier = Modifier,
+    viewModel: SearchFlightsViewModel = hiltViewModel(),
 ) {
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
 
@@ -57,7 +56,7 @@ fun FlightResultsScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 private fun Content(
     onBackClicked: () -> Unit,
-    screenState: ScreenState
+    screenState: ScreenState,
 ) {
     Scaffold(
         topBar = {
@@ -89,9 +88,11 @@ private fun Content(
                     .padding(innerPadding),
                 contentAlignment = Alignment.Center
             ) {
-                LocalVideoPlayer(Modifier
-                    .height(200.dp)
-                    .width(150.dp))
+                LocalVideoPlayer(
+                    Modifier
+                        .height(200.dp)
+                        .width(150.dp)
+                )
             }
         } else {
             when (LocalConfiguration.current.orientation) {

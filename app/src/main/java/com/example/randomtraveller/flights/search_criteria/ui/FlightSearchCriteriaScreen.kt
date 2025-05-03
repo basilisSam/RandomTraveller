@@ -26,7 +26,7 @@ import com.example.randomtraveller.flights.search_criteria.ui.components.Airport
 import com.example.randomtraveller.flights.search_criteria.ui.components.BudgetTextField
 import com.example.randomtraveller.flights.search_criteria.ui.components.DateRangeButton
 import com.example.randomtraveller.flights.search_criteria.ui.components.LeavingFromTextField
-import com.example.randomtraveller.navigation.FlightResults
+import com.example.randomtraveller.navigation.SearchFlights
 import com.example.randomtraveller.ui.theme.RandomTravellerTheme
 import com.firebase.ui.auth.AuthUI
 import kotlinx.coroutines.flow.SharedFlow
@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.SharedFlow
 @Composable
 fun FlightSearchCriteriaScreen(
     modifier: Modifier,
-    onSearchFlightsClicked: (FlightResults) -> Unit,
+    onSearchFlightsClicked: (SearchFlights) -> Unit,
     viewModel: FlightSearchCriteriaViewModel = hiltViewModel(),
 ) {
 
@@ -119,14 +119,14 @@ private fun Content(
 @Composable
 private fun NavigationHandler(
     navigation: SharedFlow<SearchFlightsNavigationParams?>,
-    onSearchFlightsClicked: (FlightResults) -> Unit
+    onSearchFlightsClicked: (SearchFlights) -> Unit
 ) {
     LaunchedEffect(navigation) {
         navigation.collect { navigationEvent ->
             if (navigationEvent == null) {
                 return@collect
             } else {
-                val flightsSearch = FlightResults(
+                val flightsSearch = SearchFlights(
                     cityId = navigationEvent.cityId,
                     maxPrice = navigationEvent.maxPrice,
                     outboundStartDate = navigationEvent.outboundStartDate,
