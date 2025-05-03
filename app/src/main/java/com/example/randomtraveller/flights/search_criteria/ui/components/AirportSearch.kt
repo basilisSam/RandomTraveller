@@ -64,9 +64,7 @@ fun AirportSuggestions(
             .fillMaxWidth(),
     ) {
         Column(
-            Modifier
-                .background(MaterialTheme.colorScheme.surfaceContainer)
-                .fillMaxSize(),
+            Modifier.background(MaterialTheme.colorScheme.surfaceContainer),
         ) {
             Text(
                 text = stringResource(R.string.choose_airport),
