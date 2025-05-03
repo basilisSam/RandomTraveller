@@ -1,49 +1,31 @@
 package com.example.randomtraveller.flights.search_flights.ui
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.randomtraveller.R
-import com.example.randomtraveller.core.ui.PrimaryButton
-import com.example.randomtraveller.core.ui.TitledTextField
-import com.example.randomtraveller.core.ui.TitledTextFieldLikeButton
 import com.example.randomtraveller.core.ui.DateRangeSelectorDialog
+import com.example.randomtraveller.core.ui.PrimaryButton
+import com.example.randomtraveller.flights.search_flights.ui.components.AirportSearchHint
+import com.example.randomtraveller.flights.search_flights.ui.components.AirportSuggestions
+import com.example.randomtraveller.flights.search_flights.ui.components.BudgetTextField
+import com.example.randomtraveller.flights.search_flights.ui.components.DateRangeButton
+import com.example.randomtraveller.flights.search_flights.ui.components.LeavingFromTextField
 import com.example.randomtraveller.navigation.FlightResults
 import com.example.randomtraveller.ui.theme.RandomTravellerTheme
 import com.firebase.ui.auth.AuthUI
@@ -158,148 +140,10 @@ private fun NavigationHandler(
     }
 }
 
-@Composable
-private fun DateRangeButton(
-    startDate: SelectedDateRange,
-    onAction: (OnAction) -> Unit,
-) {
-    val focusManager = LocalFocusManager.current
-    TitledTextFieldLikeButton(
-        headerText = stringResource(R.string.dates),
-        placeholderText =
-            startDate.startDateText
-                ?: stringResource(R.string.select_dates),
-        trailingIcon = R.drawable.ic_calendar,
-        modifier =
-            Modifier
-                .padding(top = 24.dp)
-                .clickable {
-                    focusManager.clearFocus(true)
-                    onAction(OnAction.OnShowCalendarPicker)
-                },
-    )
-}
-
-@Composable
-private fun BudgetTextField(
-    onAction: (OnAction) -> Unit,
-    budgetText: TextFieldValue,
-) {
-    TitledTextField(
-        headerText = stringResource(R.string.budget),
-        placeholderText = stringResource(R.string.enter_budget),
-        trailingIcon = R.drawable.ic_dollar,
-        onValueChange = { onAction(OnAction.OnUpdateBudget(it)) },
-        currentText = budgetText,
-        keyboardType = KeyboardType.Number,
-        modifier = Modifier.padding(top = 24.dp),
-    )
-}
-
-@Composable
-private fun AirportSearchHint() {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Spacer(Modifier.width(8.dp))
-        CircularProgressIndicator(
-            modifier = Modifier.size(12.dp),
-            strokeWidth = 2.dp,
-        )
-        Spacer(Modifier.width(8.dp))
-        Text(stringResource(R.string.searching_airports))
-    }
-}
-
-@Composable
-private fun LeavingFromTextField(
-    onAction: (OnAction) -> Unit,
-    airportText: TextFieldValue,
-) {
-    TitledTextField(
-        headerText = stringResource(R.string.leaving_from),
-        placeholderText = stringResource(R.string.enter_airport),
-        trailingIcon = R.drawable.ic_airplane,
-        onValueChange = { onAction(OnAction.OnUpdateAirportText(it)) },
-        currentText = airportText,
-    )
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun AirportSuggestions(
-    suggestions: List<AirportSuggestion>,
-    onAirportSelected: (OnAction) -> Unit
-) {
-    if (suggestions.isEmpty()) {
-        return
-    }
-    Card(
-        modifier = Modifier
-            .padding(vertical = 8.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-            .fillMaxWidth(),
-    ) {
-        Column(
-            Modifier
-                .background(MaterialTheme.colorScheme.surfaceContainer)
-                .fillMaxSize(),
-        ) {
-            Text(
-                text = stringResource(R.string.choose_airport),
-                modifier = Modifier.padding(
-                    bottom = 8.dp,
-                    top = 4.dp,
-                    start = 16.dp,
-                ),
-                fontWeight = FontWeight.Bold,
-            )
-
-            suggestions.forEachIndexed { index, suggestion ->
-                if (index > 0) {
-                    HorizontalDivider(
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(vertical = 4.dp),
-                    )
-                }
-                Row(
-                    modifier = Modifier
-                        .padding(vertical = 16.dp)
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .clickable {
-                            onAirportSelected(OnAction.OnAirportSuggestionSelected(suggestion))
-                        },
-                ) {
-                    Icon(painterResource(R.drawable.ic_airplane), contentDescription = null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("${suggestion.iata}, ${suggestion.name}")
-                }
-            }
-        }
-    }
-}
-
 @Preview
 @Composable
 private fun SearchFlightsScreenPreview() {
     RandomTravellerTheme {
         Content(SearchFlightsScreenState(), {}, Modifier)
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun AirportSuggestionPreview() {
-    RandomTravellerTheme {
-        AirportSuggestions(
-            listOf(
-                AirportSuggestion("id1", "cityId1", "Athens", "ATH"),
-                AirportSuggestion("id2", "cityId2", "Athens", "ATH2")
-            ),
-            {},
-        )
     }
 }
