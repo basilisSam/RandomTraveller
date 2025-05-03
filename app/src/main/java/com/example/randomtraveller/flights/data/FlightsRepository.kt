@@ -16,7 +16,7 @@ class FlightsRepository @Inject constructor(
      * WARNING: This version assumes the happy path only - no error handling,
      * no checking for null data, and returns the raw Apollo generated type.
      */
-    suspend fun searchUmbrellaFlights(
+    suspend fun searchFlights(
         sourceCityId: String,
         maxPrice: Int,
         outboundStartDate: String,
