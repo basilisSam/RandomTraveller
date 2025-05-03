@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -158,17 +159,20 @@ private fun DateRangeButton(
     startDate: SelectedDateRange,
     onAction: (OnAction) -> Unit,
 ) {
+    val focusManager = LocalFocusManager.current
     TitledTextFieldLikeButton(
         headerText = stringResource(R.string.dates),
         placeholderText =
             startDate.startDateText
                 ?: stringResource(R.string.select_dates),
         trailingIcon = R.drawable.ic_calendar,
-        onClick = { onAction(OnAction.OnShowCalendarPicker) },
         modifier =
             Modifier
                 .padding(top = 24.dp)
-                .clickable { onAction(OnAction.OnShowCalendarPicker) },
+                .clickable {
+                    focusManager.clearFocus(true)
+                    onAction(OnAction.OnShowCalendarPicker)
+                },
     )
 }
 

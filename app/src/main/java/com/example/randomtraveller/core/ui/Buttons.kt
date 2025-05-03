@@ -65,7 +65,6 @@ fun TitledTextFieldLikeButton(
     headerText: String = "",
     placeholderText: String = "",
     trailingIcon: Int? = null,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -80,8 +79,7 @@ fun TitledTextFieldLikeButton(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .height(56.dp)
-                    .clickable(onClick = onClick),
+                    .height(56.dp),
             shape = RoundedCornerShape(12.dp),
             color = MaterialTheme.colorScheme.surfaceVariant,
             contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -139,7 +137,6 @@ private fun TitledTextFieldLikeButtonPreview() {
             headerText = "Starting date",
             placeholderText = "Select a date",
             trailingIcon = R.drawable.ic_calendar,
-            onClick = {},
             modifier = Modifier,
         )
     }
