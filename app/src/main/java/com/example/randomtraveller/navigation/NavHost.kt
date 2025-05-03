@@ -5,8 +5,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.randomtraveller.flights.ui.flight_results.FlightResultsScreen
-import com.example.randomtraveller.flights.ui.search_flights.SearchFlightScreen
+import com.example.randomtraveller.flights.flight_results.ui.FlightResultsScreen
+import com.example.randomtraveller.flights.search_flights.ui.SearchFlightScreen
 import com.example.randomtraveller.login.LoginScreen
 import com.example.randomtraveller.splash.SplashScreen
 import com.google.firebase.auth.FirebaseAuth

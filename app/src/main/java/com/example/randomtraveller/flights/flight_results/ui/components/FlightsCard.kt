@@ -1,4 +1,4 @@
-package com.example.randomtraveller.flights.ui.flight_results.components
+package com.example.randomtraveller.flights.flight_results.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,9 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.randomtraveller.core.ui.DashedHorizontalDivider
-import com.example.randomtraveller.flights.ui.flight_results.FlightDetails
-import com.example.randomtraveller.flights.ui.flight_results.FlightDirection
-import com.example.randomtraveller.flights.ui.flight_results.RoundTripFlight
+import com.example.randomtraveller.flights.flight_results.ui.FlightDetails
+import com.example.randomtraveller.flights.flight_results.ui.FlightDirection
+import com.example.randomtraveller.flights.flight_results.ui.RoundTripFlight
 import com.example.randomtraveller.ui.theme.RandomTravellerTheme
 
 @Composable

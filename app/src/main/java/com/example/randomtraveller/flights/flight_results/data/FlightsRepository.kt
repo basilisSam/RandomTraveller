@@ -1,4 +1,4 @@
-package com.example.randomtraveller.flights.data
+package com.example.randomtraveller.flights.flight_results.data
 
 import com.apollographql.apollo.ApolloClient
 import com.example.randomtraveller.umbrella.SearchFlightsQuery

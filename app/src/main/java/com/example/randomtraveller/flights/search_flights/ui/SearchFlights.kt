@@ -1,4 +1,4 @@
-package com.example.randomtraveller.flights.ui.search_flights
+package com.example.randomtraveller.flights.search_flights.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -48,7 +48,7 @@ import com.example.randomtraveller.R
 import com.example.randomtraveller.core.ui.PrimaryButton
 import com.example.randomtraveller.core.ui.TitledTextField
 import com.example.randomtraveller.core.ui.TitledTextFieldLikeButton
-import com.example.randomtraveller.flights.ui.MyDatePicker
+import com.example.randomtraveller.core.ui.DateRangeSelectorDialog
 import com.example.randomtraveller.navigation.FlightResults
 import com.example.randomtraveller.ui.theme.RandomTravellerTheme
 import com.firebase.ui.auth.AuthUI
@@ -115,7 +115,7 @@ private fun Content(
             }
         ) { innerPadding ->
             if (screenState.shouldShowCalendarPicker) {
-                MyDatePicker(
+                DateRangeSelectorDialog(
                     screenState.selectedDateRange.startDateInMillis,
                     screenState.selectedDateRange.endDateInMillis,
                     onAction,

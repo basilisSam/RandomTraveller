@@ -1,5 +1,8 @@
-package com.example.randomtraveller.flights.ui.flight_results
+package com.example.randomtraveller.flights.flight_results.ui.mapper
 
+import com.example.randomtraveller.flights.flight_results.ui.FlightDetails
+import com.example.randomtraveller.flights.flight_results.ui.FlightDirection
+import com.example.randomtraveller.flights.flight_results.ui.RoundTripFlight
 import com.example.randomtraveller.umbrella.SearchFlightsQuery
 import com.example.randomtraveller.umbrella.fragment.TripInfo
 import java.time.LocalDateTime

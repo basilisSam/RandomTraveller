@@ -1,4 +1,4 @@
-package com.example.randomtraveller.flights.ui.search_flights
+package com.example.randomtraveller.flights.search_flights.ui
 
 import android.icu.text.NumberFormat
 import androidx.compose.ui.text.TextRange
@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.randomtraveller.core.utils.toLocalDate
 import com.example.randomtraveller.core.utils.toUtcIsoEndOfDayString
 import com.example.randomtraveller.core.utils.toUtcIsoStartOfDayString
-import com.example.randomtraveller.flights.data.AirportSearchRepository
+import com.example.randomtraveller.flights.search_flights.data.AirportSearchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.ensureActive

@@ -1,4 +1,4 @@
-package com.example.randomtraveller.flights.ui.flight_results
+package com.example.randomtraveller.flights.flight_results.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
@@ -39,7 +39,7 @@ import androidx.media3.common.Player.REPEAT_MODE_ONE
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.example.randomtraveller.R
-import com.example.randomtraveller.flights.ui.flight_results.components.FlightCard
+import com.example.randomtraveller.flights.flight_results.ui.components.FlightCard
 import com.example.randomtraveller.ui.theme.RandomTravellerTheme
 
 @Composable

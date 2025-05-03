@@ -1,4 +1,4 @@
-package com.example.randomtraveller.flights.ui
+package com.example.randomtraveller.core.ui
 
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DateRangePicker
@@ -11,12 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.example.randomtraveller.R
 import com.example.randomtraveller.core.utils.toLocalDate
-import com.example.randomtraveller.flights.ui.search_flights.OnAction
+import com.example.randomtraveller.flights.search_flights.ui.OnAction
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyDatePicker(
+fun DateRangeSelectorDialog(
     selectedStartDate: Long? = null,
     selectedEndDate: Long? = null,
     onAction: (OnAction) -> Unit,

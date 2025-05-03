@@ -5,13 +5,15 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import app.cash.turbine.TurbineTestContext
 import app.cash.turbine.test
-import com.example.randomtraveller.flights.data.AirportSearchRepository
-import com.example.randomtraveller.flights.ui.search_flights.AirportSuggestion
-import com.example.randomtraveller.flights.ui.search_flights.OnAction
-import com.example.randomtraveller.flights.ui.search_flights.SearchFlightsScreenState
-import com.example.randomtraveller.flights.ui.search_flights.SearchFlightsViewModel
-import com.example.randomtraveller.flights.ui.search_flights.SelectedDateRange
+import com.example.randomtraveller.GetAirportsQuery
+import com.example.randomtraveller.flights.search_flights.data.AirportSearchRepository
+import com.example.randomtraveller.flights.search_flights.ui.AirportSuggestion
+import com.example.randomtraveller.flights.search_flights.ui.OnAction
+import com.example.randomtraveller.flights.search_flights.ui.SearchFlightsScreenState
+import com.example.randomtraveller.flights.search_flights.ui.SearchFlightsViewModel
+import com.example.randomtraveller.flights.search_flights.ui.SelectedDateRange
 import com.google.common.truth.Truth.assertThat
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
@@ -61,9 +63,24 @@ class SearchFlightsViewModelTest {
     // region updateAirportText
 
     @Test
-    fun `should trigger airport suggestions search when text length is greater than 3`() =
+    fun `should trigger airport suggestions search when text length is greater than 2`() =
         runTest {
             viewModel.screenState.test {
+                coEvery { airportSearchRepository.getAirports(any()) } returns listOf(
+                    GetAirportsQuery.Edge(
+                        GetAirportsQuery.Node(
+                            "typename1",
+                            GetAirportsQuery.OnStation("id1", "name1", "code1")
+                        )
+                    ),
+                    GetAirportsQuery.Edge(
+                        GetAirportsQuery.Node(
+                            "typename2",
+                            GetAirportsQuery.OnStation("id2", "name2", "code2")
+                        )
+                    ),
+                )
+
                 testInitialState()
 
                 viewModel.onAction(OnAction.OnUpdateAirportText("Athens"))
@@ -139,7 +156,7 @@ class SearchFlightsViewModelTest {
             viewModel.screenState.test {
                 testInitialState()
 
-                val airportSuggestion = AirportSuggestion("Athens", "ATH")
+                val airportSuggestion = AirportSuggestion("id1", "Athens", "ATH")
                 viewModel.onAction(OnAction.OnAirportSuggestionSelected(airportSuggestion))
 
                 val expectedAirportText = "(${airportSuggestion.iata}) ${airportSuggestion.name}"
@@ -212,7 +229,7 @@ class SearchFlightsViewModelTest {
                     localDateTomorrow.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
                 val formattedDateText =
                     "${localDateNow.dayOfMonth}/${localDateNow.monthValue}/${localDateNow.year} - " +
-                        "${localDateTomorrow.dayOfMonth}/${localDateTomorrow.monthValue}/${localDateTomorrow.year}"
+                            "${localDateTomorrow.dayOfMonth}/${localDateTomorrow.monthValue}/${localDateTomorrow.year}"
 
                 viewModel.onAction(
                     OnAction.OnDateRangeSelected(

@@ -1,10 +1,11 @@
-package com.example.randomtraveller.flights.ui.flight_results
+package com.example.randomtraveller.flights.flight_results.ui
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.example.randomtraveller.flights.data.FlightsRepository
+import com.example.randomtraveller.flights.flight_results.data.FlightsRepository
+import com.example.randomtraveller.flights.flight_results.ui.mapper.toUiModel
 import com.example.randomtraveller.navigation.FlightResults
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
