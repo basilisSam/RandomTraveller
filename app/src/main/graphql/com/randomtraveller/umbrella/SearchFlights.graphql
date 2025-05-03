@@ -1,0 +1,168 @@
+# Query to search for return itineraries with specific inputs including budget
+# File: search_return_flights.graphql
+
+query SearchFlightsQuery(
+    $sourceId: ID!,               # e.g., "City:thessaloniki_gr"
+    $outboundDateStart: DateTime!, # e.g., "2025-05-06T00:00:00"
+    $outboundDateEnd: DateTime!,   # e.g., "2025-05-06T23:59:59"
+    $inboundDateStart: DateTime!,  # e.g., "2025-05-10T00:00:00"
+    $inboundDateEnd: DateTime!,    # e.g., "2025-05-10T23:59:59"
+    $maxBudgetEnd: Int!           # Max budget (e.g., 500 for 500.00 EUR)
+    # Optional: Consider adding variables for passengers, bags, currency, locale etc. if needed
+) {
+    returnItineraries(
+        search: {
+            itinerary: {
+                # Use variables for locations and dates
+                source: { ids: [$sourceId] }
+                outboundDepartureDate: {
+                    start: $outboundDateStart
+                    end: $outboundDateEnd
+                }
+                inboundDepartureDate: {
+                    start: $inboundDateStart
+                    end: $inboundDateEnd
+                }
+            }
+            # Passengers/Bags hardcoded from example, could be variables
+            passengers: {
+                adults: 1
+                children: 0
+                infants: 0
+                adultsHoldBags: [0]
+                adultsHandBags: [0]
+                childrenHoldBags: []
+                childrenHandBags: []
+            }
+            # Cabin class hardcoded from example, could be a variable
+            cabinClass: {
+                cabinClass: ECONOMY
+                applyMixedClasses: false
+            }
+        }
+        filter: {
+            price: { end: $maxBudgetEnd }
+            allowReturnFromDifferentCity: true
+            allowChangeInboundDestination: true
+            allowChangeInboundSource: true
+            allowDifferentStationConnection: true
+            enableSelfTransfer: true
+            enableThrowAwayTicketing: true
+            enableTrueHiddenCity: true
+            transportTypes: [FLIGHT]
+            contentProviders: [KIWI, FRESH]
+            flightsApiLimit: 50 # Internal API limit
+            limit: 50 # Limit the number of results returned in the list
+        }
+        options: {
+            # These define presentation and other non-filtering aspects
+            sortBy: QUALITY # Sort criteria
+            mergePriceDiffRule: INCREASED
+            currency: "EUR" # Define desired currency (Consider making this a variable)
+            locale: "en"    # Define locale (Consider making this a variable)
+            market: "gb"
+            partner: "skypicker"
+            partnerMarket: "gb"
+            affilID: "skypicker"
+            storeSearch: false
+            searchStrategy: REDUCED
+            abTestInput: {
+                priceElasticityGuarantee: DISABLE
+                baggageProtectionBundle: ENABLE
+                paretoProtectVanilla: ENABLE
+                kiwiBasicThirdIteration: C
+                marketStopPenalisation0: DISABLE
+                kayakWithoutBags: DISABLE
+                carriersDeeplinkResultsEnable: true
+                carriersDeeplinkOnSEMEnable: true
+            }
+            sortVersion: 14
+            applySortingChanges: false
+        }
+    ) {
+        __typename # Include typename for union handling (Itineraries vs AppError)
+        ... on Itineraries {
+            itineraries {
+                id
+                price {
+                    amount
+                    currency {
+                        code
+                    }
+                }
+                duration # Overall itinerary duration
+                # Apply the TripInfo fragment for detailed segment data
+                ...TripInfo
+            }
+            # Optional: Include metadata if needed for things like carrier lists, etc.
+            # metadata { carriers { id name code } }
+        }
+        ... on AppError {
+            # Include error code for better handling
+            code
+            message
+        }
+    }
+}
+
+# Fragment defining the specific trip details to fetch for each itinerary
+# This helps keep the main query cleaner and allows reusing this structure
+fragment TripInfo on Itinerary {
+    __typename # Include typename for interface/union handling within fragment
+    ... on ItineraryReturn {
+        outbound {
+            duration # Total duration for the outbound sector
+            sectorSegments {
+                segment {
+                    carrier { # Airline info for the segment
+                        name
+                        code
+                    }
+                    source { # Departure info for the segment
+                        station {
+                            name # Airport Name
+                            code # Airport Code (IATA)
+                        }
+                        localTime # Departure Date & Time (Local)
+                    }
+                    destination { # Arrival info for the segment
+                        station {
+                            name # Airport Name
+                            code # Airport Code (IATA)
+                        }
+                        localTime # Arrival Date & Time (Local)
+                    }
+                    duration # Duration of this specific flight segment
+                }
+                # layover { duration } # Optional: Include layover info if needed
+            }
+        }
+        inbound {
+            duration # Total duration for the inbound sector
+            sectorSegments {
+                segment {
+                    carrier {
+                        name
+                        code
+                    }
+                    source {
+                        station {
+                            name
+                            code
+                        }
+                        localTime
+                    }
+                    destination {
+                        station {
+                            name
+                            code
+                        }
+                        localTime
+                    }
+                    duration
+                }
+                # layover { duration } # Optional
+            }
+        }
+    }
+}
