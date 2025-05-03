@@ -4,19 +4,18 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -226,67 +225,52 @@ private fun LeavingFromTextField(
 @Composable
 fun AirportSuggestions(
     suggestions: List<AirportSuggestion>,
-    onAirportSelected: (OnAction) -> Unit,
-    modifier: Modifier = Modifier,
+    onAirportSelected: (OnAction) -> Unit
 ) {
-    if (suggestions.isNotEmpty()) {
-        LazyColumn(
-            modifier = modifier
-                .padding(vertical = 8.dp)
-                .clip(RoundedCornerShape(16.dp))
+    if (suggestions.isEmpty()) {
+        return
+    }
+    Card(
+        modifier = Modifier
+            .padding(vertical = 8.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .fillMaxWidth(),
+    ) {
+        Column(
+            Modifier
                 .background(MaterialTheme.colorScheme.surfaceContainer)
-                .fillMaxHeight(0.5f)
-                .wrapContentHeight(),
-            contentPadding = PaddingValues(horizontal = 16.dp),
+                .fillMaxSize(),
         ) {
-            stickyHeader {
-                Surface(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .zIndex(1f),
-                    color = MaterialTheme.colorScheme.surfaceContainer,
-                ) {
-                    Text(
-                        text = stringResource(R.string.choose_airport),
-                        modifier =
-                            Modifier.padding(
-                                bottom = 8.dp,
-                                top = 4.dp,
-                                start = 16.dp,
-                            ),
-                        fontWeight = FontWeight.Bold,
+            Text(
+                text = stringResource(R.string.choose_airport),
+                modifier = Modifier.padding(
+                    bottom = 8.dp,
+                    top = 4.dp,
+                    start = 16.dp,
+                ),
+                fontWeight = FontWeight.Bold,
+            )
+
+            suggestions.forEachIndexed { index, suggestion ->
+                if (index > 0) {
+                    HorizontalDivider(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(vertical = 4.dp),
                     )
                 }
-            }
-            itemsIndexed(
-                items = suggestions,
-                key = { _, suggestion -> suggestion.id },
-            ) { index, suggestion ->
-                Column {
-                    if (index > 0) {
-                        HorizontalDivider(
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(vertical = 4.dp),
-                        )
-                    }
-                    Row(
-                        modifier =
-                            Modifier
-                                .padding(vertical = 16.dp)
-                                .fillMaxWidth()
-                                .clickable {
-                                    onAirportSelected(
-                                        OnAction.OnAirportSuggestionSelected(
-                                            suggestion,
-                                        ),
-                                    )
-                                },
-                    ) {
-                        Icon(painterResource(R.drawable.ic_airplane), contentDescription = null)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("${suggestion.iata}, ${suggestion.name}")
-                    }
+                Row(
+                    modifier = Modifier
+                        .padding(vertical = 16.dp)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .clickable {
+                            onAirportSelected(OnAction.OnAirportSuggestionSelected(suggestion))
+                        },
+                ) {
+                    Icon(painterResource(R.drawable.ic_airplane), contentDescription = null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("${suggestion.iata}, ${suggestion.name}")
                 }
             }
         }
