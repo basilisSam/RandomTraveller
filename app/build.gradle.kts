@@ -64,9 +64,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
-    // Retrofit & OkHttp
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.gson)
+    // OkHttp
     implementation(libs.okhttp.logging)
 
     // Hilt
