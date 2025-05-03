@@ -2,7 +2,9 @@ package com.example.randomtraveller.core.utils
 
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -26,4 +28,14 @@ fun LocalDate.toFormattedDateString(): String {
             else -> "th"
         }
     return "$dayOfWeek, ${dayOfMonth}$dayOfMonthSuffix of $year"
+}
+
+fun LocalDate.toUtcIsoString(): String {
+    val localZone = ZoneId.systemDefault()
+    val startOfDay = this.atTime(LocalTime.MIDNIGHT)
+    val zonedLocal = startOfDay.atZone(localZone)
+    val utcZoned = zonedLocal.withZoneSameInstant(ZoneId.of("UTC"))
+
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+    return utcZoned.format(formatter)
 }
