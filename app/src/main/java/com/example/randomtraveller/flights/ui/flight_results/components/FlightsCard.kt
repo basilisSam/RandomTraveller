@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -18,10 +19,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.randomtraveller.core.ui.DashedHorizontalDivider
 import com.example.randomtraveller.flights.ui.flight_results.FlightDetails
 import com.example.randomtraveller.flights.ui.flight_results.FlightDirection
@@ -112,6 +113,16 @@ fun FlightCardSector(
                 )
             }
 
+            if (flightDetails.carrierCode != null) {
+                AsyncImage(
+                    model = "https://images.kiwi.com/airlines/64/${flightDetails.carrierCode}.png",
+                    contentDescription = null,
+                    modifier = modifier
+                        .size(24.dp)
+                        .padding(start = 4.dp)
+                )
+            }
+
             HorizontalDivider(
                 color = Color.LightGray,
                 thickness = 1.dp,
@@ -161,7 +172,8 @@ private val outboundFlight = FlightDetails(
     departureAirport = "SKG",
     duration = "1h 00m",
     arrivalTime = "07:25",
-    arrivalAirport = "ATH"
+    arrivalAirport = "ATH",
+    ""
 )
 
 private val inboundFlight = FlightDetails(
@@ -171,5 +183,6 @@ private val inboundFlight = FlightDetails(
     departureAirport = "ATH",
     duration = "1h 00m",
     arrivalTime = "07:25",
-    arrivalAirport = "SKG"
+    arrivalAirport = "SKG",
+    ""
 )
