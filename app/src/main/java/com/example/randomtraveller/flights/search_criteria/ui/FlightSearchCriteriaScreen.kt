@@ -2,6 +2,8 @@ package com.example.randomtraveller.flights.search_criteria.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -87,7 +89,8 @@ private fun Content(
                 modifier =
                     modifier
                         .padding(innerPadding)
-                        .padding(horizontal = 8.dp),
+                        .padding(horizontal = 8.dp)
+                        .verticalScroll(rememberScrollState()),
             ) {
                 LeavingFromTextField(onAction, screenState.airportText)
 
