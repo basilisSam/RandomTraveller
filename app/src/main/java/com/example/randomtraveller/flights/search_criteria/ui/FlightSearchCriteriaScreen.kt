@@ -66,7 +66,7 @@ private fun Content(
             bottomBar = {
                 PrimaryButton(
                     text = "Search flights",
-                    modifier = Modifier.padding(bottom = 24.dp),
+                    modifier = Modifier.padding(bottom = 24.dp, top = 8.dp),
                     isEnabled =
                         screenState.selectedDateRange.startDateInMillis != null &&
                                 screenState.selectedDateRange.endDateInMillis != null &&
