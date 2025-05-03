@@ -1,0 +1,91 @@
+# Query to find direct return good deals based on source city, max price, and departure date range.
+# All other parameters like radius, cabin class, provider, locale, currency etc., are fixed
+query SearchFlightsQuery(
+    $sourceCityId: ID!
+    $maxPrice: Int!
+    $departureStartDate: DateTime!
+    $departureEndDate: DateTime!
+) {
+    goodDeals(
+        search: {
+            itinerary: {
+                sourceIdSlugRadius: { id: $sourceCityId, radius: 50 }
+                itineraryType: RETURN_ITINERARY
+            }
+            cabinClass: {
+                cabinClass: ECONOMY
+                applyMixedClasses: true
+            }
+            dealsProvider: SEARCH_CHEAPEST
+        }
+        filter: {
+            departureDate: { start: $departureStartDate, end: $departureEndDate }
+            limit: 30
+            price: { end: $maxPrice }
+            maxStopsCount: 0
+        }
+        options: {
+            currency: "EUR"
+            locale: "en"
+            polling: true
+            partnerMarket: "en"
+            partner: "skypicker"
+            affilID: "skypicker"
+            usePrecached: true
+            useLongPrecached: false
+            serverToken: null
+        }
+    ) {
+        ... on GoodDeals {
+            server {
+                requestId # Useful for debugging
+            }
+            metadata {
+                itinerariesCount
+            }
+            itineraries {
+                id
+                price {
+                    amount
+                    roundedAmount
+                    formattedValue
+                    currency {
+                        code
+                    }
+                }
+                source {
+                    ... on Station {
+                        id
+                        name
+                        code # e.g., Airport IATA code
+                        city {
+                            name
+                        }
+                        country {
+                            name
+                        }
+                    }
+                }
+                destination {
+                    ... on Station {
+                        id
+                        name
+                        code
+                        city {
+                            name
+                        }
+                        country {
+                            name
+                        }
+                    }
+                }
+                departureDate
+                returnDate
+            }
+        }
+        ... on AppError {
+            code
+            message
+        }
+    }
+}
