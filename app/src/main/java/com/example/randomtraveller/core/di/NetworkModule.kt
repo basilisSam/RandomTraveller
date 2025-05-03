@@ -74,4 +74,17 @@ object NetworkModule {
             .okHttpClient(okHttpClientBuilder.build())
             .build()
     }
+
+    @Provides
+    @Singleton
+    @Named("martech")
+    fun provideMartechApolloClient(
+        apolloClientBuilder: ApolloClient.Builder,
+        okHttpClientBuilder: OkHttpClient.Builder,
+    ): ApolloClient {
+        return apolloClientBuilder
+            .serverUrl("https://martech.skypicker.com/graphql")
+            .okHttpClient(okHttpClientBuilder.build())
+            .build()
+    }
 }
