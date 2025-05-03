@@ -28,10 +28,10 @@ import com.example.randomtraveller.flights.ui.flight_results.components.FlightCa
 import com.example.randomtraveller.ui.theme.RandomTravellerTheme
 
 @Composable
-fun FlightResults(
-    modifier: Modifier = Modifier,
+fun FlightResultsScreen(
     onBackClicked: () -> Unit,
     viewModel: FlightResultsViewModel = hiltViewModel(),
+    modifier: Modifier = Modifier,
 ) {
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
 
