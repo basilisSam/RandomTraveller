@@ -79,7 +79,12 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.ui.auth)
 
+    // Apollo
     implementation(libs.apollo.graphql)
+
+    // Media 3
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.ui)
 
     testImplementation(libs.junit)
     testImplementation(libs.truth)
