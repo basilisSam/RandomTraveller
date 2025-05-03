@@ -26,6 +26,7 @@ kotlinSeralization = "1.7.2"
 kotlinSeralizationPlugin = "2.0.20"
 hiltNavigationCompose = "1.2.0"
 apolloGraphQl = "4.1.1"
+coil = "2.7.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -46,6 +47,7 @@ truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxx-coroutines-test" }
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 app-compat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appCompat" }

@@ -58,6 +58,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.app.compat)
     implementation(libs.kotlin.serialization)
+    implementation(libs.coil.compose)
 
     // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
