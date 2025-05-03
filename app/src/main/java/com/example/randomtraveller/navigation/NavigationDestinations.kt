@@ -9,7 +9,7 @@ object Login
 object SplashScreen
 
 @Serializable
-object SearchFlight
+object SearchFlightCriteria
 
 @Serializable
 data class FlightResults(

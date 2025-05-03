@@ -1,4 +1,4 @@
-package com.example.randomtraveller.flights.search_flights.ui.components
+package com.example.randomtraveller.flights.search_criteria.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,8 +28,8 @@ import androidx.compose.ui.tooling.preview.PreviewFontScale
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import com.example.randomtraveller.R
-import com.example.randomtraveller.flights.search_flights.ui.AirportSuggestion
-import com.example.randomtraveller.flights.search_flights.ui.OnAction
+import com.example.randomtraveller.flights.search_criteria.ui.AirportSuggestion
+import com.example.randomtraveller.flights.search_criteria.ui.OnAction
 import com.example.randomtraveller.ui.theme.RandomTravellerTheme
 
 @Composable

@@ -6,7 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.randomtraveller.flights.flight_results.ui.FlightResultsScreen
-import com.example.randomtraveller.flights.search_flights.ui.SearchFlightScreen
+import com.example.randomtraveller.flights.search_criteria.ui.FlightSearchCriteriaScreen
 import com.example.randomtraveller.login.LoginScreen
 import com.example.randomtraveller.splash.SplashScreen
 import com.google.firebase.auth.FirebaseAuth
@@ -29,7 +29,7 @@ fun NavHost(
                     }
                 }
             } else {
-                navController.navigate(SearchFlight) {
+                navController.navigate(SearchFlightCriteria) {
                     popUpTo(0) {
                         inclusive = true
                     }
@@ -43,8 +43,8 @@ fun NavHost(
         composable<SplashScreen> {
             SplashScreen(modifier)
         }
-        composable<SearchFlight> {
-            SearchFlightScreen(
+        composable<SearchFlightCriteria> {
+            FlightSearchCriteriaScreen(
                 modifier = modifier,
                 onSearchFlightsClicked = {
                     navController.navigate(

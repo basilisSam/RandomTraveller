@@ -6,12 +6,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import app.cash.turbine.TurbineTestContext
 import app.cash.turbine.test
 import com.example.randomtraveller.GetAirportsQuery
-import com.example.randomtraveller.flights.search_flights.data.AirportSearchRepository
-import com.example.randomtraveller.flights.search_flights.ui.AirportSuggestion
-import com.example.randomtraveller.flights.search_flights.ui.OnAction
-import com.example.randomtraveller.flights.search_flights.ui.SearchFlightsScreenState
-import com.example.randomtraveller.flights.search_flights.ui.SearchFlightsViewModel
-import com.example.randomtraveller.flights.search_flights.ui.SelectedDateRange
+import com.example.randomtraveller.flights.search_criteria.data.AirportSearchRepository
+import com.example.randomtraveller.flights.search_criteria.ui.AirportSuggestion
+import com.example.randomtraveller.flights.search_criteria.ui.OnAction
+import com.example.randomtraveller.flights.search_criteria.ui.SearchFlightsScreenState
+import com.example.randomtraveller.flights.search_criteria.ui.FlightSearchCriteriaViewModel
+import com.example.randomtraveller.flights.search_criteria.ui.SelectedDateRange
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.every
@@ -32,19 +32,19 @@ import java.time.ZoneOffset
 import java.util.Locale
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class SearchFlightsViewModelTest {
+class FlightSearchCriteriaViewModelTest {
     @MockK
     val formatter = mockk<NumberFormat>()
 
     @MockK
     private val airportSearchRepository = mockk<AirportSearchRepository>()
-    private lateinit var viewModel: SearchFlightsViewModel
+    private lateinit var viewModel: FlightSearchCriteriaViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        viewModel = SearchFlightsViewModel(airportSearchRepository)
+        viewModel = FlightSearchCriteriaViewModel(airportSearchRepository)
     }
 
     @After

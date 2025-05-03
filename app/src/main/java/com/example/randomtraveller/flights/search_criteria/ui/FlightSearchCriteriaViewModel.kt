@@ -1,4 +1,4 @@
-package com.example.randomtraveller.flights.search_flights.ui
+package com.example.randomtraveller.flights.search_criteria.ui
 
 import android.icu.text.NumberFormat
 import androidx.compose.ui.text.TextRange
@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.randomtraveller.core.utils.toLocalDate
 import com.example.randomtraveller.core.utils.toUtcIsoEndOfDayString
 import com.example.randomtraveller.core.utils.toUtcIsoStartOfDayString
-import com.example.randomtraveller.flights.search_flights.data.AirportSearchRepository
+import com.example.randomtraveller.flights.search_criteria.data.AirportSearchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.ensureActive
@@ -25,7 +25,7 @@ import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchFlightsViewModel @Inject constructor(
+class FlightSearchCriteriaViewModel @Inject constructor(
     private val airportSearchRepository: AirportSearchRepository
 ) : ViewModel() {
 
@@ -156,20 +156,6 @@ class SearchFlightsViewModel @Inject constructor(
         }
         airportSuggestionsJob =
             viewModelScope.launch {
-//                val suggestions =
-//                    listOf(
-//                        AirportSuggestion("Athens", "ATH"),
-//                        AirportSuggestion("Athens", "ATH2"),
-//                        AirportSuggestion("Athens", "ATH3"),
-//                        AirportSuggestion("Athens", "ATH4"),
-//                        AirportSuggestion("Athens", "ATH5"),
-//                        AirportSuggestion("Athens", "ATH6"),
-//                        AirportSuggestion("Athens", "ATH7"),
-//                        AirportSuggestion("Athens", "ATH8"),
-//                        AirportSuggestion("Athens", "ATH9"),
-//                        AirportSuggestion("Athens", "ATH10"),
-//                        AirportSuggestion("Athens", "ATH11"),
-//                    )
                 val suggestions =
                     airportSearchRepository.getAirports(screenState.value.airportText.text)
                         ?.mapNotNull { edge ->

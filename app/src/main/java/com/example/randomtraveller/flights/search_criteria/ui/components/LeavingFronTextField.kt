@@ -1,4 +1,4 @@
-package com.example.randomtraveller.flights.search_flights.ui.components
+package com.example.randomtraveller.flights.search_criteria.ui.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
@@ -7,7 +7,7 @@ import androidx.compose.ui.tooling.preview.PreviewFontScale
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import com.example.randomtraveller.R
 import com.example.randomtraveller.core.ui.TitledTextField
-import com.example.randomtraveller.flights.search_flights.ui.OnAction
+import com.example.randomtraveller.flights.search_criteria.ui.OnAction
 import com.example.randomtraveller.ui.theme.RandomTravellerTheme
 
 @Composable

@@ -1,4 +1,4 @@
-package com.example.randomtraveller.flights.search_flights.ui
+package com.example.randomtraveller.flights.search_criteria.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -21,21 +21,21 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.randomtraveller.R
 import com.example.randomtraveller.core.ui.DateRangeSelectorDialog
 import com.example.randomtraveller.core.ui.PrimaryButton
-import com.example.randomtraveller.flights.search_flights.ui.components.AirportSearchHint
-import com.example.randomtraveller.flights.search_flights.ui.components.AirportSuggestions
-import com.example.randomtraveller.flights.search_flights.ui.components.BudgetTextField
-import com.example.randomtraveller.flights.search_flights.ui.components.DateRangeButton
-import com.example.randomtraveller.flights.search_flights.ui.components.LeavingFromTextField
+import com.example.randomtraveller.flights.search_criteria.ui.components.AirportSearchHint
+import com.example.randomtraveller.flights.search_criteria.ui.components.AirportSuggestions
+import com.example.randomtraveller.flights.search_criteria.ui.components.BudgetTextField
+import com.example.randomtraveller.flights.search_criteria.ui.components.DateRangeButton
+import com.example.randomtraveller.flights.search_criteria.ui.components.LeavingFromTextField
 import com.example.randomtraveller.navigation.FlightResults
 import com.example.randomtraveller.ui.theme.RandomTravellerTheme
 import com.firebase.ui.auth.AuthUI
 import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
-fun SearchFlightScreen(
+fun FlightSearchCriteriaScreen(
     modifier: Modifier,
     onSearchFlightsClicked: (FlightResults) -> Unit,
-    viewModel: SearchFlightsViewModel = hiltViewModel(),
+    viewModel: FlightSearchCriteriaViewModel = hiltViewModel(),
 ) {
 
     NavigationHandler(viewModel.navigation, onSearchFlightsClicked)
