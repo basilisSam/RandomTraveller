@@ -56,7 +56,7 @@ query SearchFlightsQuery(
         }
         options: {
             # These define presentation and other non-filtering aspects
-            sortBy: QUALITY # Sort criteria
+            sortBy: POPULARITY # Sort criteria
             mergePriceDiffRule: INCREASED
             currency: "EUR" # Define desired currency (Consider making this a variable)
             locale: "en"    # Define locale (Consider making this a variable)
@@ -92,6 +92,27 @@ query SearchFlightsQuery(
                 }
                 duration # Overall itinerary duration
                 # Apply the TripInfo fragment for detailed segment data
+                # --- ADDED BOOKING OPTIONS ---
+                bookingOptions {
+                    edges {
+                        node { # Node is of type BookingOption
+                            __typename
+                            bookingUrl       # <<< The URL for booking this specific option
+                            token            # <<< The booking token (might be needed for the URL or booking API)
+                            price {          # Price associated with THIS specific booking option
+                                formattedValue # Use pre-formatted price string for display
+                                currency { code }
+                            }
+                            itineraryProvider { # Identify the provider for this booking option
+                                id
+                                name             # e.g., "Kiwi.com", "Kayak", Airline Name
+                                code
+                            }
+                        }
+                    }
+                    # pageInfo # Optional, if expecting many booking options
+                }
+                # --- END OF BOOKING OPTIONS ---
                 ...TripInfo
             }
             # Optional: Include metadata if needed for things like carrier lists, etc.
@@ -122,6 +143,9 @@ fragment TripInfo on Itinerary {
                         station {
                             name # Airport Name
                             code # Airport Code (IATA)
+                            city {       # <<< Access the linked City object
+                                name     # <<< Get the City Name
+                            }
                         }
                         localTime # Departure Date & Time (Local)
                     }
@@ -129,6 +153,9 @@ fragment TripInfo on Itinerary {
                         station {
                             name # Airport Name
                             code # Airport Code (IATA)
+                            city {       # <<< Access the linked City object
+                                name     # <<< Get the City Name
+                            }
                         }
                         localTime # Arrival Date & Time (Local)
                     }
@@ -149,6 +176,9 @@ fragment TripInfo on Itinerary {
                         station {
                             name
                             code
+                            city {       # <<< Access the linked City object
+                                name     # <<< Get the City Name
+                            }
                         }
                         localTime
                     }
@@ -156,6 +186,9 @@ fragment TripInfo on Itinerary {
                         station {
                             name
                             code
+                            city {       # <<< Access the linked City object
+                                name     # <<< Get the City Name
+                            }
                         }
                         localTime
                     }

@@ -55,11 +55,14 @@ data class RoundTripFlight(
     val price: String,
     val inbound: FlightDetails,
     val outbound: FlightDetails,
+    val bookingUrl: String? = null
 )
 
 data class FlightDetails(
     val date: String,
     val flightDirection: FlightDirection,
+    val sourceCityName: String,
+    val destinationCityName: String,
     val departureTime: String,
     val departureAirport: String,
     val duration: String,
@@ -98,12 +101,14 @@ fun createRoundTripFlight(id: String, price: String): RoundTripFlight {
 fun createFlightDetails(direction: FlightDirection): FlightDetails {
     return FlightDetails(
         date = "10 Apr",
+        sourceCityName = "Berlin",
+        destinationCityName = "Frankfurt",
         flightDirection = direction,
         departureTime = "08:00",
         departureAirport = "JFK",
         duration = "3h 30m",
         arrivalTime = "11:30",
         arrivalAirport = "LAX",
-        null
+        carrierCode = null
     )
 }

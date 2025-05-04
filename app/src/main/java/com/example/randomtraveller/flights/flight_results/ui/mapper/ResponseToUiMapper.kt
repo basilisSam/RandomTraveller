@@ -15,7 +15,7 @@ fun SearchFlightsQuery.Data.toUiModel(): List<RoundTripFlight> {
     // It also safely accesses itineraries list, filtering out any potential nulls within the list
     return this.returnItineraries?.onItineraries?.itineraries?.mapNotNull {
         // Map each itinerary, skipping if mapping fails (returns null)
-        it?.tripInfo?.toRoundTripFlight(it.id, it.price)
+        it?.tripInfo?.toRoundTripFlight(it.id, it.price, it.bookingOptions)
     } ?: emptyList() // Return empty list if returnItineraries or itineraries is null
 }
 
@@ -25,7 +25,8 @@ fun SearchFlightsQuery.Data.toUiModel(): List<RoundTripFlight> {
  */
 fun TripInfo.toRoundTripFlight(
     itineraryId: String?,
-    priceData: SearchFlightsQuery.Price?
+    priceData: SearchFlightsQuery.Price?,
+    bookingOptions: SearchFlightsQuery.BookingOptions?
 ): RoundTripFlight? {
     // We expect this fragment to be on an ItineraryReturn based on the query structure
     val returnInfo = this.onItineraryReturn ?: return null
@@ -39,11 +40,14 @@ fun TripInfo.toRoundTripFlight(
         return null
     }
 
+    val bookingUrl = bookingOptions?.edges?.firstOrNull()?.node?.bookingUrl
+
     return RoundTripFlight(
         id = itineraryId,
         price = formatPrice(priceData),
         outbound = outboundDetails,
-        inbound = inboundDetails
+        inbound = inboundDetails,
+        bookingUrl = "${"https://kiwi.com/"}$bookingUrl"
     )
 }
 
@@ -76,6 +80,8 @@ fun TripInfo.Outbound.toFlightDetails(direction: FlightDirection): FlightDetails
     return FlightDetails(
         date = formatDate(departureDateTime),
         flightDirection = direction,
+        sourceCityName = firstSegment.source.station?.city?.name ?: "N/A",
+        destinationCityName = lastSegment.destination.station?.city?.name ?: "N/A",
         departureTime = formatTime(departureDateTime),
         departureAirport = departureAirportStr,
         duration = formattedDuration,
@@ -97,7 +103,7 @@ fun TripInfo.Inbound.toFlightDetails(direction: FlightDirection): FlightDetails?
         println("Warning: Sector missing first or last segment for ${direction.value}")
         return null
     }
-    
+
     val departureDateTime = parseGraphQLDateTime(firstSegment.source?.localTime as String)
     val arrivalDateTime = parseGraphQLDateTime(lastSegment.destination?.localTime as String)
 
@@ -109,6 +115,8 @@ fun TripInfo.Inbound.toFlightDetails(direction: FlightDirection): FlightDetails?
     return FlightDetails(
         date = formatDate(departureDateTime),
         flightDirection = direction,
+        sourceCityName = firstSegment.source.station?.city?.name ?: "N/A",
+        destinationCityName = lastSegment.destination.station?.city?.name ?: "N/A",
         departureTime = formatTime(departureDateTime),
         departureAirport = firstSegment.source.station?.code ?: "N/A",
         duration = formatDuration(this.duration),

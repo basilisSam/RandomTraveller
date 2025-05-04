@@ -90,8 +90,8 @@ private fun Content(
             ) {
                 LocalVideoPlayer(
                     Modifier
-                        .height(200.dp)
-                        .width(150.dp)
+                        .height(300.dp)
+                        .width(200.dp)
                 )
             }
         } else {
