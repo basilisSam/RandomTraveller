@@ -21,27 +21,19 @@ fun NavHost(
         startDestination = SplashScreen,
         modifier = modifier,
     ) {
-        FirebaseAuth.getInstance().addAuthStateListener {
-            if (it.currentUser == null) {
-                navController.navigate(Login) {
-                    popUpTo(0) {
-                        inclusive = true
-                    }
-                }
-            } else {
-                navController.navigate(SearchFlightCriteria) {
-                    popUpTo(0) {
-                        inclusive = true
-                    }
-                }
-            }
-        }
-
         composable<Login> {
             LoginScreen(modifier)
         }
         composable<SplashScreen> {
-            SplashScreen(modifier)
+            SplashScreen(
+                modifier = modifier,
+                onAuthResult = { isLoggedIn ->
+                    val destination = if (isLoggedIn) SearchFlightCriteria else Login
+                    navController.navigate(destination) {
+                        popUpTo<SplashScreen> { inclusive = true }
+                        launchSingleTop = true
+                    }
+                })
         }
         composable<SearchFlightCriteria> {
             FlightSearchCriteriaScreen(
