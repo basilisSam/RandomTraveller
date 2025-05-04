@@ -53,6 +53,7 @@ data class ScreenState(
 data class RoundTripFlight(
     val id: String,
     val price: String,
+    val priceAmount: Int?,
     val inbound: FlightDetails,
     val outbound: FlightDetails,
     val bookingUrl: String? = null
@@ -93,6 +94,7 @@ fun createRoundTripFlight(id: String, price: String): RoundTripFlight {
     return RoundTripFlight(
         id = id,
         price = "$price$",
+        priceAmount = 123,
         outbound = createFlightDetails(FlightDirection.OUTBOUND),
         inbound = createFlightDetails(FlightDirection.INBOUND)
     )

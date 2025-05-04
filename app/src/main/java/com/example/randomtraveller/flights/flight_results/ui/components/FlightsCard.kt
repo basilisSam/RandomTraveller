@@ -196,7 +196,7 @@ fun FlightCardSector(
 @Composable
 private fun FlightCardPreview() {
     RandomTravellerTheme {
-        FlightCard(RoundTripFlight("id", "123$", inboundFlight, outboundFlight))
+        FlightCard(RoundTripFlight("id", "123$", 123, inboundFlight, outboundFlight))
     }
 }
 

@@ -1,22 +1,74 @@
 package com.example.randomtraveller.flights.flight_results.ui.mapper
 
+import android.util.Log
 import com.example.randomtraveller.flights.flight_results.ui.FlightDetails
 import com.example.randomtraveller.flights.flight_results.ui.FlightDirection
 import com.example.randomtraveller.flights.flight_results.ui.RoundTripFlight
 import com.example.randomtraveller.umbrella.SearchFlightsQuery
 import com.example.randomtraveller.umbrella.fragment.TripInfo
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 fun SearchFlightsQuery.Data.toUiModel(): List<RoundTripFlight> {
-    // Handles the case where the response is successful but contains no itineraries
-    // or if the top-level 'returnItineraries' is null (less likely for successful response)
-    // It also safely accesses itineraries list, filtering out any potential nulls within the list
-    return this.returnItineraries?.onItineraries?.itineraries?.mapNotNull {
-        // Map each itinerary, skipping if mapping fails (returns null)
-        it?.tripInfo?.toRoundTripFlight(it.id, it.price, it.bookingOptions)
-    } ?: emptyList() // Return empty list if returnItineraries or itineraries is null
+    // 1. Get the raw list of itineraries, filtering out nulls within the list
+    val rawItineraries = this.returnItineraries?.onItineraries?.itineraries
+        ?.filterNotNull() // Ensure we work with non-null Itinerary objects
+        ?: return emptyList()
+    Log.d(
+        "SearchFlightGroup",
+        rawItineraries.size.toString()
+    )
+    rawItineraries.forEach { iterinary ->
+        Log.d(
+            "SearchFlightGroup",
+            iterinary.tripInfo.onItineraryReturn?.outbound?.sectorSegments?.first()?.segment?.destination?.station?.city?.name
+                ?: "null"
+        )
+    }
+
+    if (rawItineraries.isEmpty()) {
+        return emptyList()
+    }
+
+    // 2. Group raw itineraries by the FINAL destination city name of the outbound leg
+    val rawGroupedByDestCity = rawItineraries.groupBy { itinerary ->
+        getFinalDestinationCityName(itinerary) // Use helper to get key safely
+    }
+
+    rawGroupedByDestCity.forEach {
+        Log.d("SearchFlightGroup", it.key)
+    }
+
+    // 3. For each group, find the raw itinerary with the minimum price
+    val cheapestRawItineraries =
+        rawGroupedByDestCity.mapNotNull { (cityName, rawItinerariesToSameDest) ->
+            // Skip if destination couldn't be determined
+            if (cityName == "UNKNOWN_DESTINATION") {
+                null
+            } else {
+                // Find the itinerary with the minimum price (using parsed Int cents)
+                rawItinerariesToSameDest.minByOrNull { itinerary ->
+                    getPriceAsInteger(itinerary.price) ?: Int.MAX_VALUE // Compare numeric price
+                }
+            }
+        }
+
+    // 4. Map ONLY the selected cheapest raw itineraries to the UI model
+    val finalUiFlights = cheapestRawItineraries.mapNotNull { cheapItinerary ->
+        // Use the existing detailed mapper, passing the required parts
+        // Ensure tripInfo is not null before calling the extension function
+        cheapItinerary.tripInfo.toRoundTripFlight(
+            cheapItinerary.id,
+            cheapItinerary.price,
+            cheapItinerary.bookingOptions
+        )
+    }
+
+    // 5. Optionally sort the final list of unique destinations by price
+    return finalUiFlights.sortedBy { it.priceAmount ?: Int.MAX_VALUE }
 }
 
 /**
@@ -40,11 +92,13 @@ fun TripInfo.toRoundTripFlight(
         return null
     }
 
+    val numericPrice = getPriceAsInteger(priceData)
     val bookingUrl = bookingOptions?.edges?.firstOrNull()?.node?.bookingUrl
 
     return RoundTripFlight(
         id = itineraryId,
         price = formatPrice(priceData),
+        priceAmount = numericPrice,
         outbound = outboundDetails,
         inbound = inboundDetails,
         bookingUrl = "${"https://kiwi.com/"}$bookingUrl"
@@ -194,6 +248,30 @@ fun formatDuration(durationInSeconds: Int?): String {
         // Fallback for zero, though already handled above
         else -> "0m"
     }
+}
+
+// Helper to get price as Int cents from the raw Price type
+fun getPriceAsInteger(priceData: SearchFlightsQuery.Price?): Int? {
+    val amountStr = priceData?.amount
+    if (amountStr.isNullOrBlank()) return null
+    return try {
+        BigDecimal(amountStr)
+            .setScale(2, RoundingMode.HALF_EVEN) // Ensure 2 decimal places
+            .multiply(BigDecimal(100))
+            .toInt()
+    } catch (e: Exception) {
+        println("Error parsing price amount '$amountStr' to integer cents: ${e.message}")
+        null
+    }
+}
+
+// Helper to safely get the *final* destination city name from a raw itinerary's outbound leg
+fun getFinalDestinationCityName(itinerary: SearchFlightsQuery.Itinerary?): String {
+    // Navigate through the structure to the last segment's destination city
+    return itinerary?.tripInfo?.onItineraryReturn
+        ?.outbound?.sectorSegments?.lastOrNull() // Get the last segment
+        ?.segment?.destination?.station?.city?.name
+        ?: "UNKNOWN_DESTINATION" // Fallback if path fails
 }
 
 /**
