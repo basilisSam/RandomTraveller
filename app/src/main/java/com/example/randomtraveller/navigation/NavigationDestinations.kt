@@ -20,3 +20,6 @@ data class SearchFlights(
     val inboundStartDate: String,
     val inboundEndDate: String
 )
+
+@Serializable
+object SavedFlightSearches

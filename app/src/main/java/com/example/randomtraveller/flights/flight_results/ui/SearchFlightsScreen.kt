@@ -44,79 +44,51 @@ import com.example.randomtraveller.ui.theme.RandomTravellerTheme
 
 @Composable
 fun SearchFlightsScreen(
-    onBackClicked: () -> Unit,
     viewModel: SearchFlightsViewModel = hiltViewModel(),
 ) {
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
 
-    Content(onBackClicked, screenState)
+    Content(screenState)
 }
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun Content(
-    onBackClicked: () -> Unit,
     screenState: ScreenState,
 ) {
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        "Flights Results",
-                        fontWeight = FontWeight.Bold,
-                    )
-                },
-                navigationIcon = {
-                    Icon(
-                        Icons.AutoMirrored.Default.ArrowBack,
-                        contentDescription = "",
-                        Modifier
-                            .padding(start = 8.dp)
-                            .clickable {
-                                onBackClicked()
-                            }
-                    )
-                }
+    if (screenState.isLoading) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            LocalVideoPlayer(
+                Modifier
+                    .height(300.dp)
+                    .width(200.dp)
             )
         }
-    ) { innerPadding ->
-        if (screenState.isLoading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                contentAlignment = Alignment.Center
-            ) {
-                LocalVideoPlayer(
-                    Modifier
-                        .height(300.dp)
-                        .width(200.dp)
-                )
-            }
-        } else {
-            when (LocalConfiguration.current.orientation) {
-                Configuration.ORIENTATION_PORTRAIT -> {
-                    LazyColumn(modifier = Modifier.padding(innerPadding)) {
-                        items(
-                            items = screenState.flights,
-                            key = { roundTripFlight -> roundTripFlight.id }) {
-                            FlightCard(roundTripFlight = it)
-                        }
+    } else {
+        when (LocalConfiguration.current.orientation) {
+            Configuration.ORIENTATION_PORTRAIT -> {
+                LazyColumn() {
+                    items(
+                        items = screenState.flights,
+                        key = { roundTripFlight -> roundTripFlight.id }) {
+                        FlightCard(roundTripFlight = it)
                     }
                 }
+            }
 
-                else -> {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        modifier = Modifier.padding(innerPadding)
-                    ) {
-                        items(
-                            count = screenState.flights.size,
-                            key = { index -> screenState.flights[index].id }
-                        ) { index ->
-                            FlightCard(roundTripFlight = screenState.flights[index])
-                        }
+            else -> {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                ) {
+                    items(
+                        count = screenState.flights.size,
+                        key = { index -> screenState.flights[index].id }
+                    ) { index ->
+                        FlightCard(roundTripFlight = screenState.flights[index])
                     }
                 }
             }
@@ -162,7 +134,7 @@ fun LocalVideoPlayer(
 @Composable
 private fun ContentPreview() {
     RandomTravellerTheme {
-        Content({}, createSampleScreenState())
+        Content(createSampleScreenState())
     }
 }
 

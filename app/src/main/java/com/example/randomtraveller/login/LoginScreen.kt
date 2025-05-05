@@ -35,7 +35,10 @@ private val signInIntent =
         .build()
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier) {
+fun LoginScreen(
+    onUserSignedIn: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     RandomTravellerTheme {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
             Box(
@@ -45,7 +48,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                 Column(
                     modifier = modifier.padding(innerPadding),
                 ) {
-                    LoginButton()
+                    LoginButton(onUserSignedIn)
                 }
             }
         }
@@ -53,9 +56,9 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun LoginButton() {
+fun LoginButton(onUserSignedIn: () -> Unit) {
     val context = LocalContext.current
-    val sigInInLauncher = getSigInInLauncher(context)
+    val sigInInLauncher = getSigInInLauncher(context, onUserSignedIn)
 
     PrimaryButton(
         text = "Sign-in",
@@ -64,20 +67,27 @@ fun LoginButton() {
 }
 
 @Composable
-private fun getSigInInLauncher(context: Context) =
+private fun getSigInInLauncher(context: Context, onUserSignedIn: () -> Unit) =
     rememberLauncherForActivityResult(
         contract = FirebaseAuthUIActivityResultContract(),
     ) { result ->
-        onSignInResult(context, result)
+        onSignInResult(context, result, onUserSignedIn)
     }
 
 private fun onSignInResult(
     context: Context,
     result: FirebaseAuthUIAuthenticationResult,
+    onUserSignedIn: () -> Unit,
 ) {
     if (result.resultCode != RESULT_OK) {
-        Toast.makeText(context, "Couldn't login ${result.idpResponse?.error?.message}", Toast.LENGTH_LONG)
+        Toast.makeText(
+            context,
+            "Couldn't login ${result.idpResponse?.error?.message}",
+            Toast.LENGTH_LONG
+        )
             .show()
+    } else {
+        onUserSignedIn.invoke()
     }
 }
 
@@ -85,6 +95,6 @@ private fun onSignInResult(
 @Composable
 private fun LoginScreenPreview() {
     RandomTravellerTheme {
-        LoginScreen(Modifier)
+        LoginScreen({}, Modifier)
     }
 }
