@@ -4,6 +4,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
@@ -48,4 +49,14 @@ fun LocalDate.toUtcIsoEndOfDayString(): String {
 
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
     return utcZoned.format(formatter)
+}
+
+fun String.toPrettyLocalDate(): String {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+    val utcZoned = ZonedDateTime.parse(this, formatter.withZone(ZoneId.of("UTC")))
+    val localZoned = utcZoned.withZoneSameInstant(ZoneId.systemDefault())
+    val localDate = localZoned.toLocalDate()
+
+    val outputFormatter = DateTimeFormatter.ofPattern("MMM d") // e.g., "May 23"
+    return localDate.format(outputFormatter)
 }
