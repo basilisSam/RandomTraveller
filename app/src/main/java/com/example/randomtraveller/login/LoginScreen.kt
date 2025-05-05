@@ -4,15 +4,18 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.randomtraveller.R
@@ -45,6 +48,11 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.BottomCenter,
             ) {
+                Image(
+                    painter = painterResource(R.drawable.ic_random_traveller_blue_letters),
+                    contentDescription = null,
+                    modifier = Modifier.align(Alignment.Center).size(300.dp)
+                )
                 Column(
                     modifier = modifier.padding(innerPadding),
                 ) {
