@@ -5,6 +5,7 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.randomtraveller.core.data.SavedSearchesRepository
 import com.example.randomtraveller.core.utils.toLocalDate
 import com.example.randomtraveller.core.utils.toUtcIsoEndOfDayString
 import com.example.randomtraveller.core.utils.toUtcIsoStartOfDayString
@@ -26,7 +27,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FlightSearchCriteriaViewModel @Inject constructor(
-    private val airportSearchRepository: AirportSearchRepository
+    private val airportSearchRepository: AirportSearchRepository,
+    private val savedSearchesRepository: SavedSearchesRepository
 ) : ViewModel() {
 
     private val _screenState: MutableStateFlow<SearchFlightsScreenState> =
@@ -204,6 +206,16 @@ class FlightSearchCriteriaViewModel @Inject constructor(
                 inboundStartDate = inboundStartDate,
                 inboundEndDate = inboundEndDate
             )
+
+            savedSearchesRepository.saveSearch(
+                _screenState.value.selectedAirportSuggestion!!,
+                maxPrice,
+                outboundStartDate,
+                outboundEndDate,
+                inboundStartDate,
+                inboundEndDate
+            )
+
             _navigation.emit(searchFlightsData)
         }
     }
