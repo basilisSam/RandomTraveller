@@ -4,8 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.example.randomtraveller.flights.flight_results.data.FlightsRepository
-import com.example.randomtraveller.flights.flight_results.ui.mapper.toUiModel
+import com.example.randomtraveller.flights.flight_results.domain.usecase.FindCheapestFlightsPerDestinationUseCase
+import com.example.randomtraveller.flights.flight_results.ui.mapper.RoundTripFlightMapper
 import com.example.randomtraveller.navigation.SearchFlights
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -18,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchFlightsViewModel @Inject constructor(
-    private val flightSearchRepository: FlightsRepository,
+    private val cheapestFlightsPerDestinationUseCase: FindCheapestFlightsPerDestinationUseCase,
+    private val roundTripFlightMapper: RoundTripFlightMapper,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -27,7 +28,7 @@ class SearchFlightsViewModel @Inject constructor(
     private val _screenState = MutableStateFlow(ScreenState())
     val screenState = _screenState.onStart {
         delay(5000)
-        val response = flightSearchRepository.searchFlights(
+        val roundTripFlights = cheapestFlightsPerDestinationUseCase(
             flightParams.cityId,
             flightParams.maxPrice,
             flightParams.outboundStartDate,
@@ -36,11 +37,11 @@ class SearchFlightsViewModel @Inject constructor(
             flightParams.inboundEndDate
         )
 
-        val mapped = response?.toUiModel() ?: emptyList()
+        val mappedFlights = roundTripFlightMapper.mapDomainToUiModel(roundTripFlights)
 
         _screenState.update {
             it.copy(
-                flights = mapped,
+                flights = mappedFlights,
                 isLoading = false
             )
         }
