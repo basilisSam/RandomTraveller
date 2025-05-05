@@ -78,19 +78,17 @@ fun MainAppScreen() {
         drawerState = drawerState,
         gesturesEnabled = showDrawer,
         drawerContent = {
-            if (showDrawer) {
-                AppDrawerContent(
-                    currentRoute = currentDestination?.route,
-                    onNavigate = { destination ->
-                        navController.navigate(destination) {
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                        scope.launch { drawerState.close() }
-                    },
-                    onCloseDrawer = { scope.launch { drawerState.close() } }
-                )
-            }
+            AppDrawerContent(
+                currentRoute = currentDestination?.route,
+                onNavigate = { destination ->
+                    navController.navigate(destination) {
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                    scope.launch { drawerState.close() }
+                },
+                onCloseDrawer = { scope.launch { drawerState.close() } }
+            )
         }
     ) {
         Scaffold(
