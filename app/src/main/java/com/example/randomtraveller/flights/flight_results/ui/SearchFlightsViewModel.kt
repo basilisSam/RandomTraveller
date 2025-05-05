@@ -8,6 +8,7 @@ import com.example.randomtraveller.flights.flight_results.data.FlightsRepository
 import com.example.randomtraveller.flights.flight_results.ui.mapper.toUiModel
 import com.example.randomtraveller.navigation.SearchFlights
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
@@ -25,6 +26,7 @@ class SearchFlightsViewModel @Inject constructor(
 
     private val _screenState = MutableStateFlow(ScreenState())
     val screenState = _screenState.onStart {
+        delay(5000)
         val response = flightSearchRepository.searchFlights(
             flightParams.cityId,
             flightParams.maxPrice,
