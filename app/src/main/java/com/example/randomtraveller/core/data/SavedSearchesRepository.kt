@@ -36,4 +36,8 @@ class SavedSearchesRepository @Inject constructor(
     fun getSavedSearches(): Flow<List<SavedSearch>> {
         return savedSearchDao.getAll()
     }
+
+    suspend fun deleteSavedSearch(savedSearch: SavedSearch) {
+        savedSearchDao.delete(savedSearch)
+    }
 }
