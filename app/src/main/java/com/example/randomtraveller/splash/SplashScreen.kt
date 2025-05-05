@@ -14,7 +14,6 @@ import kotlinx.coroutines.delay
 fun SplashScreen(modifier: Modifier, onAuthResult: (Boolean) -> Unit) {
     LaunchedEffect(Unit) {
         val isLoggedIn = FirebaseAuth.getInstance().currentUser != null
-        delay(3000)
         onAuthResult(isLoggedIn)
     }
 
