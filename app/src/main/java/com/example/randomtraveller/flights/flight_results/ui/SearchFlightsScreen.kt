@@ -2,6 +2,7 @@ package com.example.randomtraveller.flights.flight_results.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -117,7 +118,7 @@ fun LocalVideoPlayer(
                 player = exoPlayer
             }
         },
-        modifier = modifier
+        modifier = modifier.aspectRatio(1f)
     )
 }
 
