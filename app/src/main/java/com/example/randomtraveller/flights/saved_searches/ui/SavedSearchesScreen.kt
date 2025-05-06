@@ -1,4 +1,4 @@
-package com.example.randomtraveller.flights.saved_searches
+package com.example.randomtraveller.flights.saved_searches.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -41,27 +41,36 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.randomtraveller.core.database.SavedSearch
-import com.example.randomtraveller.core.utils.toPrettyLocalDate
+import com.example.randomtraveller.flights.common.model.SearchFlightsNavigationParams
 import com.example.randomtraveller.ui.theme.RandomTravellerTheme
 import kotlinx.coroutines.delay
 
 @Composable
 fun SavedSearchesScreen(
     modifier: Modifier = Modifier,
-    onSavedSearchClicked: (SavedSearch) -> Unit,
+    onSavedSearchClicked: (SearchFlightsNavigationParams) -> Unit,
     viewModel: SavedSearchesViewModel = hiltViewModel()
 ) {
     val savedSearches by viewModel.savedSearches.collectAsStateWithLifecycle()
 
-    Content(savedSearches, { viewModel.deleteSavedSearch(it) }, onSavedSearchClicked)
+    LaunchedEffect(Unit) {
+        viewModel.navigationEvent.collect {
+            if (it == null) return@collect
+            onSavedSearchClicked(it)
+        }
+    }
+
+    Content(
+        savedSearches,
+        { viewModel.deleteSavedSearch(it) },
+        { viewModel.onSavedSearchClicked(it) })
 }
 
 @Composable
 fun Content(
-    savedSearches: List<SavedSearch>,
-    onDeleteSearch: (SavedSearch) -> Unit,
-    onSavedSearchClicked: (SavedSearch) -> Unit,
+    savedSearches: List<SavedSearchUi>,
+    onDeleteSearch: (SavedSearchUi) -> Unit,
+    onSavedSearchClicked: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (savedSearches.isEmpty()) {
@@ -102,7 +111,7 @@ fun Content(
                         onDeleteSearch(savedSearch)
                     }
                 }
-                
+
                 LaunchedEffect(dismissState.currentValue) {
                     if (dismissState.currentValue == SwipeToDismissBoxValue.EndToStart) {
                         showItem = false
@@ -149,7 +158,7 @@ fun Content(
                     ) {
                         SavedSearchCard(
                             savedSearch = savedSearch,
-                            onClick = { onSavedSearchClicked(savedSearch) }
+                            onClick = { onSavedSearchClicked(savedSearch.id) }
                         )
                     }
                 }
@@ -160,7 +169,7 @@ fun Content(
 
 @Composable
 fun SavedSearchCard(
-    savedSearch: SavedSearch,
+    savedSearch: SavedSearchUi,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -178,19 +187,19 @@ fun SavedSearchCard(
                 .padding(16.dp)
         ) {
             Text(
-                text = "(${savedSearch.iata}) ${savedSearch.airportName}",
+                text = savedSearch.airportInfo,
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "${savedSearch.outboundStartDate.toPrettyLocalDate()} - ${savedSearch.inboundStartDate.toPrettyLocalDate()}",
+                text = savedSearch.dateRange,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Max price: ${savedSearch.maxPrice}",
+                text = savedSearch.maxPrice,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -205,17 +214,7 @@ private fun SavedSearchesScreenPreview() {
     RandomTravellerTheme {
         Content(
             listOf(
-                SavedSearch(
-                    id = 0,
-                    cityId = "City:thessaloniki_gt",
-                    airportName = "Thessaloniki airport",
-                    iata = "SKG",
-                    maxPrice = 300,
-                    outboundStartDate = "2024-07-27T00:00:00Z",
-                    outboundEndDate = "2024-07-27T00:00:00Z",
-                    inboundStartDate = "2024-07-27T00:00:00Z",
-                    inboundEndDate = "2024-07-27T00:00:00Z"
-                )
+
             ),
             {},
             {}

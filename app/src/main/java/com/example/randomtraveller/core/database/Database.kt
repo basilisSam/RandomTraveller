@@ -12,8 +12,8 @@ import androidx.room.RoomDatabase
 import kotlinx.coroutines.flow.Flow
 
 @Database(
-    entities = [SavedSearch::class],
-    version = 2,
+    entities = [SavedSearchDTO::class],
+    version = 3,
     exportSchema = false,
 )
 abstract class RandomTravellerDatabase : RoomDatabase() {
@@ -21,7 +21,7 @@ abstract class RandomTravellerDatabase : RoomDatabase() {
 }
 
 @Entity(tableName = "saved_searches")
-data class SavedSearch(
+data class SavedSearchDTO(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val cityId: String,
@@ -42,20 +42,20 @@ interface SavedSearchDao {
      * Consider if you need a different conflict strategy (e.g., IGNORE or ABORT).
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(savedSearch: SavedSearch)
+    suspend fun insert(savedSearch: SavedSearchDTO)
 
     /**
      * Retrieves all saved searches, ordered by ID descending (newest first).
      * Returns a Flow for reactive updates.
      */
     @Query("SELECT * FROM saved_searches ORDER BY id DESC")
-    fun getAll(): Flow<List<SavedSearch>>
+    fun getAll(): Flow<List<SavedSearchDTO>>
 
     /**
      * Deletes a specific saved search.
      */
     @Delete
-    suspend fun delete(savedSearch: SavedSearch)
+    suspend fun delete(savedSearch: SavedSearchDTO)
 
     /**
      * Optional: Deletes a saved search by its ID.
@@ -69,6 +69,5 @@ interface SavedSearchDao {
      * Returns a Flow for reactive updates.
      */
     @Query("SELECT * FROM saved_searches WHERE id = :searchId")
-    fun getById(searchId: Int): Flow<SavedSearch?>
-
+    fun getById(searchId: Int): SavedSearchDTO?
 }

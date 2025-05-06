@@ -7,9 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.randomtraveller.core.database.SavedSearch
 import com.example.randomtraveller.flights.flight_results.ui.SearchFlightsScreen
-import com.example.randomtraveller.flights.saved_searches.SavedSearchesScreen
+import com.example.randomtraveller.flights.saved_searches.ui.SavedSearchesScreen
 import com.example.randomtraveller.flights.search_criteria.ui.FlightSearchCriteriaScreen
 import com.example.randomtraveller.login.LoginScreen
 import com.example.randomtraveller.splash.SplashScreen
