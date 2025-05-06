@@ -16,6 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.randomtraveller.core.ui.DateRangeSelectorDialog
 import com.example.randomtraveller.core.ui.PrimaryButton
+import com.example.randomtraveller.flights.common.model.SearchFlightsNavigationParams
 import com.example.randomtraveller.flights.search_criteria.ui.components.AirportSearchHint
 import com.example.randomtraveller.flights.search_criteria.ui.components.AirportSuggestions
 import com.example.randomtraveller.flights.search_criteria.ui.components.BudgetTextField

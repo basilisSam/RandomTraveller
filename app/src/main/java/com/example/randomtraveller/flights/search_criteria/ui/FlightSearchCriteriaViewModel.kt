@@ -5,11 +5,14 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.randomtraveller.core.data.SavedSearchesRepository
+import com.example.randomtraveller.flights.common.domain.usecase.saved_search.SaveSearchUseCase
 import com.example.randomtraveller.core.utils.toLocalDate
 import com.example.randomtraveller.core.utils.toUtcIsoEndOfDayString
 import com.example.randomtraveller.core.utils.toUtcIsoStartOfDayString
-import com.example.randomtraveller.flights.search_criteria.data.AirportSearchRepository
+import com.example.randomtraveller.flights.common.model.SearchFlightsNavigationParams
+import com.example.randomtraveller.flights.search_criteria.domain.usecase.GetAirportsUseCase
+import com.example.randomtraveller.flights.search_criteria.ui.mapper.AirportsMapper
+import com.example.randomtraveller.flights.search_criteria.ui.mapper.SavedSearchMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.ensureActive
@@ -27,8 +30,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FlightSearchCriteriaViewModel @Inject constructor(
-    private val airportSearchRepository: AirportSearchRepository,
-    private val savedSearchesRepository: SavedSearchesRepository
+    private val getAirportsUseCase: GetAirportsUseCase,
+    private val saveSearchUseCase: SaveSearchUseCase,
+    private val savedSearchMapper: SavedSearchMapper,
+    private val airportsMapper: AirportsMapper
 ) : ViewModel() {
 
     private val _screenState: MutableStateFlow<SearchFlightsScreenState> =
@@ -158,22 +163,15 @@ class FlightSearchCriteriaViewModel @Inject constructor(
         }
         airportSuggestionsJob =
             viewModelScope.launch {
-                val suggestions =
-                    airportSearchRepository.getAirports(screenState.value.airportText.text)
-                        ?.mapNotNull { edge ->
-                            val station = edge?.node?.onStation ?: return@mapNotNull null
-                            AirportSuggestion(
-                                station.id,
-                                station.city?.id ?: "",
-                                station.name,
-                                station.code ?: ""
-                            )
-                        } ?: emptyList()
-
+                val airportsDomain =
+                    getAirportsUseCase.getAirports(_screenState.value.airportText.text)
+                val airportSuggestions =
+                    airportsMapper.mapAirportsDomainToUi(airportsDomain)
+                
                 ensureActive()
                 _screenState.update {
                     it.copy(
-                        airportSuggestions = suggestions,
+                        airportSuggestions = airportSuggestions,
                         areSuggestionsLoading = false,
                     )
                 }
@@ -207,14 +205,22 @@ class FlightSearchCriteriaViewModel @Inject constructor(
                 inboundEndDate = inboundEndDate
             )
 
-            savedSearchesRepository.saveSearch(
-                _screenState.value.selectedAirportSuggestion!!,
-                maxPrice,
-                outboundStartDate,
-                outboundEndDate,
-                inboundStartDate,
-                inboundEndDate
-            )
+            val suggestedAirportSelection = _screenState.value.selectedAirportSuggestion
+
+            if (suggestedAirportSelection != null) {
+                val savedSearchDomain = savedSearchMapper.flightSearchCriteriaToDomain(
+                    cityId = cityId,
+                    airportName = suggestedAirportSelection.name,
+                    iata = suggestedAirportSelection.iata,
+                    maxPrice = maxPrice,
+                    outboundStartDate = outboundStartDate,
+                    outboundEndDate = outboundEndDate,
+                    inboundStartDate = inboundStartDate,
+                    inboundEndDate = inboundEndDate
+                )
+
+                saveSearchUseCase.invoke(savedSearchDomain)
+            }
 
             _navigation.emit(searchFlightsData)
         }
@@ -265,12 +271,3 @@ sealed class OnAction {
 
     data object OnSearchButtonClicked : OnAction()
 }
-
-data class SearchFlightsNavigationParams(
-    val cityId: String,
-    val maxPrice: Int,
-    val outboundStartDate: String,
-    val outboundEndDate: String,
-    val inboundStartDate: String,
-    val inboundEndDate: String,
-)
