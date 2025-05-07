@@ -41,7 +41,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.randomtraveller.flights.common.model.SavedSearchUi
 import com.example.randomtraveller.flights.common.model.SearchFlightsNavigationParams
+import com.example.randomtraveller.flights.common.ui.components.SavedSearchItem
 import com.example.randomtraveller.ui.theme.RandomTravellerTheme
 import kotlinx.coroutines.delay
 
@@ -156,7 +158,7 @@ fun Content(
                             }
                         }
                     ) {
-                        SavedSearchCard(
+                        SavedSearchItem(
                             savedSearch = savedSearch,
                             onClick = { onSavedSearchClicked(savedSearch.id) }
                         )
@@ -166,47 +168,6 @@ fun Content(
         }
     }
 }
-
-@Composable
-fun SavedSearchCard(
-    savedSearch: SavedSearchUi,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(4.dp),
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(16.dp)
-        ) {
-            Text(
-                text = savedSearch.airportInfo,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = savedSearch.dateRange,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = savedSearch.maxPrice,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-    }
-}
-
 
 @Preview
 @Composable

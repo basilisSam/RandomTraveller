@@ -1,11 +1,14 @@
 package com.example.randomtraveller.flights.search_criteria.ui
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -17,6 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.randomtraveller.core.ui.DateRangeSelectorDialog
 import com.example.randomtraveller.core.ui.PrimaryButton
 import com.example.randomtraveller.flights.common.model.SearchFlightsNavigationParams
+import com.example.randomtraveller.flights.common.ui.components.SavedSearchItem
 import com.example.randomtraveller.flights.search_criteria.ui.components.AirportSearchHint
 import com.example.randomtraveller.flights.search_criteria.ui.components.AirportSuggestions
 import com.example.randomtraveller.flights.search_criteria.ui.components.BudgetTextField
@@ -71,6 +75,7 @@ private fun Content(
         }
         Column(
             modifier = Modifier
+                .fillMaxSize()
                 .padding(horizontal = 8.dp)
                 .verticalScroll(rememberScrollState()),
         ) {
@@ -89,6 +94,23 @@ private fun Content(
 
             BudgetTextField(onAction, screenState.budgetText)
             DateRangeButton(screenState.selectedDateRange, onAction)
+            if (screenState.lastSearch != null) {
+                Text(
+                    text = "Last search",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.padding(
+                        start = 8.dp,
+                        end = 16.dp,
+                        top = 24.dp,
+                        bottom = 8.dp
+                    )
+                )
+                SavedSearchItem(
+                    screenState.lastSearch,
+                    { onAction.invoke(OnAction.OnLastSearchClicked) }
+                )
+            }
         }
     }
 }
@@ -116,6 +138,7 @@ private fun NavigationHandler(
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

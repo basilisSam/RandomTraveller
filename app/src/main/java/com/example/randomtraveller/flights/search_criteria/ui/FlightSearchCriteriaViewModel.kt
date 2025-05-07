@@ -5,23 +5,31 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.randomtraveller.flights.common.domain.usecase.saved_search.SaveSearchUseCase
 import com.example.randomtraveller.core.utils.toLocalDate
 import com.example.randomtraveller.core.utils.toUtcIsoEndOfDayString
 import com.example.randomtraveller.core.utils.toUtcIsoStartOfDayString
+import com.example.randomtraveller.flights.common.domain.model.SavedSearchDomain
+import com.example.randomtraveller.flights.common.domain.usecase.saved_search.GetSavedSearchesUseCase
+import com.example.randomtraveller.flights.common.domain.usecase.saved_search.SaveSearchUseCase
+import com.example.randomtraveller.flights.common.model.SavedSearchUi
 import com.example.randomtraveller.flights.common.model.SearchFlightsNavigationParams
+import com.example.randomtraveller.flights.common.ui.mapper.SavedSearchDomainToUiMapper
 import com.example.randomtraveller.flights.search_criteria.domain.usecase.GetAirportsUseCase
 import com.example.randomtraveller.flights.search_criteria.ui.mapper.AirportsMapper
 import com.example.randomtraveller.flights.search_criteria.ui.mapper.SavedSearchMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -32,7 +40,9 @@ import javax.inject.Inject
 class FlightSearchCriteriaViewModel @Inject constructor(
     private val getAirportsUseCase: GetAirportsUseCase,
     private val saveSearchUseCase: SaveSearchUseCase,
+    getSavedSearchesUseCase: GetSavedSearchesUseCase,
     private val savedSearchMapper: SavedSearchMapper,
+    private val savedSearchDomainToUiMapper: SavedSearchDomainToUiMapper,
     private val airportsMapper: AirportsMapper
 ) : ViewModel() {
 
@@ -42,6 +52,29 @@ class FlightSearchCriteriaViewModel @Inject constructor(
         )
     val screenState: StateFlow<SearchFlightsScreenState>
         get() = _screenState.asStateFlow()
+
+    private val lastSearchUiModelFlow: StateFlow<SavedSearchDomain?> =
+        getSavedSearchesUseCase.invoke()
+            .map { domainList ->
+                domainList.firstOrNull()
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000L),
+                initialValue = null
+            )
+
+    private val lastSearchStateUpdaterJob: Job = viewModelScope.launch {
+        lastSearchUiModelFlow.collect { lastSavedSearchDomain ->
+            val lastSavedSearchUi = if (lastSavedSearchDomain == null) {
+                null
+            } else {
+                savedSearchDomainToUiMapper.mapSavedSearchDomainToUi(lastSavedSearchDomain)
+            }
+            _screenState.update { currentState ->
+                currentState.copy(lastSearch = lastSavedSearchUi)
+            }
+        }
+    }
 
     private val _navigation: MutableSharedFlow<SearchFlightsNavigationParams?> = MutableSharedFlow()
     val navigation: SharedFlow<SearchFlightsNavigationParams?> = _navigation.asSharedFlow()
@@ -61,6 +94,7 @@ class FlightSearchCriteriaViewModel @Inject constructor(
             )
 
             is OnAction.OnSearchButtonClicked -> handleSearchButtonClick()
+            is OnAction.OnLastSearchClicked -> onLastSearchClicked()
         }
     }
 
@@ -167,7 +201,7 @@ class FlightSearchCriteriaViewModel @Inject constructor(
                     getAirportsUseCase.getAirports(_screenState.value.airportText.text)
                 val airportSuggestions =
                     airportsMapper.mapAirportsDomainToUi(airportsDomain)
-                
+
                 ensureActive()
                 _screenState.update {
                     it.copy(
@@ -225,6 +259,23 @@ class FlightSearchCriteriaViewModel @Inject constructor(
             _navigation.emit(searchFlightsData)
         }
     }
+
+    private fun onLastSearchClicked() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val savedSearchDomain = lastSearchUiModelFlow.value
+            if (savedSearchDomain != null) {
+                val searchFlightsNavigationParams = SearchFlightsNavigationParams(
+                    cityId = savedSearchDomain.cityId,
+                    maxPrice = savedSearchDomain.maxPrice,
+                    outboundStartDate = savedSearchDomain.outboundStartDate,
+                    outboundEndDate = savedSearchDomain.outboundEndDate,
+                    inboundStartDate = savedSearchDomain.inboundStartDate,
+                    inboundEndDate = savedSearchDomain.inboundEndDate
+                )
+                _navigation.emit(searchFlightsNavigationParams)
+            }
+        }
+    }
 }
 
 data class SearchFlightsScreenState(
@@ -236,6 +287,7 @@ data class SearchFlightsScreenState(
     val shouldShowCalendarPicker: Boolean = false,
     val airportSuggestions: List<AirportSuggestion> = emptyList(),
     val areSuggestionsLoading: Boolean = false,
+    val lastSearch: SavedSearchUi? = null
 )
 
 data class SelectedDateRange(
@@ -270,4 +322,6 @@ sealed class OnAction {
     ) : OnAction()
 
     data object OnSearchButtonClicked : OnAction()
+
+    data object OnLastSearchClicked : OnAction()
 }

@@ -1,10 +1,18 @@
-package com.example.randomtraveller.flights.saved_searches.ui
+package com.example.randomtraveller.flights.common.ui.mapper
 
-import com.example.randomtraveller.flights.common.domain.model.SavedSearchDomain
 import com.example.randomtraveller.core.utils.toPrettyLocalDate
+import com.example.randomtraveller.flights.common.domain.model.SavedSearchDomain
+import com.example.randomtraveller.flights.common.model.SavedSearchUi
 import javax.inject.Inject
 
-class SavedSearchMapper @Inject constructor() {
+class SavedSearchDomainToUiMapper @Inject constructor() {
+
+    fun mapSavedSearchesDomainToUi(
+        savedSearchesDomain: List<SavedSearchDomain>
+    ): List<SavedSearchUi> = savedSearchesDomain.map {
+        mapSavedSearchDomainToUi(it)
+    }
+
     fun mapSavedSearchDomainToUi(savedSearch: SavedSearchDomain): SavedSearchUi {
         return SavedSearchUi(
             id = savedSearch.id,

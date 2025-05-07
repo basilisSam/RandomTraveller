@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.randomtraveller.flights.common.domain.usecase.saved_search.DeleteSavedSearchUseCase
 import com.example.randomtraveller.flights.common.domain.usecase.saved_search.GetSavedSearchByIdUseCase
 import com.example.randomtraveller.flights.common.domain.usecase.saved_search.GetSavedSearchesUseCase
+import com.example.randomtraveller.flights.common.model.SavedSearchUi
 import com.example.randomtraveller.flights.common.model.SearchFlightsNavigationParams
+import com.example.randomtraveller.flights.common.ui.mapper.SavedSearchDomainToUiMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -20,14 +22,14 @@ class SavedSearchesViewModel @Inject constructor(
     getSavedSearchesUseCase: GetSavedSearchesUseCase,
     private val deleteSavedSearchUseCase: DeleteSavedSearchUseCase,
     private val getSavedSearchByIdUseCase: GetSavedSearchByIdUseCase,
-    private val savedSearchMapper: SavedSearchMapper
+    private val savedSearchDomainToUiMapper: SavedSearchDomainToUiMapper
 ) : ViewModel() {
 
     private val _navigationEvent = MutableSharedFlow<SearchFlightsNavigationParams?>()
     val navigationEvent = _navigationEvent
 
     val savedSearches = getSavedSearchesUseCase().map { savedSearches ->
-        savedSearches.map { search -> savedSearchMapper.mapSavedSearchDomainToUi(search) }
+        savedSearchDomainToUiMapper.mapSavedSearchesDomainToUi(savedSearches)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun deleteSavedSearch(savedSearch: SavedSearchUi) {
@@ -53,11 +55,3 @@ class SavedSearchesViewModel @Inject constructor(
         }
     }
 }
-
-data class SavedSearchUi(
-    val id: Int,
-    val airportInfo: String,
-    val dateRange: String,
-    val maxPrice: String,
-    val iata: String
-)
